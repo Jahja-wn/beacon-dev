@@ -5,7 +5,6 @@ import config from '../config';
 import { logger } from '../../logger';
 
  function handleBeaconEvent(userId, displayName, timestamp, hwid, url) {
-  console.log(userId)
 
   var finddisplayName = { userId: userId };
   var sort = { '_id': 'desc' };
@@ -38,10 +37,19 @@ import { logger } from '../../logger';
   // }
 }
 
+function getDisplayName(userId, displayName, timestamp, hwid, url, model){
+
+  var finddisplayName = { userId: userId };
+  var sort = { '_id': 'desc' };
+  var limit = 1;
+  this.dal.find(finddisplayName,model, sort, limit);
+}
+
 class BeaconService {
   constructor(conversationService,messageService,dal) {
     this.conversationService = conversationService;
     this.handleBeaconEvent = handleBeaconEvent;
+    this.getDisplayName = getDisplayName;
     this.messageService = messageService;
     this.dal = dal;
   }

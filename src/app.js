@@ -20,13 +20,11 @@ const conversationService = new ConversationService(dal, messageService, elastic
 const beaconService = new BeaconService(conversationService, messageService, dal, elastic);
 
 const mongoose = require('mongoose');
-const uri = "mongodb+srv://Jahja-wn:1234@cluster0-dcsni.azure.mongodb.net/test?retryWrites=true&w=majority";
-mongoose.connect(uri, { useNewUrlParser: true });
-const db = mongoose.connection;
+const db = mongoose.createConnection(process.env.MONGODB_URL,  { useNewUrlParser: true })
+const userSchema = db.model('user', users);
 
 db.on('connected', function () {
   console.log('Mongoose connected');
-  console.log(beaconService.dal)
 });
 db.on('error', function (err) {
   console.log('Mongoose error: ' + err);
@@ -34,17 +32,20 @@ db.on('error', function (err) {
 
 
 app.use(bodyParser.urlencoded({ extended: false }));
+
 app.get('/userprofile', function (req, res) {
   res.sendFile(path.join(__dirname + '/index.html'));
 });
+
 app.post('/submit', (req, res) => {
-  var saveUser = new users({
+  var saveUser = new userSchema({
     userId: req.body.useridfield,
     displayName: req.body.displayname,
     firstName: req.body.Firstname,
     LastName: req.body.Lastname,
     nickName: req.body.Nickname
   });
+  console.log(saveUser)
   dal.save(saveUser);
   //elastic.elasticsave(saveUser);
 });
@@ -55,6 +56,10 @@ app.post('/submit', (req, res) => {
 //   fs.writeFileSync("./resource/profile.json", JSON.stringify(data, null, 4),{flag:'w'});
 //   return res.status(200).send('hello world');
 //   });
+
+app.get('/getBeacon', (req, res) => {
+  beaconService.getDisplayName("s", "s", "1111111", "1234567890", "profile.pictureUrl", userSchema);
+})
 
 // webhook callback
 app.post('/webhook', middleware(config), (req, res) => {

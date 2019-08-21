@@ -11,7 +11,6 @@ class LocalFile {
   }
 
   find(findObj, model, sortOptions,limit) {
-    console.log(findObj)
     //findObj is an obj that you want to find , create from model and sort by id order by desc
     model.find(findObj).sort(sortOptions).limit(limit).exec((err, docs) => {
       if (err) {
