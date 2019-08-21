@@ -1,0 +1,52 @@
+{
+  "name": "line-bot-nodejs-starter",
+  "version": "1.0.0",
+  "description": "starter point to create new line bot project",
+  "main": "app.js",
+  "scripts": {
+    "build": "rimraf dist/ && babel ./src --out-dir dist/src --ignore ./node_modules,./.babelrc,./package.json,./npm-debug.log --copy-files",
+    "test": "npm run build && jasmine ./dist/src/core/test/data_access_layer_spec/local_file_spec.js",
+    "testb": "npm run build && jasmine ./dist/src/core/test/service_spec/beacon_service_spec.js",
+    "testm": "npm run build && jasmine ./dist/src/core/test/service_spec/message_service_spec.js",
+    "testc": "npm run build && jasmine ./dist/src/core/test/service_spec/conversation_service_spec.js",
+    "play": "npm run build && node dist/src/core/test/play.js",
+    "esinsert": "npm run build && node dist/src/utility/elastic_script/insert.js",
+    "start": "npm run build&&node dist/src/app.js"
+  },
+  "keywords": [
+    "line",
+    "bot",
+    "messaging-api"
+  ],
+  "author": "Sitthi Thiammekha",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
+    "eslint": "^5.16.0",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-node": "^7.0.1",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-standard": "^4.0.0",
+    "jasmine": "^3.4.0",
+    "jshint": "^2.10.2",
+    "rimraf": "^2.7.1"
+  },
+  "dependencies": {
+    "@line/bot-sdk": "^6.8.0",
+    "babel": "^6.23.0",
+    "babelify": "^10.0.0",
+    "body-parser": "^1.19.0",
+    "elasticsearch": "^16.3.0",
+    "express": "^4.17.1",
+    "is-subset": "^0.1.1",
+    "lodash": "^4.17.13",
+    "log4js": "^4.4.0",
+    "moment": "^2.24.0",
+    "mongoose": "^5.6.9",
+    "morgan": "^1.9.1",
+    "node": "^12.8.1",
+    "nodemon": "^1.19.1"
+  }
+}

@@ -1,0 +1,86 @@
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LIFF Starter</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<style>
+    .hide {
+        position: absolute;
+        top: -1px;
+        left: -1px;
+        width: 1px;
+        height: 1px;
+    }
+</style>
+
+<body>
+    <iframe name="hiddenFrame" class="hide"></iframe>
+    <form method="post" id="form" target="hiddenFrame" action="/submit">
+        User id :
+        <input type="text" id="useridfield" name="useridfield">
+        Display name :
+        <input type="text" id="displayname" name="displayname">
+        <br>
+        First name:<br>
+        <input type="text" id="Firstname" name="Firstname">
+        <br>
+        Last name:<br>
+        <input type="text" id="Lastname" name="Lastname">
+        <br>
+        Nickname : <br>
+        <input type="text" id="Nickname" name="Nickname">
+        <br><br>
+        <input onclick="myFunction()" type="submit" />
+
+    </form>
+
+    <h2>Profile</h2>
+    <table border="1">
+        <tr>
+            <th>Firstname</th>
+            <td id="sh_first"></td>
+        </tr>
+        <tr>
+            <th>Lastname</th>
+            <td id="sh_last"></td>
+        </tr>
+        <tr>
+            <th>Nickname</th>
+            <td id="sh_nick"></td>
+        </tr>
+    </table>
+    </div>
+
+
+    <script src="https://d.line-scdn.net/liff/1.0/sdk.js"></script>
+    <script>
+
+
+        window.onload = function (e) {
+            liff.init(function (data) {
+                init(data);
+            });
+        };
+
+        function init(data) {
+            liff.getProfile().then(function (profile) {
+                document.getElementById('useridfield').value = profile.userId;
+                document.getElementById('displayname').value = profile.displayName;
+            }).catch(function (error) {
+                window.alert("Error getting profile: " + error);
+            });
+        }
+        function myFunction() {
+            var firstname = document.getElementById('Firstname').value;
+            var lastname = document.getElementById('Lastname').value;
+            var nickname = document.getElementById('Nickname').value;
+            alert("\n" + "save successfully");
+            document.getElementById('sh_first').textContent = firstname;
+            document.getElementById('sh_last').textContent = lastname;
+            document.getElementById('sh_nick').textContent = nickname;
+
+        }   
+    </script>
+
+
+</body>

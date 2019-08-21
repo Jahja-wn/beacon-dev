@@ -1,0 +1,20 @@
+
+    [
+        {
+            "hardwareID": "012c7cbf02",
+            "locationName": "Dimension Data Office, Asok",
+            "point":{
+                "lat": 13.733014,
+                "lon": 100.560290
+            }
+        },
+        {
+            "hardwareID": "012ecfa651",
+            "locationName": "Chidlom Site",
+            "point":{
+                "lat": 13.740472,
+                "lon": 100.542970
+            }
+        }
+    ]
+    

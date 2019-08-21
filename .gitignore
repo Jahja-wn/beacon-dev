@@ -1,0 +1,7 @@
+
+resource/
+ngrok-stable-windows-amd64/
+node_modules/
+dist/
+logs/
+**/test_file/*
