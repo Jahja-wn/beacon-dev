@@ -6,11 +6,10 @@ const activitySchema = new Schema({
     displayName : String,
     type : String,
     timestamp : Number,
-    location : String,
+    location : Object,
     askstate : String,
     plan : String,
     url : String
 })
-const activities = mongoose.model("activities", activitySchema)
 
-module.exports = activities
+module.exports = activitySchema

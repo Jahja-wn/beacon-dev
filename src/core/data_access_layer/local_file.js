@@ -1,25 +1,14 @@
 
 (function () { 'use strict'; }());
-
+const dataArray=[];
 class LocalFile {
 
-  save(obj) {   //ต้องเป็น Object ที่ได้มาจากการ new Object จาก Model เท่านั้น
-    obj.save(function (err) {
-      if (err) return console.error(err);
-      console.log(" saved to collection.");
-    });
-  }
+  async save(obj) {   //ต้องเป็น Object ที่ได้มาจากการ new Object จาก Model เท่านั้น
+    return obj.save()}
 
-  find(findObj, model, sortOptions,limit) {
+  async find(findObj, model, sortOptions,limit) {
     //findObj is an obj that you want to find , create from model and sort by id order by desc
-    model.find(findObj).sort(sortOptions).limit(limit).exec((err, docs) => {
-      if (err) {
-        console.log('err:',err)
-      }
-      else {
-        console.log("userInfo",docs)
-      }
-    })
+    return model.find(findObj).sort(sortOptions).limit(limit).exec()
   }
 
   update(model,findobj,replace,sortOption){

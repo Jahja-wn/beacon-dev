@@ -34,7 +34,7 @@ async function handleInMessage(message, userId) {
 }
 
 function askTodayPlan(userId, location) { //send the question to users
-    this.messageService.sendMessage(userId, 'what\'s your plan to do today at ' + location.locationName + ' ?');
+    this.messageService.sendMessage(userId, 'what\'s your plan to do today at ' + location+ ' ?');
     // update to mark as already ask question
     this.dal.update({ askstate: true }, null, new Activity(userId, null, null, null, location, null, null, null));
     return new Promise((resolve) => {

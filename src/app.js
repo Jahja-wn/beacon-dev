@@ -1,7 +1,7 @@
 (function () { 'use strict'; }());
-import users from './core/model';
+import { users, locations,activities } from './core/model';
+//import locations from './core/model';
 import { LocalFile } from './core/data_access_layer/local_file';
-
 import { ConversationService, ElasticService, BeaconService, MessageService } from './core/service';
 import { Client, middleware } from '@line/bot-sdk';
 import { logger, Log_config } from './logger';
@@ -20,8 +20,10 @@ const conversationService = new ConversationService(dal, messageService, elastic
 const beaconService = new BeaconService(conversationService, messageService, dal, elastic);
 
 const mongoose = require('mongoose');
-const db = mongoose.createConnection(process.env.MONGODB_URL,  { useNewUrlParser: true })
-const userSchema = db.model('user', users);
+const db = mongoose.createConnection(process.env.MONGODB_URL, { useNewUrlParser: true })
+const userSchema = db.model('users', users);
+const locationSchema = db.model('locations', locations);
+const activitySchema = db.model('activities', activities)
 
 db.on('connected', function () {
   console.log('Mongoose connected');
@@ -38,13 +40,8 @@ app.get('/userprofile', function (req, res) {
 });
 
 app.post('/submit', (req, res) => {
-  var saveUser = new userSchema({
-    userId: req.body.useridfield,
-    displayName: req.body.displayname,
-    firstName: req.body.Firstname,
-    LastName: req.body.Lastname,
-    nickName: req.body.Nickname
-  });
+  console.log(req.body)
+  var saveUser = new userSchema(req.body);
   console.log(saveUser)
   dal.save(saveUser);
   //elastic.elasticsave(saveUser);
@@ -57,9 +54,9 @@ app.post('/submit', (req, res) => {
 //   return res.status(200).send('hello world');
 //   });
 
-app.get('/getBeacon', (req, res) => {
-  beaconService.getDisplayName("s", "s", "1111111", "1234567890", "profile.pictureUrl", userSchema);
-})
+// app.get('/getBeacon', (req, res) => {
+//   beaconService.getDisplayName("s", "s", "1111111", "1234567890", "profile.pictureUrl", userSchema);
+// })
 
 // webhook callback
 app.post('/webhook', middleware(config), (req, res) => {
@@ -125,7 +122,7 @@ function handleEvent(event) {
     case 'beacon':
       client.getProfile(event.source.userId)
         .then((profile) => {
-          beaconService.handleBeaconEvent(event.source.userId, profile.displayName, event.timestamp, event.beacon.hwid, profile.pictureUrl);
+          beaconService.handleBeaconEvent(event.source.userId, profile.displayName, event.timestamp, event.beacon.hwid, profile.pictureUrl, userSchema, locationSchema, activitySchema);
         }).catch((err) => {
           logger.error(err);
         });

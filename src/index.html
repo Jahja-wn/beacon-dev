@@ -17,18 +17,18 @@
     <iframe name="hiddenFrame" class="hide"></iframe>
     <form method="post" id="form" target="hiddenFrame" action="/submit">
         User id :
-        <input type="text" id="useridfield" name="useridfield">
+        <input type="text" id="userId" name="userId">
         Display name :
-        <input type="text" id="displayname" name="displayname">
+        <input type="text" id="displayName" name="displayName">
         <br>
         First name:<br>
-        <input type="text" id="Firstname" name="Firstname">
+        <input type="text" id="firstName" name="firstName">
         <br>
         Last name:<br>
-        <input type="text" id="Lastname" name="Lastname">
+        <input type="text" id="lastName" name="lastname">
         <br>
         Nickname : <br>
-        <input type="text" id="Nickname" name="Nickname">
+        <input type="text" id="nickName" name="nickName">
         <br><br>
         <input onclick="myFunction()" type="submit" />
 
@@ -64,16 +64,16 @@
 
         function init(data) {
             liff.getProfile().then(function (profile) {
-                document.getElementById('useridfield').value = profile.userId;
-                document.getElementById('displayname').value = profile.displayName;
+                document.getElementById('userId').value = profile.userId;
+                document.getElementById('displayName').value = profile.displayName;
             }).catch(function (error) {
                 window.alert("Error getting profile: " + error);
             });
         }
         function myFunction() {
-            var firstname = document.getElementById('Firstname').value;
-            var lastname = document.getElementById('Lastname').value;
-            var nickname = document.getElementById('Nickname').value;
+            var firstname = document.getElementById('firstName').value;
+            var lastname = document.getElementById('lastName').value;
+            var nickname = document.getElementById('nickName').value;
             alert("\n" + "save successfully");
             document.getElementById('sh_first').textContent = firstname;
             document.getElementById('sh_last').textContent = lastname;

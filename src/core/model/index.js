@@ -1,6 +1,5 @@
-const users = require('./user')
-const activities = require('./activity')
-
-module.exports = 
-  users,activities
+import users from './user';
+import activities from './activity';
+import locations from './location';
+export{users,activities,locations}
 
