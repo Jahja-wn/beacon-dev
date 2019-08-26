@@ -101,7 +101,7 @@ async function handleEvent(event) {
       return logge.info("bot join in ", event.source.groupId);
 
     case 'memberJoined':
-      return messageService.sendMessage(event.joined.members[0].userId, "please insert your information \n line://app/1589363163-1oVLQwQk");
+      return messageService.sendMessage(event.joined.members[0].userId, "please insert your information \n line://app/1588402264-zGXExoo1");
 
     case 'memberLeft':
       return;
