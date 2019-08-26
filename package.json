@@ -12,7 +12,7 @@
     "play": "npm run build && node dist/src/core/test/play.js",
     "esinsert": "npm run build && node dist/src/utility/elastic_script/insert.js",
     "postinstall": "npm run build",
-    "start": "node dist/src/app.js"
+    "start": " node dist/src/app.js"
   },
   "keywords": [
     "line",

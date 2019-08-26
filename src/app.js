@@ -21,7 +21,7 @@ const beaconService = new BeaconService(conversationService, messageService, dal
 const mongoose = require('mongoose');
 const toJson = require('@meanie/mongoose-to-json');
 mongoose.plugin(toJson);
-const db = mongoose.createConnection(config.uri, { useNewUrlParser: true , useFindAndModify: false });
+const db = mongoose.createConnection("mongodb+srv://Jahja-wn:1234@cluster0-dcsni.azure.mongodb.net/test?retryWrites=true&w=majority", { useNewUrlParser: true , useFindAndModify: false });
 const userSchema = db.model('users', users);
 const locationSchema = db.model('locations', locations);
 const activitySchema = db.model('activities', activities)
