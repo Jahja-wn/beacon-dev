@@ -1,9 +1,9 @@
 (function () { 'use strict'; }());
 
 const port = process.env.PORT || 7000;
-
+const uri=process.env.MONGODB_URL;
 module.exports = {
-    uri:process.env.MONGODB_URL,
+    uri,
     port,
     channelAccessToken: process.env.channelAccessToken,
     channelSecret: process.env.channelSecret,
