@@ -1,7 +1,7 @@
 (function () { 'use strict'; }());
 
 const port = process.env.PORT || 7000;
-const uri=process.env.MONGODB_URL;
+const uri="mongodb+srv://Jahja-wn:1234@cluster0-dcsni.azure.mongodb.net/test?retryWrites=true&w=majority";
 module.exports = {
     uri,
     port,

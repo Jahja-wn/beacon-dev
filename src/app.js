@@ -18,7 +18,7 @@ const elastic = new ElasticService();
 const messageService = new MessageService(new Client(config));
 const conversationService = new ConversationService(dal, messageService, elastic, config.AnswerAlertDuration);
 const beaconService = new BeaconService(conversationService, messageService, dal, elastic);
-
+console.log("uri",config.uri)
 const mongoose = require('mongoose');
 const toJson = require('@meanie/mongoose-to-json');
 mongoose.plugin(toJson);
