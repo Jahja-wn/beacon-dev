@@ -3,6 +3,7 @@
 const port = process.env.PORT || 7000;
 
 module.exports = {
+    uri:process.env.MONGODB_URL,
     port,
     channelAccessToken: process.env.channelAccessToken,
     channelSecret: process.env.channelSecret,

@@ -22,7 +22,7 @@ const beaconService = new BeaconService(conversationService, messageService, dal
 const mongoose = require('mongoose');
 const toJson = require('@meanie/mongoose-to-json');
 mongoose.plugin(toJson);
-const db = mongoose.createConnection(process.env.MONGODB_URL, { useNewUrlParser: true, useFindAndModify: false })
+const db = mongoose.createConnection(config.uri, { useNewUrlParser: true, useFindAndModify: false })
 const userSchema = db.model('users', users);
 const locationSchema = db.model('locations', locations);
 const activitySchema = db.model('activities', activities)
