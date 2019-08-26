@@ -4,25 +4,24 @@ import { setTimeout } from 'timers';
 import config from '../config';
 import { logger } from '../../logger';
 
-
+const sortOption ={ '_id': 'desc' };
 const alreadyAnswerMessage = {
     type: 'text',
     text: 'you already have answered the question'
 };
 
 //handle when messages were sent
-async function handleInMessage(message, userId) {
-    var matchedActivities = this.dal.find(new Activity(userId, null, null, null, null, true, null, null), 1, true);
-
+async function handleInMessage(message, userId, schema, userprofile) {
+    var matchedActivities = await this.dal.find({ userId: userId }, schema, sortOption, 1)
     // Find for checking if user sending message is one we waiting for response(ask state = true)
-    if (matchedActivities.length > 0) {
+    if (matchedActivities != undefined) {
         let matchedActivity = matchedActivities[0];
         if (matchedActivity.plan === 'none') {
             //if plan parameter equals to none then updated an answer with incomeing message 
-            this.dal.update({ plan: message.text }, null, matchedActivity);
+            this.dal.update(schema, { userId: userId }, { plan: message.text }, sortOption)
             matchedActivity.plan = message.text;
             this.elastic.save(matchedActivity);
-            await this.messageService.sendWalkInMessage(matchedActivity);
+            await this.messageService.sendWalkInMessage(matchedActivity, userprofile);
         }
         else {
             await this.messageService.sendMessage(userId, alreadyAnswerMessage);
@@ -33,47 +32,52 @@ async function handleInMessage(message, userId) {
     }
 }
 
-function askTodayPlan(userId, location) { //send the question to users
-    this.messageService.sendMessage(userId, 'what\'s your plan to do today at ' + location+ ' ?');
-    // update to mark as already ask question
-    this.dal.update({ askstate: true }, null, new Activity(userId, null, null, null, location, null, null, null));
-    return new Promise((resolve) => {
-        this.callback(userId, location, 0);
-    });
+async function askTodayPlan(userId, location, schema, userprofile) { //send the question to users
+    //this.messageService.sendMessage(userId, 'what\'s your plan to do today at ' + location + ' ?');
+    const { err, result } = await this.dal.update(schema, { userId: userId }, { askstate: true }, sortOption)// update to mark as already ask question
+    if (err) {
+        logger.error('update unsuccessful', err)
+        return 'update unsuccessful ', err;
+    }
+    else {
+        logger.info('update successful');
+        const call_callback = await this.callback(userId, location, 0, schema, userprofile)
+        if (err) {
+            return err
+        }
+        return call_callback;
+    }
+
 }
 
 
-function callback(userId, location, count) {  //handle when users do not answer question within 15 seconds
+async function callback(userId, location, count, schema, userprofile) {  //handle when users do not answer question within 15 seconds
 
-    return new Promise(resolve => {
-        setTimeout(() => {
+    return new Promise((resolve, reject) => {
+        setTimeout(async () => {
+
             logger.debug(`call back for ${count} times`);
-            var checkAnswer = new Activity(userId, null, null, null, location, null, null, null);
-            var checkAns = this.dal.find(checkAnswer, 1, true)
+            var checkAns = await this.dal.find({ userId: userId }, schema, sortOption, 1)
 
             if (checkAns[0].plan === 'none' && count < 3) {
-
-                this.messageService.sendMessage(userId, 'Please enter your answer');
+                //this.messageService.sendMessage(userId, 'Please enter your answer');
                 count = count + 1;
-                this.callback(userId, location, count).then(() => { 
-                    resolve(); });
+                let result = await this.callback(userId, location, count, schema, userprofile);
+                resolve(result);
 
             } else if (checkAns[0].plan === 'none' && count == 3) {
-                //var updateAnswer = new Activity(userId, null, null, null, location, null, '           ', null);  // has notified for 3 times but no response
-
-                this.dal.update({ plan: '           ' }, false, checkAns[0]);
-                checkAns[0].plan = '           ';
-                this.messageService.sendWalkInMessage(checkAns[0])
-                .then(() => {
-                        resolve(); }
-                ).catch(err => { 
-                    logger.error(err); 
-                    resolve()
-                });
+                // has notified for 3 times but no response
+                await this.dal.update(schema, { userId: userId }, { plan: '           ' }, sortOption)
+                    //  await this.messageService.sendWalkInMessage(checkAns[0], userprofile)
+                    .then(() => {
+                        resolve("update answer and exist loop from conver,callback");
+                    }
+                    ).catch(err => {
+                        resolve(err)
+                    });
             }
             else if (checkAns[0].plan != 'none') {
-                console.log("exist loop from conver,callback");
-                resolve();
+                resolve("exist loop from conver,callback");
             }
         }, this.answerAlertDuration);
     });

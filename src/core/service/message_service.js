@@ -20,14 +20,13 @@ async function sendMessage(id, messageContent) {
     }
 }
 
-async function sendWalkInMessage(activity) {
-    logger.info(`send WalkInMessage with Activity: ${JSON.stringify(activity)}`);
-    let message = this.createWalkInMessage(activity);
-    await this.sendMessage(config.ReportGroupId,message);
+async function sendWalkInMessage(activity,userprofile) {
+    logger.info(`send WalkInMessage with Activity: ${JSON.stringify(activity)}  ${JSON.stringify(userprofile)} `);
+    let message = this.createWalkInMessage(activity,userprofile);
+   // await this.sendMessage(config.ReportGroupId,message);
 }
 
-
-function createWalkInMessage( activity) {//format of the sent message
+function createWalkInMessage( activity,userprofile) {//format of the sent message
     const flexMessage = {
         "type": "flex",
         "altText": "this is a flex message",
@@ -47,7 +46,7 @@ function createWalkInMessage( activity) {//format of the sent message
                 "contents": [
                     {
                         "type": "text",
-                        "text": activity.name,
+                        "text": activity.displayName + " "+"(" +userprofile.nickName +")",
                         "wrap": true,
                         "weight": "bold",
                         "gravity": "center",

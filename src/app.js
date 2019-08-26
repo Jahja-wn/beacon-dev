@@ -1,5 +1,5 @@
 (function () { 'use strict'; }());
-import { users, locations,activities } from './core/model';
+import { users, locations, activities } from './core/model';
 //import locations from './core/model';
 import { LocalFile } from './core/data_access_layer/local_file';
 import { ConversationService, ElasticService, BeaconService, MessageService } from './core/service';
@@ -20,7 +20,9 @@ const conversationService = new ConversationService(dal, messageService, elastic
 const beaconService = new BeaconService(conversationService, messageService, dal, elastic);
 
 const mongoose = require('mongoose');
-const db = mongoose.createConnection(process.env.MONGODB_URL, { useNewUrlParser: true })
+const toJson = require('@meanie/mongoose-to-json');
+mongoose.plugin(toJson);
+const db = mongoose.createConnection(process.env.MONGODB_URL, { useNewUrlParser: true, useFindAndModify: false })
 const userSchema = db.model('users', users);
 const locationSchema = db.model('locations', locations);
 const activitySchema = db.model('activities', activities)
@@ -40,23 +42,9 @@ app.get('/userprofile', function (req, res) {
 });
 
 app.post('/submit', (req, res) => {
-  console.log(req.body)
   var saveUser = new userSchema(req.body);
-  console.log(saveUser)
   dal.save(saveUser);
-  //elastic.elasticsave(saveUser);
 });
-// app.use(.bodyParser.JSON);
-// app.post('/userprofile',bodyParser.json() ,(req, res) => {
-//   console.log(req.body); 
-//   var data = req.body;
-//   fs.writeFileSync("./resource/profile.json", JSON.stringify(data, null, 4),{flag:'w'});
-//   return res.status(200).send('hello world');
-//   });
-
-// app.get('/getBeacon', (req, res) => {
-//   beaconService.getDisplayName("s", "s", "1111111", "1234567890", "profile.pictureUrl", userSchema);
-// })
 
 // webhook callback
 app.post('/webhook', middleware(config), (req, res) => {
@@ -92,11 +80,13 @@ const replyText = (token, texts) => {
 };
 
 // callback function to handle a single event
-function handleEvent(event) {
+async function handleEvent(event) {
   switch (event.type) {
     case 'message':
-      return conversationService.handleInMessage(event.message, event.source.userId);
-
+      var userprofile = await dal.find({ userId: event.source.userId }, userSchema);
+      if (userprofile[0] != undefined) {
+        return conversationService.handleInMessage(event.message, event.source.userId, activitySchema, userprofile[0]);
+      } else { return replyText(event.replyToken, `you aren't a group member`); }
     case 'follow':
       return replyText(event.replyToken, 'Got followed event');
 
@@ -108,7 +98,7 @@ function handleEvent(event) {
       return replyText(event.replyToken, `Got postback: ${data}`);
 
     case 'join':
-      return console.log(event.source.groupId);
+      return logge.info("bot join in ", event.source.groupId);
 
     case 'memberJoined':
       return messageService.sendMessage(event.joined.members[0].userId, "please insert your information \n line://app/1589363163-1oVLQwQk");

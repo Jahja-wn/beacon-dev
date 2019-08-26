@@ -1,6 +1,6 @@
 import elasticsearch from 'elasticsearch';
 import config from  '../config';
-import { Activity , User} from '../model';
+import { activities , users} from '../model';
 import { logger } from '../../logger';
 
 const current_datetime = new Date();
@@ -60,6 +60,7 @@ async function insertActivity(activity){
             logger.debug("insert activity: "+JSON.stringify(activity)+" success");
         }
         catch(err){
+            console.log("from elastic",err)
             logger.error("cannot insert activity: ",err.body.error.type);
         }
     }
@@ -69,9 +70,9 @@ async function insertActivity(activity){
 
 function elastic_update(obj , target) {
     var presentIndex;
-    if (obj instanceof Activity) {
+    if (obj instanceof activities) {
         presentIndex = 'activity-'+current_datetime.getDate() + "-" + (current_datetime.getMonth() + 1) + "-" + current_datetime.getFullYear();
-    } else if (obj instanceof User) {
+    } else if (obj instanceof users) {
         presentIndex = "user";
     }
     console.log("Enter Query");
@@ -102,29 +103,14 @@ function elastic_update(obj , target) {
             }
         })
         
-        // console.log("-----------------------------------------");
-        // console.log("res string", JSON.stringify(res)); // {}
-        // console.log("res object", res); // {}
+     
         resolve(res);
         reject();
-        // res.then(() => {
-        //     console.log("resolve")
-        //     resolve(res);
-        // })
-        // .catch(() => {
-        //     console.log("reject")
-        //     reject();
-        // })
-        
+     
         
     });
 
-    // promise.then((data) => {
-    //     console.log("data", data)
-    // })
-    // .catch((err) => {
-    //     console.log("err", err)
-    // })
+  
     return promise;
 }
 
