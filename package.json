@@ -11,7 +11,8 @@
     "testc": "npm run build && jasmine ./dist/src/core/test/service_spec/conversation_service_spec.js",
     "play": "npm run build && node dist/src/core/test/play.js",
     "esinsert": "npm run build && node dist/src/utility/elastic_script/insert.js",
-    "start": "npm run build && node dist/src/app.js"
+    "postinstall": "npm run build ",
+    "start": "node dist/src/app.js"
   },
   "keywords": [
     "line",
