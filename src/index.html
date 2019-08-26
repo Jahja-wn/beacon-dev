@@ -16,19 +16,18 @@
 <body>
     <iframe name="hiddenFrame" class="hide"></iframe>
     <form method="post" id="form" target="hiddenFrame" action="/submit">
-        User id :
-        <input type="text" id="userId" name="userId">
-        Display name :
-        <input type="text" id="displayName" name="displayName">
+
+        <input type="text" id="userId" name="userId" hidden>
+        <input type="text" id="displayName" name="displayName" hidden>
         <br>
         First name:<br>
-        <input type="text" id="firstName" name="firstName">
+        <input type="text" id="firstName" name="firstName" required>
         <br>
         Last name:<br>
-        <input type="text" id="lastName" name="lastname">
+        <input type="text" id="lastName" name="lastname" required>
         <br>
         Nickname : <br>
-        <input type="text" id="nickName" name="nickName">
+        <input type="text" id="nickName" name="nickName" required>
         <br><br>
         <input onclick="myFunction()" type="submit" />
 
@@ -74,7 +73,12 @@
             var firstname = document.getElementById('firstName').value;
             var lastname = document.getElementById('lastName').value;
             var nickname = document.getElementById('nickName').value;
-            alert("\n" + "save successfully");
+            if (firstname == "" || lastname == "" || nickname == "") {
+                alert("Name must be filled out");
+                return false;
+            } else {
+                alert("\n" + "save successfully");
+            }
             document.getElementById('sh_first').textContent = firstname;
             document.getElementById('sh_last').textContent = lastname;
             document.getElementById('sh_nick').textContent = nickname;

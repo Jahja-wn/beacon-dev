@@ -33,7 +33,7 @@ async function handleInMessage(message, userId, schema, userprofile) {
 }
 
 async function askTodayPlan(userId, location, schema, userprofile) { //send the question to users
-    //this.messageService.sendMessage(userId, 'what\'s your plan to do today at ' + location + ' ?');
+    this.messageService.sendMessage(userId, 'what\'s your plan to do today at ' + location + ' ?');
     const { err, result } = await this.dal.update(schema, { userId: userId }, { askstate: true }, sortOption)// update to mark as already ask question
     if (err) {
         logger.error('update unsuccessful', err)
@@ -60,7 +60,7 @@ async function callback(userId, location, count, schema, userprofile) {  //handl
             var checkAns = await this.dal.find({ userId: userId }, schema, sortOption, 1)
 
             if (checkAns[0].plan === 'none' && count < 3) {
-                //this.messageService.sendMessage(userId, 'Please enter your answer');
+                this.messageService.sendMessage(userId, 'Please enter your answer');
                 count = count + 1;
                 let result = await this.callback(userId, location, count, schema, userprofile);
                 resolve(result);
@@ -68,7 +68,7 @@ async function callback(userId, location, count, schema, userprofile) {  //handl
             } else if (checkAns[0].plan === 'none' && count == 3) {
                 // has notified for 3 times but no response
                 await this.dal.update(schema, { userId: userId }, { plan: '           ' }, sortOption)
-                    //  await this.messageService.sendWalkInMessage(checkAns[0], userprofile)
+                     await this.messageService.sendWalkInMessage(checkAns[0], userprofile)
                     .then(() => {
                         resolve("update answer and exist loop from conver,callback");
                     }

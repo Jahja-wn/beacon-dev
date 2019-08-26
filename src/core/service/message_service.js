@@ -23,7 +23,7 @@ async function sendMessage(id, messageContent) {
 async function sendWalkInMessage(activity,userprofile) {
     logger.info(`send WalkInMessage with Activity: ${JSON.stringify(activity)}  ${JSON.stringify(userprofile)} `);
     let message = this.createWalkInMessage(activity,userprofile);
-   // await this.sendMessage(config.ReportGroupId,message);
+    await this.sendMessage(config.ReportGroupId,message);
 }
 
 function createWalkInMessage( activity,userprofile) {//format of the sent message
