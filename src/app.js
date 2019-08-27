@@ -24,7 +24,8 @@ mongoose.plugin(toJson);
 const db = mongoose.createConnection("mongodb+srv://Jahja-wn:1234@cluster0-dcsni.azure.mongodb.net/test?retryWrites=true&w=majority", { useNewUrlParser: true, useFindAndModify: false });
 const userSchema = db.model('users', users);
 const locationSchema = db.model('locations', locations);
-const activitySchema = db.model('activities', activities)
+const activitySchema = db.model('activities', activities);
+const ejs = require('ejs');
 
 db.on('connected', function () {
   console.log('Mongoose connected');
@@ -33,31 +34,44 @@ db.on('error', function (err) {
   console.log('Mongoose error: ' + err);
 });
 
-
 app.use(bodyParser.urlencoded({ extended: false }));
 
-app.get('/userprofile', function (req, res) {
-  res.sendFile(path.join(__dirname + '/index.html'));
-});
-app.get('/history', function (req, res) {
-  res.send("hello world");
-  // dal.find({ userId: "U5924eb56f756b1cbc1a565a5467be412" }, activitySchema)
-  //   .then((docs) => {
-
-  //     console.log(docs)
-  //     res.status(200).send(docs)
-  //   })
-  //   .catch((err) => {
-  //     console.log(err)
-  //     res.status(500).send(err.message)
-  //   })
-
-});
-
+// app.get('/userprofile', function (req, res) {
+//   res.sendFile(path.join(__dirname + './views/index.html'));
+// });
 app.post('/submit', (req, res) => {
   var saveUser = new userSchema(req.body);
   dal.save(saveUser);
 });
+
+app.set('views', __dirname + '/views');
+app.set('view engine', 'ejs');
+
+app.get('/history', function (req, res) {
+  dal.find({ userId: "U5924eb56f756b1cbc1a565a5467be412" }, activitySchema)
+    .then((docs) => {
+      res.render('history', { displayName: docs.displayName }, { type: docs.type }, { timestamp: docs.timestamp }, { location: docs.locations }, { plan: docs.plan });
+    })
+    .catch((err) => {
+      console.log(err)
+      res.status(500).send(err.message)
+    })
+});
+
+// app.get('/history', function (req, res) {
+//   dal.find({ userId: "U5924eb56f756b1cbc1a565a5467be412" }, activitySchema)
+//     .then((docs) => {
+//       console.log(docs)
+//       res.render("/history.html", { displayName: docs.displayName }, { type: docs.type }, { timestamp: docs.timestamp }, { plan: docs.plan });
+//       res.status(200)
+//     })
+//     .catch((err) => {
+//       console.log(err)
+//       res.status(500).send(err.message)
+//     })
+
+// });
+
 
 // webhook callback
 app.post('/webhook', middleware(config), (req, res) => {
