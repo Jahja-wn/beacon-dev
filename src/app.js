@@ -40,16 +40,17 @@ app.get('/userprofile', function (req, res) {
   res.sendFile(path.join(__dirname + '/index.html'));
 });
 app.get('/history', function (req, res) {
-  dal.find({ userId: "U5924eb56f756b1cbc1a565a5467be412" }, activitySchema)
-    .then((docs) => {
+  res.send("hello world");
+  // dal.find({ userId: "U5924eb56f756b1cbc1a565a5467be412" }, activitySchema)
+  //   .then((docs) => {
 
-      console.log(docs)
-      res.status(200).send(docs)
-    })
-    .catch((err) => {
-      console.log(err)
-      res.status(500).send(err.message)
-    })
+  //     console.log(docs)
+  //     res.status(200).send(docs)
+  //   })
+  //   .catch((err) => {
+  //     console.log(err)
+  //     res.status(500).send(err.message)
+  //   })
 
 });
 
