@@ -39,18 +39,11 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.get('/userprofile', function (req, res) {
   res.sendFile(path.join(__dirname + '/index.html'));
 });
-app.route('/history', function (req, res) {
-  res.sendFile(path.join(__dirname + '/history.html'));
-  var matchedActivities = dal.find({ userId: event.source.userId }, activitySchema, { '_id': 'desc' })
-  //noinspection JSDeprecatedSymbols
-  matchedActivities.each(function (err, result) {
-
-    if (result != null) {
-      str = str + "    Employee id  " + result.userId + "</br>";
-    }
-  });
-  res.send(str);
-
+app.get('/history', middleware(config), function (req, res) {
+  var userprofile = dal.find({ userId: event.source.userId }, activitySchema);
+  dal.find(userprofile)
+  res.send(userprofile)
+  //res.sendFile(path.join(__dirname + '/history.html'));
 });
 
 app.post('/submit', (req, res) => {
