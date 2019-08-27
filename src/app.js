@@ -39,6 +39,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.get('/userprofile', function (req, res) {
   res.sendFile(path.join(__dirname + '/index.html'));
 });
+app.get('/history', function (req, res) {
+  res.sendFile(path.join(__dirname + '/history.html'));
+});
 
 app.post('/submit', (req, res) => {
   var saveUser = new userSchema(req.body);
