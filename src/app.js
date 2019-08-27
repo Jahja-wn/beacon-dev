@@ -36,9 +36,9 @@ db.on('error', function (err) {
 
 app.use(bodyParser.urlencoded({ extended: false }));
 
-// app.get('/userprofile', function (req, res) {
-//   res.sendFile(path.join(__dirname + './views/index.html'));
-// });
+app.get('/userprofile', function (req, res) {
+  res.sendFile(path.join(__dirname + './views/index.html'));
+});
 app.post('/submit', (req, res) => {
   var saveUser = new userSchema(req.body);
   dal.save(saveUser);
@@ -58,19 +58,6 @@ app.get('/history', function (req, res) {
     })
 });
 
-// app.get('/history', function (req, res) {
-//   dal.find({ userId: "U5924eb56f756b1cbc1a565a5467be412" }, activitySchema)
-//     .then((docs) => {
-//       console.log(docs)
-//       res.render("/history.html", { displayName: docs.displayName }, { type: docs.type }, { timestamp: docs.timestamp }, { plan: docs.plan });
-//       res.status(200)
-//     })
-//     .catch((err) => {
-//       console.log(err)
-//       res.status(500).send(err.message)
-//     })
-
-// });
 
 
 // webhook callback
