@@ -50,7 +50,7 @@ app.set('view engine', 'ejs');
 app.get('/history', function (req, res) {
 dal.find({ userId: "U5924eb56f756b1cbc1a565a5467be412" }, activitySchema)
     .then((docs) => {
-       res.render('history', { displayName:  docs.displayName , type: docs.type ,timestamp: docs.timestamp, location: docs.location.locationName , plan: docs.plan } );
+       res.render('history', { displayName:  docs.displayName , type: docs.type ,timestamp: docs.timestamp, location: docs.location, plan: docs.plan } );
     })
     .catch((err) => {
       console.log(err)
