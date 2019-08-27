@@ -21,11 +21,12 @@ const beaconService = new BeaconService(conversationService, messageService, dal
 const mongoose = require('mongoose');
 const toJson = require('@meanie/mongoose-to-json');
 mongoose.plugin(toJson);
-const db = mongoose.createConnection("mongodb+srv://Jahja-wn:1234@cluster0-dcsni.azure.mongodb.net/test?retryWrites=true&w=majority", { useNewUrlParser: true , useFindAndModify: false });
+const db = mongoose.createConnection("mongodb+srv://Jahja-wn:1234@cluster0-dcsni.azure.mongodb.net/test?retryWrites=true&w=majority", { useNewUrlParser: true, useFindAndModify: false });
 const userSchema = db.model('users', users);
 const locationSchema = db.model('locations', locations);
 const activitySchema = db.model('activities', activities)
-
+const a = require('./webpage/index.html');
+const b = require('./webpage/history.html')
 db.on('connected', function () {
   console.log('Mongoose connected');
 });
@@ -37,10 +38,10 @@ db.on('error', function (err) {
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.get('/userprofile', function (req, res) {
-  res.sendFile(path.join(__dirname + './webpage/index.html'));
+  res.sendFile(path.join(__dirname + a));
 });
 app.get('/history', function (req, res) {
-  res.sendFile(path.join(__dirname + './webpage/history.html'));
+  res.sendFile(path.join(__dirname + b));
 });
 
 app.post('/submit', (req, res) => {
