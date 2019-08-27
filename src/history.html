@@ -9,41 +9,17 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
   <link rel="stylesheet" href="history.css">
   <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-  <script src="https://d.line-scdn.net/liff/1.0/sdk.js"></script>
-  <script>
-    window.onload = function (e) {
-      liff.init(function (data) {
-        init(data);
-      });
-    };
-
-    function init(data) {
-      liff.getProfile().then(function (profile) {
-        document.getElementById('displayName').value = profile.displayName;
-        const profilePictureDiv = document.getElementById('profilepicturediv');
-        if (profilePictureDiv.firstElementChild) {
-          profilePictureDiv.removeChild(profilePictureDiv.firstElementChild);
-        }
-        const img = document.createElement('img');
-        img.src = profile.pictureUrl;
-        img.alt = "Profile Picture";
-        profilePictureDiv.appendChild(img);
-
-      }).catch(function (error) {
-        window.alert("Error getting profile: " + error);
-      });
-    }
-  </script>
 </head>
 
 <body>
   <!-- First Container -->
   <div class="container-fluid bg-1 text-center">
     <h3 class="margin" id="displayName"></h3>
-    <div id="profilepicturediv" class="img-responsive img-circle margin" style="display:inline" width="350"
-      height="350">
+    <div id="profilepicturediv">
     </div>
+    <!-- <div id="profilepicturediv" class="img-responsive img-circle margin" style="display:inline" width="350"
+      height="350">
+    </div> -->
   </div>
 
   <!-- Second Container -->
@@ -83,6 +59,34 @@
   <footer class="container-fluid bg-4 text-center">
     <p>Bootstrap Theme Made By <a href="https://www.w3schools.com">www.w3schools.com</a></p>
   </footer>
+
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://d.line-scdn.net/liff/1.0/sdk.js"></script>
+  <script>
+    window.onload = function (e) {
+      liff.init(function (data) {
+        init(data);
+      });
+    };
+
+    function init(data) {
+      liff.getProfile().then(function (profile) {
+        document.getElementById('displayName').textContent = profile.displayName;
+        const profilePictureDiv = document.getElementById('profilepicturediv');
+        if (profilePictureDiv.firstElementChild) {
+          profilePictureDiv.removeChild(profilePictureDiv.firstElementChild);
+        }
+        const img = document.createElement('img');
+        img.src = profile.pictureUrl;
+        img.alt = "Profile Picture";
+        profilePictureDiv.appendChild(img);
+
+      }).catch(function (error) {
+        window.alert("Error getting profile: " + error);
+      });
+    }
+  </script>
 </body>
 
 </html>
