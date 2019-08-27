@@ -39,11 +39,18 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.get('/userprofile', function (req, res) {
   res.sendFile(path.join(__dirname + '/index.html'));
 });
-app.get('/history', middleware(config), function (req, res) {
-  var userprofile = dal.find({ userId: event.source.userId }, activitySchema);
-  dal.find(userprofile)
-  res.send(userprofile)
-  //res.sendFile(path.join(__dirname + '/history.html'));
+app.get('/history', function (req, res) {
+  dal.find({ userId: "U5924eb56f756b1cbc1a565a5467be412" }, activitySchema)
+    .then((docs) => {
+
+      console.log(docs)
+      res.status(200).send(docs)
+    })
+    .catch((err) => {
+      console.log(err)
+      res.status(500).send(err.message)
+    })
+
 });
 
 app.post('/submit', (req, res) => {
