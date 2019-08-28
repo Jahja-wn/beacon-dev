@@ -1,15 +1,22 @@
 
 const mongoose = require('mongoose');
+const timeZone = require('mongoose-timezone');
 const Schema = mongoose.Schema;
 const activitySchema = new Schema({
     userId: String,
     displayName: String,
     type: String,
-    timestamp: { type: Date, default: Date.now },
+    timestamp: Date,
+    subDocument: {
+        subDate: {
+            type: Date,
+        },
+    },
     location: Object,
     askstate: Boolean,
     plan: String,
     url: String
-},{timestamps: true})
+})
+activitySchema.plugin(timeZone, { paths: ['date', 'subDocument.subDate'] });
 
 module.exports = activitySchema
