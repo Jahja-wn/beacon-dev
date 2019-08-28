@@ -1,5 +1,5 @@
 import users from './user';
-import activities from './activity';
+import Schema from './activity';
 import locations from './location';
-export{users,activities,locations}
+export{users,Schema,locations}
 
