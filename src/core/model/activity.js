@@ -1,13 +1,11 @@
 
-const moment = require('moment-timezone');
-const dateThailand = moment.tz(Date.now(), "Asia/Bangkok");
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const activitySchema = new Schema({
     userId: String,
     displayName: String,
     type: String,
-    timestamp: {type: Date, default: dateThailand},
+    timestamp: {type: Date, default: new Date(Date.now() + 60 * 60 * 1000)},
     location: Object,
     askstate: Boolean,
     plan: String,
