@@ -72,7 +72,7 @@ function createWalkInMessage( activity,userprofile) {//format of the sent messag
                                     },
                                     {
                                         "type": "text",
-                                        "text": moment(activity.timestamp).format('DD/MM/YYYY HH:mm'),
+                                        "text": moment(activity.timestamp).format('MMMM Do YYYY, h:mm:ss a'),
                                         "wrap": true,
                                         "size": "sm",
                                         "color": "#666666",
