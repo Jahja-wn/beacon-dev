@@ -11,6 +11,6 @@ const activitySchema = new Schema({
     askstate: Boolean,
     plan: String,
     url: String
-}, { timestamps: { createdAt: 'created_at' } })
+})
 
 module.exports = activitySchema
