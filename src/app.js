@@ -1,5 +1,5 @@
 (function () { 'use strict'; }());
-import { users, locations, Schema } from './core/model';
+import { users, locations, activities } from './core/model';
 //import locations from './core/model';
 import { LocalFile } from './core/data_access_layer/local_file';
 import { ConversationService, ElasticService, BeaconService, MessageService } from './core/service';
@@ -24,7 +24,7 @@ mongoose.plugin(toJson);
 const db = mongoose.createConnection("mongodb+srv://Jahja-wn:1234@cluster0-dcsni.azure.mongodb.net/test?retryWrites=true&w=majority", { useNewUrlParser: true, useFindAndModify: false });
 const userSchema = db.model('users', users);
 const locationSchema = db.model('locations', locations);
-const activitySchema = db.model('activities', Schema);
+const activitySchema = db.model('activities', activities);
 const ejs = require('ejs');
 
 db.on('connected', function () {
