@@ -4,13 +4,21 @@ import { logger } from '../../logger';
 
 async function handleBeaconEvent(userId, displayName, timestamp, hwid, url, userSchema, locationSchema, activitySchema) {
 
-  let user = await this.dal.find( { userId: userId }, userSchema); //Find userid ,it is a member of the group or not.
+  let user = await this.dal.find({ userId: userId }, userSchema); //Find userid ,it is a member of the group or not.
   if (user[0] === undefined || user[0] === null) { logger.error(`Unrecognized user id: ${userId}`); return; }
 
   var findhwid = { hardwareId: hwid };
   var location = await this.dal.find(findhwid, locationSchema);
   if (location[0] === undefined || location[0] === null) { logger.error(`Unrecognized hardware id: ${hwid}`); return; }
-  var matchedActities = await this.dal.find( { userId: userId }, activitySchema, { '_id': 'desc' }, 1); // Find activity matches userId and location for today  
+
+  var activities = {
+    userId: userId,
+    createdAt: {
+      $gte: today.toDate(),
+      $lte: moment(today).endOf('day').toDate()
+    }
+  }
+  var matchedActities = await this.dal.find(activities, activitySchema, { '_id': 'desc' }, 1); // Find activity matches userId and location for today  
   if (matchedActities[0] === undefined || matchedActities[0] === null) {
     logger.debug(`handleBeaconEvent not found matched activity -> userid: ${userId}, location: ${location[0].locationName}`);
 
