@@ -1,6 +1,5 @@
-
-const mongoose = require('mongoose');
 const timeZone = require('mongoose-timezone');
+const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const activitySchema = new Schema({
     userId: String,
@@ -17,6 +16,5 @@ const activitySchema = new Schema({
     plan: String,
     url: String
 })
-activitySchema.plugin(timeZone, { paths: ['date', 'subDocument.subDate'] });
-
+activitySchema.plugin(timeZone, { paths: ['timestamp', 'subDocument.subDate'] });
 module.exports = activitySchema
