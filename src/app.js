@@ -50,8 +50,9 @@ app.set('view engine', 'ejs');
 app.get('/history', function (req, res) {
 dal.find({ userId: "U5924eb56f756b1cbc1a565a5467be412" }, activitySchema)
     .then((docs) => {
-     for (var i in docs)
-       res.render('history', { displayName:  docs[i].displayName , type: docs[i].type ,timestamp: docs[i].timestamp, location: docs[i].location.locationName, plan: docs[i].plan } );
+      res.send(docs);
+    //  for (var i in docs)
+    //    res.render('history', { displayName:  docs[i].displayName , type: docs[i].type ,timestamp: docs[i].timestamp, location: docs[i].location.locationName, plan: docs[i].plan } );
     })
     .catch((err) => {
       console.log(err)
