@@ -1,19 +1,16 @@
-const timeZone = require('mongoose-timezone');
+const moment = require('moment-timezone');
+const dateThailand = moment.tz(Date.now(), "Asia/Bangkok");
 const mongoose = require('mongoose');
-const activitySchema = new mongoose.Schema({
+const Schema = mongoose.Schema;
+const activitySchema = new Schema({
     userId: String,
     displayName: String,
     type: String,
-    timestamp: Date,
-    subDocument: {
-        subDate: {
-            type: Date,
-        },
-    },
+    timestamp:{type: Date, default: dateThailand},
     location: Object,
     askstate: Boolean,
     plan: String,
     url: String
-})
-activitySchema.plugin(timeZone, { paths: ['timestamp', 'subDocument.subDate'] });
+},{timestamps:true})
+
 module.exports = activitySchema
