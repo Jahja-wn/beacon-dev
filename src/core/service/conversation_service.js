@@ -60,7 +60,7 @@ async function callback(userId, location, count, schema, userprofile) {  //handl
             var checkAns = await this.dal.find({ userId: userId }, schema, sortOption, 1)
 
             if (checkAns[0].plan === 'none' && count < 3) {
-                this.messageService.sendMessage(userId, 'Please enter your answer');
+                //this.messageService.sendMessage(userId, 'Please enter your answer');
                 count = count + 1;
                 let result = await this.callback(userId, location, count, schema, userprofile);
                 resolve(result);

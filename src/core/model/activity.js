@@ -1,5 +1,4 @@
 
-const moment = require('moment')
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const activitySchema = new Schema({
@@ -11,6 +10,6 @@ const activitySchema = new Schema({
     askstate: Boolean,
     plan: String,
     url: String
-})
+},{timestamps: true})
 
 module.exports = activitySchema
