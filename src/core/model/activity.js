@@ -5,7 +5,7 @@ const activitySchema = new Schema({
     userId: String,
     displayName: String,
     type: String,
-    timestamp: {type: Date, default: new Date(Date.now() + 60 * 60 * 1000)},
+    timestamp: {type: Date, default: Date.now() + 60 * 60 * 1000},
     location: Object,
     askstate: Boolean,
     plan: String,
