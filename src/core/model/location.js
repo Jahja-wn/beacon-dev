@@ -1,4 +1,3 @@
-
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const locationSchema = new Schema({
@@ -6,5 +5,6 @@ const locationSchema = new Schema({
     locationName : String,
     point : Object
 })
+const locationModel = mongoose.model('locations',locationSchema)
 
-module.exports = locationSchema
+module.exports = locationModel

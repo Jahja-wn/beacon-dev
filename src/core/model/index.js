@@ -1,5 +1,4 @@
-import users from './user';
-import activities from './activity';
-import locations from './location';
-export{users,activities,locations}
-
+import userModel from './user';
+import activityModel from './activity';
+import locationModel from './location';
+module.exports = userModel, activityModel, locationModel

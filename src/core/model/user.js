@@ -7,5 +7,5 @@ const userSchema = new Schema({
     lastName: String,
     nickName: String
 })
-
-module.exports = userSchema
+const userModel = mongoose.model('users', userSchema);
+module.exports = userModel

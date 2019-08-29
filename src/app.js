@@ -1,5 +1,5 @@
 (function () { 'use strict'; }());
-import { users, locations, activities } from './core/model';
+import { userModel, activityModel, locationModel } from './core/model';
 //import locations from './core/model';
 import { LocalFile } from './core/data_access_layer/local_file';
 import { ConversationService, ElasticService, BeaconService, MessageService } from './core/service';
@@ -21,18 +21,13 @@ const beaconService = new BeaconService(conversationService, messageService, dal
 const mongoose = require('mongoose');
 const toJson = require('@meanie/mongoose-to-json');
 mongoose.plugin(toJson);
-const db = mongoose.createConnection("mongodb+srv://Jahja-wn:1234@cluster0-dcsni.azure.mongodb.net/test?retryWrites=true&w=majority", { useNewUrlParser: true, useFindAndModify: false });
-const userSchema = db.model('users', users);
-const locationSchema = db.model('locations', locations);
-const activitySchema = db.model('activities', activities);
+mongoose.connect("mongodb+srv://Jahja-wn:1234@cluster0-dcsni.azure.mongodb.net/test?retryWrites=true&w=majority", { useNewUrlParser: true, useFindAndModify: false })
+  .then(() => console.log('connected'))
+  .catch((err) => console.log(err))
+const userColl = mongoose.model('users', userModel);
+const locationColl = mongoose.model('locations', locationModel);
+const activityColl = mongoose.model('activities', activityModel);
 const ejs = require('ejs');
-
-db.on('connected', function () {
-  console.log('Mongoose connected');
-});
-db.on('error', function (err) {
-  console.log('Mongoose error: ' + err);
-});
 
 app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -40,7 +35,7 @@ app.get('/userprofile', function (req, res) {
   res.sendFile(path.join(__dirname + './views/index.html'));
 });
 app.post('/submit', (req, res) => {
-  var saveUser = new userSchema(req.body);
+  var saveUser = new userColl(req.body);
   dal.save(saveUser);
 });
 
@@ -48,16 +43,38 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 
 app.get('/history', function (req, res) {
-dal.find({ userId: "U5924eb56f756b1cbc1a565a5467be412" }, activitySchema)
-    .then((docs) => {
-      res.send(docs);
-    //  for (var i in docs)
-    //    res.render('history', { displayName:  docs[i].displayName , type: docs[i].type ,timestamp: docs[i].timestamp, location: docs[i].location.locationName, plan: docs[i].plan } );
-    })
-    .catch((err) => {
-      console.log(err)
-      res.status(500).send(err.message)
-    })
+  // var saveActivity = new activityColl({
+  //   userId: "userId",
+  //   displayName: "displayName",
+  //   type: "in",
+  //   timestamp: 1567045856000,
+  //   location: new locationColl({
+  //     hardwareID: "hwid",
+  //     locationName: "location[0].locationName",
+  //     point: "location[0].poin"
+  //   }),
+  //   askstate: false,
+  //   plan: "none",
+  //   url: "url"
+  // });
+  // saveActivity.save().then((docs) => {
+  //   console.log(docs)
+  //   res.status(200).send(docs)
+  // })
+  //   .catch((err) => {
+  //     console.log(err)
+  //     res.status(500).send(err.message)
+  //   })
+  // dal.find({ userId: "U5924eb56f756b1cbc1a565a5467be412" }, activityColl)
+  //     .then((docs) => {
+  //       res.send(docs)
+  //     //  for (var i in docs)
+  //     //    res.render('history', { displayName:  docs[i].displayName , type: docs[i].type ,timestamp: docs[i].timestamp, location: docs[i].location.locationName, plan: docs[i].plan } );
+  //     })
+  //     .catch((err) => {
+  //       console.log(err)
+  //       res.status(500).send(err.message)
+  //     })
 });
 
 
@@ -99,9 +116,9 @@ const replyText = (token, texts) => {
 async function handleEvent(event) {
   switch (event.type) {
     case 'message':
-      var userprofile = await dal.find({ userId: event.source.userId }, userSchema);
+      var userprofile = await dal.find({ userId: event.source.userId }, userColl);
       if (userprofile[0] != undefined) {
-        return conversationService.handleInMessage(event.message, event.source.userId, activitySchema, userprofile[0]);
+        return conversationService.handleInMessage(event.message, event.source.userId, activityColl, userprofile[0]);
       } else { return replyText(event.replyToken, `you aren't a group member`); }
     case 'follow':
       return replyText(event.replyToken, 'Got followed event');
@@ -128,7 +145,7 @@ async function handleEvent(event) {
     case 'beacon':
       client.getProfile(event.source.userId)
         .then((profile) => {
-          beaconService.handleBeaconEvent(event.source.userId, profile.displayName, event.timestamp, event.beacon.hwid, profile.pictureUrl, userSchema, locationSchema, activitySchema);
+          beaconService.handleBeaconEvent(event.source.userId, profile.displayName, event.timestamp, event.beacon.hwid, profile.pictureUrl, userColl, locationColl, activityColl);
         }).catch((err) => {
           logger.error(err);
         });

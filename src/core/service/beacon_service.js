@@ -15,7 +15,7 @@ async function handleBeaconEvent(userId, displayName, timestamp, hwid, url, user
 
   var activities = {
     userId: userId,
-    createdAt: {
+    timestamp: {
       $gte: today.toDate(),
       $lte: moment(today).endOf('day').toDate()
     }
