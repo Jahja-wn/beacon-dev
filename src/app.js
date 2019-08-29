@@ -43,28 +43,28 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 
 app.get('/history', function (req, res) {
-  // var saveActivity = new activityColl({
-  //   userId: "userId",
-  //   displayName: "displayName",
-  //   type: "in",
-  //   timestamp: 1567045856000,
-  //   location: new locationColl({
-  //     hardwareID: "hwid",
-  //     locationName: "location[0].locationName",
-  //     point: "location[0].poin"
-  //   }),
-  //   askstate: false,
-  //   plan: "none",
-  //   url: "url"
-  // });
-  // saveActivity.save().then((docs) => {
-  //   console.log(docs)
-  //   res.status(200).send(docs)
-  // })
-  //   .catch((err) => {
-  //     console.log(err)
-  //     res.status(500).send(err.message)
-  //   })
+  var saveActivity = new activityColl({
+    userId: "userId",
+    displayName: "displayName",
+    type: "in",
+    timestamp: 1567049413298,
+    location: new locationColl({
+      hardwareID: "hwid",
+      locationName: "location[0].locationName",
+      point: "location[0].poin"
+    }),
+    askstate: false,
+    plan: "none",
+    url: "url"
+  });
+  saveActivity.save().then((docs) => {
+    console.log(docs)
+    res.status(200).send(docs)
+  })
+    .catch((err) => {
+      console.log(err)
+      res.status(500).send(err.message)
+    })
   // dal.find({ userId: "U5924eb56f756b1cbc1a565a5467be412" }, activityColl)
   //     .then((docs) => {
   //       res.send(docs)

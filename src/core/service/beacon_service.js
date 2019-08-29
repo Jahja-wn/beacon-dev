@@ -23,7 +23,7 @@ async function handleBeaconEvent(userId, displayName, timestamp, hwid, url, user
   var matchedActities = await this.dal.find(activities, activitySchema, { '_id': 'desc' }, 1); // Find activity matches userId and location for today  
   if (matchedActities[0] === undefined || matchedActities[0] === null) {
     logger.debug(`handleBeaconEvent not found matched activity -> userid: ${userId}, location: ${location[0].locationName}`);
-
+    console.log(timestamp)
     var saveActivity = new activitySchema({
       userId: userId,
       displayName: displayName,
@@ -54,7 +54,7 @@ async function handleBeaconEvent(userId, displayName, timestamp, hwid, url, user
     logger.debug(`handleBeaconEvent found matched activity -> userid: ${userId}, location: ${location[0].locationName}`);
     for (var i in matchedActities) {
       if (matchedActities[i].plan != 'none' && matchedActities[i].askstate == true) { // users become active again
-        return this.messageService.sendMessage(config.ReportGroupId, displayName + ' re-enter ' + location[0].locationName);
+       // return this.messageService.sendMessage(config.ReportGroupId, displayName + ' re-enter ' + location[0].locationName);
 
       }
     }
