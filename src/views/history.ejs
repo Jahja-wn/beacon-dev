@@ -7,8 +7,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-  <link rel="stylesheet" href="history.css">
   <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="./src/history.css">
 </head>
 
 <body>
@@ -20,33 +22,31 @@
     <div id="profilepicturediv">
     </div>
   </div>
+  <!--  Second Container -->
 
-  <!-- Second Container -->
-  <div class="container-fluid bg-2 text-center">
-    <h3 class="margin">History</h3>
-    <div class="card">
-      <div class="container">
-        <h4><%= displayName %> </h4> <br>
-        <h4><%= type %><br>
-        <h4><%= timestamp %> </h4> <br>
-        <h4><%= location %> </h4> <br>
-        <h4><%= plan %></h4>
-      </div>
-    </div>
-    <a href="#" class="btn btn-default btn-lg">
-      <span class="glyphicon glyphicon-search"></span> Search
-    </a>
-  </div>
-
-  <!-- Footer -->
-  <footer class="container-fluid bg-4 text-center">
-    <p>Bootstrap Theme Made By <a href="https://www.w3schools.com">www.w3schools.com</a></p>
-  </footer>
-
+  <table>
+    <tr>
+      <th>name</th>
+      <th>type</th>
+      <th>date/time</th>
+      <th>location</th>
+      <th>plan</th>
+    </tr>
+    <% for(var i=0; i<docs.length; i++) {%>
+    <tr>
+      <td><%= docs[i].displayName %></td>
+      <td><%= docs[i].type %></td>
+      <td><%= docs[i].timestamp %></td>
+      <td><%= docs[i].location.locationName %></td>
+      <td><%= docs[i].plan %></td>
+    </tr>
+    <% } %>
+  </table>
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <script src="https://d.line-scdn.net/liff/1.0/sdk.js"></script>
   <script>
+
     window.onload = function (e) {
       liff.init(function (data) {
         init(data);

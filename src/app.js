@@ -22,8 +22,8 @@ const mongoose = require('mongoose');
 const toJson = require('@meanie/mongoose-to-json');
 mongoose.plugin(toJson);
 mongoose.connect("mongodb+srv://Jahja-wn:1234@cluster0-dcsni.azure.mongodb.net/test?retryWrites=true&w=majority", { useNewUrlParser: true, useFindAndModify: false })
-  .then(() => console.log('connected'))
-  .catch((err) => console.log(err))
+  .then(() => console.log('monggoose connected'))
+  .catch((err) => console.log('mongoose unconnected:', err))
 const userColl = mongoose.model('users', userModel);
 const locationColl = mongoose.model('locations', locationModel);
 const activityColl = mongoose.model('activities', activityModel);
@@ -43,38 +43,17 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 
 app.get('/history', function (req, res) {
-  var saveActivity = new activityColl({
-    userId: "userId",
-    displayName: "displayName",
-    type: "in",
-    timestamp: 1567049413298,
-    location: new locationColl({
-      hardwareID: "hwid",
-      locationName: "location[0].locationName",
-      point: "location[0].poin"
-    }),
-    askstate: false,
-    plan: "none",
-    url: "url"
-  });
-  saveActivity.save().then((docs) => {
-    console.log(docs)
-    res.status(200).send(docs)
-  })
+
+  dal.find({ type: "in" }, activityColl)
+    .then((docs) => {
+      res.render('history', { docs: docs });
+      //  res.send(docs)
+      // res.render('history', { displayName:  docs[0].displayName , type: docs[0].type ,timestamp: docs[0].timestamp, location: docs[0].location.locationName, plan: docs[0].plan } );
+    })
     .catch((err) => {
       console.log(err)
       res.status(500).send(err.message)
     })
-  // dal.find({ userId: "U5924eb56f756b1cbc1a565a5467be412" }, activityColl)
-  //     .then((docs) => {
-  //       res.send(docs)
-  //     //  for (var i in docs)
-  //     //    res.render('history', { displayName:  docs[i].displayName , type: docs[i].type ,timestamp: docs[i].timestamp, location: docs[i].location.locationName, plan: docs[i].plan } );
-  //     })
-  //     .catch((err) => {
-  //       console.log(err)
-  //       res.status(500).send(err.message)
-  //     })
 });
 
 

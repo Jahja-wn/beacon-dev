@@ -54,7 +54,7 @@ async function handleBeaconEvent(userId, displayName, timestamp, hwid, url, user
     logger.debug(`handleBeaconEvent found matched activity -> userid: ${userId}, location: ${location[0].locationName}`);
     for (var i in matchedActities) {
       if (matchedActities[i].plan != 'none' && matchedActities[i].askstate == true) { // users become active again
-       // return this.messageService.sendMessage(config.ReportGroupId, displayName + ' re-enter ' + location[0].locationName);
+        return this.messageService.sendMessage(config.ReportGroupId, displayName + ' re-enter ' + location[0].locationName);
 
       }
     }
