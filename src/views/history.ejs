@@ -10,36 +10,36 @@
 
 <body>
 
-    <!-- First Container -->
-    <div class="first-container">
-      <h1 class="margin" id="displayName"></h1>
-      <div id="profilepicturediv">
-      </div>
+  <!-- First Container -->
+  <div class="first-container">
+    <h1 class="margin" id="displayName">name</h1>
+    <div id="profilepicturediv">
     </div>
+  </div>
 
-    <!--  Second Container -->
-    <div class="article">
-      <h2 class="margin">History</h2>
-      <table class="table">
-        <tr>
-          <th>name</th>
-          <th>type</th>
-          <th>date/time</th>
-          <th>location</th>
-          <th>plan</th>
-        </tr>
-        <% for(var i=0; i<docs.length; i++) {%>
-        <tr>
-          <td><%= docs[i].displayName %></td>
-          <td><%= docs[i].type %></td>
-          <td><%= docs[i].timestamp %></td>
-          <td><%= docs[i].location.locationName %></td>
-          <td><%= docs[i].plan %></td>
-        </tr>
-        <% } %>
-      </table>
-    </div>
-  
+  <!--  Second Container -->
+  <div class="article">
+    <h2 class="margin">History</h2>
+    <table class="table">
+      <tr>
+        <th>name</th>
+        <th>type</th>
+        <th>date/time</th>
+        <th>location</th>
+        <th>plan</th>
+      </tr>
+      <% for(var i=0; i<docs.length; i++) {%>
+      <tr>
+        <td><%= docs[i].displayName %></td>
+        <td><%= docs[i].type %></td>
+        <td><%= docs[i].timestamp %></td>
+        <td><%= docs[i].location.locationName %></td>
+        <td><%= docs[i].plan %></td>
+      </tr>
+      <% } %>
+    </table>
+  </div>
+
 
   <script src="https://d.line-scdn.net/liff/1.0/sdk.js"></script>
   <script>
@@ -58,13 +58,18 @@
           profilePictureDiv.removeChild(profilePictureDiv.firstElementChild);
         }
         const img = document.createElement('img');
-        img.className = "img-responsive img-circle margin";
-        img.style = "display:inline";
-        img.width = "20%";
-        img.height = "20%";
         img.src = profile.pictureUrl;
         img.alt = "Profile Picture";
         profilePictureDiv.appendChild(img);
+
+        // const img = document.createElement('img');
+        // img.className = "img-responsive img-circle margin";
+        // img.style = "display:inline";
+        // img.width = "20%";
+        // img.height = "20%";
+        // img.src = profile.pictureUrl;
+        // img.alt = "Profile Picture";
+        // profilePictureDiv.appendChild(img);
 
       }).catch(function (error) {
         window.alert("Error getting profile: " + error);
