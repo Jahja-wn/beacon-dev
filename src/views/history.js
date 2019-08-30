@@ -1,6 +1,6 @@
-const activityModel = require ('../core/model');
-const mongoose = require('mongoose');
-const activityColl = mongoose.model('activities', activityModel);
+// const activityModel = require ('../core/model');
+// const mongoose = require('mongoose');
+// const activityColl = mongoose.model('activities', activityModel);
 window.onload = function (e) {
     liff.init(function (data) {
         init(data);
