@@ -1,31 +1,41 @@
+* {
+  box-sizing: border-box;
+}
+
 body {
+  text-align: center;
   line-height: 1.8;
   color: #f5f6f7;
+  font-family: "Montserrat", sans-serif;
 }
-.font{
-  font: 30px Montserrat, sans-serif;
-  font: bold;}
-.margin {margin-bottom: 45px;}
-.bg-1 { 
+.first-container {
+  font-size: 20px ;
+  font: bold;
   background-color: #1abc9c; /* Green */
-  color: #ffffff;
+  padding: 30px;
+  text-align: center;
+  font-size: 35px;
 }
-.bg-2 { 
+.margin {margin-bottom: 45px;}
+
+/* Container for flexboxes */
+section {
+  display: -webkit-flex;
+  display: flex;
+}
+
+
+/* Style the content */
+.article {
+  font-size: 20px;
   background-color: #595c63; /* Dark Blue */
   color: #ffffff;
+  -webkit-flex: 3;
+  -ms-flex: 3;
+  flex: 3;
+  padding: 10px;
 }
-.bg-3 { 
-  background-color: #ffffff; /* White */
-  color: #555555;
-}
-.bg-4 { 
-  background-color: #2f2f2f; /* Black Gray */
-  color: #fff;
-}
-.container-fluid {
-  padding-top: 70px;
-  padding-bottom: 70px;
-}
+
 
 .table {
   border-collapse: collapse;
@@ -34,7 +44,6 @@ body {
 }
 
 .table td, .table th {
-  text-align: center;
   border: 1px solid #ddd;
   padding-top: 12px;
   padding-bottom: 12px;
