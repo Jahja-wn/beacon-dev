@@ -23,6 +23,9 @@ section {
   display: flex;
 }
 
+.img{
+  border-radius: 20%;
+}
 
 /* Style the content */
 .article {
