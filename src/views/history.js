@@ -8,20 +8,20 @@ window.onload = function (e) {
 };
 
 function init(data) {
-    var userId = data.context.userId;
-    userColl.find({ userId: userId })
-        .then((docs) => {
-            // var loops = document.getElementById('loops');
-            for(var i = 0 ; i<docs.length; i++)
-            document.getElementById('namefield').textContent = docs[i].displayName;
-            document.getElementById('typefield').textContent = docs[i].type;
-            document.getElementById('timestampfield').textContent = docs[i].timestamp;
-            document.getElementById('locationfield').textContent = docs[i].location.locationName;
-            document.getElementById('planfield').textContent = docs[i].plan;
-        })
-        .catch((error) => {
-            window.alert("Error getting data: " + error);
-        })
+    // var userId = data.context.userId;
+    // userColl.find({ userId: userId })
+    //     .then((docs) => {
+    //         // var loops = document.getElementById('loops');
+    //         for(var i = 0 ; i<docs.length; i++)
+    //         document.getElementById('namefield').textContent = docs[i].displayName;
+    //         document.getElementById('typefield').textContent = docs[i].type;
+    //         document.getElementById('timestampfield').textContent = docs[i].timestamp;
+    //         document.getElementById('locationfield').textContent = docs[i].location.locationName;
+    //         document.getElementById('planfield').textContent = docs[i].plan;
+    //     })
+    //     .catch((error) => {
+    //         window.alert("Error getting data: " + error);
+    //     })
     liff.getProfile().then(function (profile) {
         document.getElementById('displayName').textContent = profile.displayName;
         const profilePictureDiv = document.getElementById('profilepicturediv');
