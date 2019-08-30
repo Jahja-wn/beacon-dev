@@ -58,13 +58,9 @@
           profilePictureDiv.removeChild(profilePictureDiv.firstElementChild);
         }
         const img = document.createElement('img');
-        img.style = "display:inline";
-        img.width = "20%";
-        img.height = "20%";
-        img.src = profile.pictureUrl;
-        img.alt = "Profile Picture";
-        profilePictureDiv.appendChild(img);
-
+            img.src = profile.pictureUrl;
+            img.alt = "Profile Picture";
+            profilePictureDiv.appendChild(img);
 
       }).catch(function (error) {
         window.alert("Error getting profile: " + error);

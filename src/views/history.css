@@ -48,3 +48,12 @@ section {
   padding-bottom: 12px;
   color: white;
 }
+#profilepicturediv {
+  text-align: center;
+}
+
+img {
+  border-radius: 20%;
+  max-width: 25%; 
+  height: 25%; 
+}
