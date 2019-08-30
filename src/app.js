@@ -43,9 +43,9 @@ app.post('/submit', (req, res) => {
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 
-app.get('/history', function (req, res) {
+app.get('/history', middleware(config),function (req, res) {
 
-  dal.find({ type: "in" }, activityColl)
+  dal.find({ userId:event.source.userId}, activityColl)
     .then((docs) => {
       res.render('history', { docs: docs });
       //  res.send(docs)
