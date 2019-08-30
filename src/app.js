@@ -30,6 +30,7 @@ const activityColl = mongoose.model('activities', activityModel);
 const ejs = require('ejs');
 
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.static(path.join(__dirname, './views')));
 
 app.get('/userprofile', function (req, res) {
   res.sendFile(path.join(__dirname + './views/index.html'));
