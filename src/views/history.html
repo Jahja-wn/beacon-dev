@@ -12,7 +12,7 @@
 
   <!-- First Container -->
   <div class="first-container">
-    <h1 class="margin" id="displayName">name</h1>
+    <h1 class="margin" id="displayName"></h1>
     <div id="profilepicturediv">
     </div>
   </div>
@@ -21,15 +21,23 @@
   <div class="article">
     <h2 class="margin">History</h2>
     <div style="overflow-x:auto;">
-    <table class="table">
-      <tr>
-        <th>name</th>
-        <th>type</th>
-        <th>date/time</th>
-        <th>location</th>
-        <th>plan</th>
-      </tr>
-      <!-- <% for(var i=0; i<docs.length; i++) {%>
+      <table class="table">
+        <tr>
+          <th>name</th>
+          <th>type</th>
+          <th>date/time</th>
+          <th>location</th>
+          <th>plan</th>
+        </tr>
+        <tr>
+          <td id="namefield"></td>
+          <td id="typefield"></td>
+          <td id="timestampfield"></td>
+          <td id="locationfield"></td>
+          <td id="planfields"></td>
+        </tr>
+
+        <!-- <% for(var i=0; i<docs.length; i++) {%>
       <tr>
         <td><%= docs[i].displayName %></td>
         <td><%= docs[i].type %></td>
@@ -38,11 +46,11 @@
         <td><%= docs[i].plan %></td>
       </tr>
       <% } %> -->
-    </table>
+      </table>
     </div>
   </div>
   <script src="https://d.line-scdn.net/liff/1.0/sdk.js"></script>
-  <script src= "history.js"></script>
+  <script src="history.js"></script>
 </body>
 
 </html>
