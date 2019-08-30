@@ -13,7 +13,7 @@
   <!-- First Container -->
   <div class="first-container">
     <h1 class="margin" id="displayName">name</h1>
-    <div id="profilepicturediv">
+    <div class="img" id="profilepicturediv">
     </div>
   </div>
 
@@ -58,7 +58,7 @@
           profilePictureDiv.removeChild(profilePictureDiv.firstElementChild);
         }
         const img = document.createElement('img');
-        img.style = "display:inline,  border-radius: 20%";
+        img.style = "display:inline";
         img.width = "20%";
         img.height = "20%";
         img.src = profile.pictureUrl;
