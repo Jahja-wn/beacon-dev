@@ -2,55 +2,103 @@
 <html lang="en">
 
 <head>
-  <!-- Theme Made By www.w3schools.com - No Copyright -->
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" type="text/css" href="history.css">
+    <!-- Theme Made By www.w3schools.com - No Copyright -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="history.css">
 </head>
 
 <body>
 
-  <!-- First Container -->
-  <div class="first-container">
-    <h1 class="margin" id="displayName"></h1>
-    <div id="profilepicturediv">
+    <!-- First Container -->
+    <div class="first-container">
+        <h1 class="margin" id="displayName"></h1>
+        <div id="profilepicturediv">
+        </div>
     </div>
-  </div>
 
-  <!--  Second Container -->
-  <div class="article">
-    <h2 class="margin">History</h2>
-    <div style="overflow-x:auto;">
-      <table class="table">
-        <tr>
-          <th>name</th>
-          <th>type</th>
-          <th>date/time</th>
-          <th>location</th>
-          <th>plan</th>
-        </tr>
-       <!-- <tr>
+    <!--  Second Container -->
+    <div class="article">
+        <h2 class="margin">History</h2>
+        <div style="overflow-x:auto;">
+            <table class="table">
+                <tr>
+                    <th>name</th>
+                    <th>type</th>
+                    <th>date/time</th>
+                    <th>location</th>
+                    <th>plan</th>
+                </tr>
+                <!-- <tr>
           <td id="namefield"></td>
           <td id="typefield"></td>
           <td id="timestampfield"></td>
           <td id="locationfield"></td>
           <td id="planfields"></td>
         </tr>  -->
-     
-      <% docs.foreach((doc) => { %>
-      <tr>
-        <td><%= doc.displayName %></td>
-        <td><%= doc.type %></td>
-        <td><%= doc.timestamp %></td>
-        <td><%= doc.location.locationName %></td>
-        <td><%= doc.plan %></td>
-      </tr>
-      <% }) %>
-      </table>
+
+                <% docs.foreach((doc) => { %>
+                <tr>
+                    <td><%= doc.displayName %></td>
+                    <td><%= doc.type %></td>
+                    <td><%= doc.timestamp %></td>
+                    <td><%= doc.location.locationName %></td>
+                    <td><%= doc.plan %></td>
+                </tr>
+                <% }) %>
+            </table>
+        </div>
     </div>
-  </div>
-  <script src="https://d.line-scdn.net/liff/1.0/sdk.js"></script>
-  <script src="history.js"></script>
+    <script src="https://d.line-scdn.net/liff/1.0/sdk.js"></script>
+    <script>
+        window.onload = function (e) {
+            liff.init(function (data) {
+                init(data);
+                getProfile();
+            });
+        };
+
+        function init(data) {
+            var userId = data.context.userId;
+            console.log("init", userId)
+            fetch('/clicked', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    // 'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: { userId: userId }
+            })
+                .then(function (response) {
+                    if (response.ok) {
+                        console.log('Click was recorded');
+                        return;
+                    }
+                    throw new Error('Request failed.');
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+        }
+        function getProfile() {
+
+
+            liff.getProfile().then(function (profile) {
+                document.getElementById('displayName').textContent = profile.displayName;
+                const profilePictureDiv = document.getElementById('profilepicturediv');
+                if (profilePictureDiv.firstElementChild) {
+                    profilePictureDiv.removeChild(profilePictureDiv.firstElementChild);
+                }
+                const img = document.createElement('img');
+                img.src = profile.pictureUrl;
+                img.alt = "Profile Picture";
+                profilePictureDiv.appendChild(img);
+
+            }).catch(function (error) {
+                window.alert("Error getting profile: " + error);
+            });
+
+        }</script>
 </body>
 
 </html>
