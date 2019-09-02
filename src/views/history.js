@@ -9,8 +9,12 @@ window.onload = function (e) {
 function init(data) {
     var userId = data.context.userId;
     fetch('/clicked', {
-        method: 'POST', 
-        body: userId
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+        }, 
+        body: { userId: userId }
     })
         .then(function (response) {
             if (response.ok) {
