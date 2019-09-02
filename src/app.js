@@ -44,7 +44,7 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 
 app.get('/history', function (req, res) {
-  res.render('history');
+  res.sendFile(path.join(__dirname + '/views/history.ejs'));
 });
 app.post('/clicked', (req, res) => {
   console.log("/clicked body", req.body)
