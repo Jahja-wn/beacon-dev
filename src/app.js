@@ -44,8 +44,7 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 
 app.get('/history', function (req, res) {
-  console.log(req.body);
-  res.send(req.body);
+  res.sendFile(path.join(__dirname + '/views/history.html'));
   // dal.find({type: "in" }, activityColl)
   //   .then((docs) => {
   //     res.render('history', { docs: docs });
@@ -57,10 +56,18 @@ app.get('/history', function (req, res) {
   //     res.status(500).send(err.message)
   //   })
 });
-
-// app.get('/history', function (req, res) {
-//   res.sendFile(path.join(__dirname + '/views/history.html'));
-//   });
+app.post('/clicked', (req, res) => {
+  dal.find({userId:req.body }, activityColl)
+    .then((docs) => {
+      res.render('history', { docs: docs });
+      //  res.send(docs)
+      // res.render('history', { displayName:  docs[0].displayName , type: docs[0].type ,timestamp: docs[0].timestamp, location: docs[0].location.locationName, plan: docs[0].plan } );
+    })
+    .catch((err) => {
+      console.log(err)
+      res.status(500).send(err.message)
+    })
+});
 
 // webhook callback
 app.post('/webhook', middleware(config), (req, res) => {

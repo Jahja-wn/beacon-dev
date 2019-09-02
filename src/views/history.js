@@ -1,3 +1,4 @@
+
 window.onload = function (e) {
     liff.init(function (data) {
         init(data);
@@ -6,9 +7,22 @@ window.onload = function (e) {
 };
 
 function init(data) {
-     var userId = data.context.userId;
+    var userId = data.context.userId;
+    fetch('/clicked', { method: 'POST' })
+        .then(function (response) {
+            if (response.ok) {
+                return userId;
+            }
+            throw new Error('Request failed.');
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
 }
-function getProfile(){
+function getProfile() {
+
+    alert("data.context.userId");
+
     liff.getProfile().then(function (profile) {
         document.getElementById('displayName').textContent = profile.displayName;
         const profilePictureDiv = document.getElementById('profilepicturediv');

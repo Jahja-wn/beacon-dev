@@ -21,7 +21,7 @@
   <div class="article">
     <h2 class="margin">History</h2>
     <div style="overflow-x:auto;">
-      <!-- <table class="table">
+      <table class="table">
         <tr>
           <th>name</th>
           <th>type</th>
@@ -29,13 +29,13 @@
           <th>location</th>
           <th>plan</th>
         </tr>
-       <tr>
+       <!-- <tr>
           <td id="namefield"></td>
           <td id="typefield"></td>
           <td id="timestampfield"></td>
           <td id="locationfield"></td>
           <td id="planfields"></td>
-        </tr> 
+        </tr>  -->
 
       <% for(var i=0; i<docs.length; i++) {%>
       <tr>
@@ -46,7 +46,7 @@
         <td><%= docs[i].plan %></td>
       </tr>
       <% } %>
-      </table> -->
+      </table>
     </div>
   </div>
   <script src="https://d.line-scdn.net/liff/1.0/sdk.js"></script>
