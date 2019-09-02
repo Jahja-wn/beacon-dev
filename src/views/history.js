@@ -8,10 +8,14 @@ window.onload = function (e) {
 
 function init(data) {
     var userId = data.context.userId;
-    fetch('/clicked', { method: 'POST' })
+    fetch('/clicked', {
+        method: 'POST', 
+        body: userId
+    })
         .then(function (response) {
             if (response.ok) {
-                return userId;
+                console.log('Click was recorded');
+                return ;
             }
             throw new Error('Request failed.');
         })
@@ -21,7 +25,6 @@ function init(data) {
 }
 function getProfile() {
 
-    alert("data.context.userId");
 
     liff.getProfile().then(function (profile) {
         document.getElementById('displayName').textContent = profile.displayName;
