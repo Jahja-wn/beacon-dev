@@ -7,7 +7,7 @@ window.onload = function (e) {
 };
 
 function init(data) {
-   document.getElementById.textContent = data.context.userId;
+   document.getElementById('userId').textContent = data.context.userId;
     var userId = data.context.userId;
     console.log("init", userId)
     fetch('/clicked', {
