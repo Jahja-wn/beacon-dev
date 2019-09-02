@@ -44,17 +44,18 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 
 app.get('/history', function (req, res) {
-
-  dal.find({type: "in" }, activityColl)
-    .then((docs) => {
-      res.render('history', { docs: docs });
-      //  res.send(docs)
-      // res.render('history', { displayName:  docs[0].displayName , type: docs[0].type ,timestamp: docs[0].timestamp, location: docs[0].location.locationName, plan: docs[0].plan } );
-    })
-    .catch((err) => {
-      console.log(err)
-      res.status(500).send(err.message)
-    })
+  console.log(req.body);
+  res.send(req.body);
+  // dal.find({type: "in" }, activityColl)
+  //   .then((docs) => {
+  //     res.render('history', { docs: docs });
+  //     //  res.send(docs)
+  //     // res.render('history', { displayName:  docs[0].displayName , type: docs[0].type ,timestamp: docs[0].timestamp, location: docs[0].location.locationName, plan: docs[0].plan } );
+  //   })
+  //   .catch((err) => {
+  //     console.log(err)
+  //     res.status(500).send(err.message)
+  //   })
 });
 
 // app.get('/history', function (req, res) {
