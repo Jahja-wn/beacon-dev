@@ -16,7 +16,7 @@
             initializeApp(data);
         });
     };
-   async function initializeApp(data) {
+    async function initializeApp(data) {
 
         document.getElementById('userId').textContent = data.context.userId;
         const userIdfield = { userId: data.context.userId }
@@ -71,7 +71,16 @@
                     <th> userid</th>
                 </tr>
                 <tr>
+                    <% for(var i=0; i< docs.length; i++) {%>
+                <tr>
+                    <td><%= docs.displayName %></td>
+                    <td><%= docs.type %></td>
+                    <td><%= docs.timestamp %></td>
+                    <td><%= docs.location.locationName %></td>
+                    <td><%= docs.plan %></td>
                     <td id="userId"></td>
+                </tr>
+                <% } %>
                 </tr>
 
             </table>
