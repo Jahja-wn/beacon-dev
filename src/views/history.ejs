@@ -36,16 +36,16 @@
           <td id="locationfield"></td>
           <td id="planfields"></td>
         </tr>  -->
-
-      <% for(var i=0; i< %=docs.length; i++) {%>
+     
+      <% docs.foreach((doc) => { %>
       <tr>
-        <td><%= docs[i].displayName %></td>
-        <td><%= docs[i].type %></td>
-        <td><%= docs[i].timestamp %></td>
-        <td><%= docs[i].location.locationName %></td>
-        <td><%= docs[i].plan %></td>
+        <td><%= doc.displayName %></td>
+        <td><%= doc.type %></td>
+        <td><%= doc.timestamp %></td>
+        <td><%= doc.location.locationName %></td>
+        <td><%= doc.plan %></td>
       </tr>
-      <% } %>
+      <% }) %>
       </table>
     </div>
   </div>

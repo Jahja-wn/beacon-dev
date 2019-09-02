@@ -47,7 +47,7 @@ app.get('/history', function (req, res) {
   res.sendFile(path.join(__dirname + '/views/history.ejs'));
 });
 app.post('/clicked', (req, res) => {
-  console.log(req.body.userId)
+  console.log("/clicked body", req.body)
   dal.find({userId:req.body.userId }, activityColl)
     .then((docs) => {
       res.render('history', { docs: docs});
