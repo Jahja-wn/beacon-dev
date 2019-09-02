@@ -44,15 +44,13 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 
 app.get('/history', function (req, res) {
-  res.sendFile(path.join(__dirname + '/views/history.ejs'));
+  res.render('history');
 });
-app.post('/clicked', (req, res) => {
-  console.log("/clicked body", req.body)
-  dal.find({userId:req.body.userId }, activityColl)
+app.post('/user', (req, res) => {
+  console.log("/user body", req.body.userIdfield.userId);
+  dal.find({userId:req.body.userIdfield.userId }, activityColl)
     .then((docs) => {
       res.render('history', { docs: docs});
-      //  res.send(docs)
-      // res.render('history', { displayName:  docs[0].displayName , type: docs[0].type ,timestamp: docs[0].timestamp, location: docs[0].location.locationName, plan: docs[0].plan } );
     })
     .catch((err) => {
       console.log(err)

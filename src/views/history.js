@@ -8,8 +8,7 @@ window.onload = function (e) {
 
 function init(data) {
    document.getElementById('userId').textContent = data.context.userId;
-    var userId = data.context.userId;
-    console.log("init", userId)
+    var userId = "data.context.userId";
     fetch('/clicked', {
         method: 'POST',
         headers: {
