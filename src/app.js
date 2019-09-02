@@ -44,7 +44,7 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 
 app.get('/history', function (req, res) {
-  res.sendFile(path.join(__dirname + '/views/history.html'));
+  res.sendFile(path.join(__dirname + '/views/history.ejs'));
   // dal.find({type: "in" }, activityColl)
   //   .then((docs) => {
   //     res.render('history', { docs: docs });
