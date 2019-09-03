@@ -18,7 +18,6 @@
         });
 
         function getProfile() {
-            console.log('get profile')
             liff.getProfile().then(function (profile) {
                 document.getElementById('displayName').textContent = profile.displayName;
                 const profilePictureDiv = document.getElementById('profilepicturediv');
