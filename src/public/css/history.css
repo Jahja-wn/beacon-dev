@@ -40,6 +40,10 @@ section {
   border-collapse: collapse;
   width: 100%;
   font-size: 16px;
+  border: 1px solid #ddd;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  color: white;
 }
 
 .table td, .table th {
