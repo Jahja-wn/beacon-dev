@@ -11,8 +11,6 @@
     <script>
         $(document).ready(async (e) => {
             liff.init(function (data) {
-                console.log("hi")
-
                 var userIdfield = data.context.userId;
                 $('#data').load('/liff/gethistory', { userId: userIdfield })
                 getProfile();
