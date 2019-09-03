@@ -12,7 +12,7 @@
         $(document).ready(async (e) => {
             liff.init(function (data) {
                 console.log("hi")
-                var userIdfield = "U5924eb56f756b1cbc1a565a5467be412"
+                var userIdfield = data.context.userId;
                 $('#data').load('/liff/gethistory', { userId: userIdfield })
                 getProfile();
             });
