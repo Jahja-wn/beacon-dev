@@ -1,4 +1,3 @@
-<!-- <% var docs; %> -->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -6,46 +5,40 @@
     <!-- Theme Made By www.w3schools.com - No Copyright -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="history.css">
+    <link rel="stylesheet" type="text/css" href="../css/history.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="../js/sdk.js"></script>
+    <script>
+        $(document).ready(async (e) => {
+            liff.init(function (data) {
+                console.log("hi")
+                var userIdfield = "U5924eb56f756b1cbc1a565a5467be412"
+                $('#data').load('/liff/gethistory', { userId: userIdfield })
+                getProfile();
+            });
+        });
+
+        function getProfile() {
+            console.log('get profile')
+            liff.getProfile().then(function (profile) {
+                document.getElementById('displayName').textContent = profile.displayName;
+                const profilePictureDiv = document.getElementById('profilepicturediv');
+                if (profilePictureDiv.firstElementChild) {
+                    profilePictureDiv.removeChild(profilePictureDiv.firstElementChild);
+                }
+                const img = document.createElement('img');
+                img.src = profile.pictureUrl;
+                img.alt = "Profile Picture";
+                profilePictureDiv.appendChild(img);
+
+            }).catch(function (error) {
+                window.alert("Error getting profile: " + error);
+            });
+
+        }</script>
 </head>
-<script src="https://d.line-scdn.net/liff/1.0/sdk.js"></script>
 <script>
 
-    window.onload = function (e) {
-        liff.init(function (data) {
-            initializeApp(data);
-        });
-    };
-    async function initializeApp(data) {
-
-        document.getElementById('userId').textContent = data.context.userId;
-        const userIdfield = { userId: data.context.userId }
-
-        const sendUserid = await fetch('/user', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                // 'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: JSON.stringify(userIdfield)
-        })
-
-        liff.getProfile().then(function (profile) {
-            document.getElementById('displayName').textContent = profile.displayName;
-            const profilePictureDiv = document.getElementById('profilepicturediv');
-            if (profilePictureDiv.firstElementChild) {
-                profilePictureDiv.removeChild(profilePictureDiv.firstElementChild);
-            }
-            const img = document.createElement('img');
-            img.src = profile.pictureUrl;
-            img.alt = "Profile Picture";
-            profilePictureDiv.appendChild(img);
-
-        }).catch(function (error) {
-            window.alert("Error getting profile: " + error);
-        });
-
-    }
 </script>
 
 <body>
@@ -55,33 +48,22 @@
         <h1 class="margin" id="displayName"></h1>
         <div id="profilepicturediv">
         </div>
+        <!-- <p id="data"></p> -->
     </div>
 
     <!--  Second Container -->
     <div class="article">
         <h2 class="margin">History</h2>
         <div style="overflow-x:auto;">
-            <table class="table">
-                <tr>
+            <table class="table" id="data">
+                <!-- <tr>
                     <th>name</th>
                     <th>type</th>
                     <th>date/time</th>
                     <th>location</th>
                     <th>plan</th>
-                    <th> userid</th>
-                </tr>
-                <tr>
-                    <% for(var i=0; i< docs.length; i++) {%>
-                <tr>
-                    <td><%= docs.displayName %></td>
-                    <td><%= docs.type %></td>
-                    <td><%= docs.timestamp %></td>
-                    <td><%= docs.location.locationName %></td>
-                    <td><%= docs.plan %></td>
-                    <td id="userId"></td>
-                </tr>
-                <% } %>
-                </tr>
+                    <th>userid</th>
+                </tr> -->
 
             </table>
         </div>

@@ -5,6 +5,7 @@ window.onload = function (e) {
 };
 
 function init(data) {
+
     liff.getProfile().then(function (profile) {
         document.getElementById('userId').value = profile.userId;
         document.getElementById('displayName').value = profile.displayName;
@@ -26,4 +27,5 @@ function myFunction() {
     document.getElementById('sh_last').textContent = lastname;
     document.getElementById('sh_nick').textContent = nickname;
 
+    
 }   

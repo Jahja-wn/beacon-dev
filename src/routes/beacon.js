@@ -1,77 +1,28 @@
-(function () { 'use strict'; }());
-import { userModel, activityModel, locationModel } from './core/model';
-//import locations from './core/model';
-import { LocalFile } from './core/data_access_layer/local_file';
-import { ConversationService, ElasticService, BeaconService, MessageService } from './core/service';
+import {Router} from 'express'
+import mongoose from 'mongoose'
+import { userModel, activityModel, locationModel } from '../core/model';
+import { LocalFile } from '../core/data_access_layer';
+import { ConversationService, ElasticService, BeaconService, MessageService } from '../core/service';
 import { Client, middleware } from '@line/bot-sdk';
-import { logger, Log_config } from './logger';
-import config from './core/config';
-
-const bodyParser = require('body-parser');
-const express = require('express');
-const app = express();
-const path = require('path');
-const logconfig = Log_config;               //const config = require('./core/config.js');
+import { logger, Log_config } from '../logger';
+import config from '../core/config';
+const router = Router()
 const client = new Client(config);          // create LINE SDK client
 const dal = new LocalFile();
 const elastic = new ElasticService();
 const messageService = new MessageService(new Client(config));
 const conversationService = new ConversationService(dal, messageService, elastic, config.AnswerAlertDuration);
 const beaconService = new BeaconService(conversationService, messageService, dal, elastic);
-const mongoose = require('mongoose');
+
 const toJson = require('@meanie/mongoose-to-json');
 mongoose.plugin(toJson);
-mongoose.connect("mongodb+srv://Jahja-wn:1234@cluster0-dcsni.azure.mongodb.net/test?retryWrites=true&w=majority", { useNewUrlParser: true, useFindAndModify: false })
-  .then(() => console.log('monggoose connected'))
-  .catch((err) => console.log('mongoose unconnected:', err))
+
 const userColl = mongoose.model('users', userModel);
 const locationColl = mongoose.model('locations', locationModel);
 const activityColl = mongoose.model('activities', activityModel);
-const ejs = require('ejs');
-
-app.use(bodyParser.urlencoded({ extended: false }));
-
-app.get('/userprofile', function (req, res) {
-  res.sendFile(path.join(__dirname + '/views/index.html'));
-});
-app.post('/submit', (req, res) => {
-  var saveUser = new userColl(req.body);
-  dal.save(saveUser);
-});
-
-app.set('views', __dirname + '/views');
-app.set('view engine', 'ejs');
-
-app.post('/history', function (req, res) {
-  var a = req.body.userId ; 
-  console.log(a);
-  dal.find(req.body.userId, activityColl)
-        .then((docs) => {
-          res.status(200).send(docs)
-        })
-        .catch((err) => {
-          console.log(err)
-          res.status(500).send(err.message)
-        })
-  //res.render('history')
-});
-
-// app.post('/', (req, res) => {
-//   console.log(req.body.userId)
-//   dal.find(req.body.userId, activityColl)
-//       .then((docs) => {
-//         res.status(200).send(docs)
-//       })
-//       .catch((err) => {
-//         console.log(err)
-//         res.status(500).send(err.message)
-//       })
-// })
-
-
 
 // webhook callback
-app.post('/webhook', middleware(config), (req, res) => {
+router.post('/webhook', middleware(config), (req, res) => {
   // req.body.events should be an array of events
   if (!Array.isArray(req.body.events)) {
     logger.error(res);
@@ -147,6 +98,4 @@ async function handleEvent(event) {
   }
 }
 
-app.listen(config.port, () => {
-  logger.info(`listening on ${config.port}`);
-});
+module.exports = router
