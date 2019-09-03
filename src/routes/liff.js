@@ -21,11 +21,11 @@ router.post('/gethistory', function (req, res) {
     console.log(getuserid)
     dal.find(getuserid, activityColl)
         .then((docs) => {
-            let users = '<tr><th>name</th><th>type</th><th>date/time</th><th>location</th><th>plan</th>';
+            let users = '<tr><th>name</th><th>type</th><th>date/time</th><th>location</th><th>plan</th></tr>';
             docs.forEach(doc => {
-                users += '<tr><td>' + doc.displayName + '</td><td>' + doc.type + '</td><td>' + doc.timestamp + '</td><td>' + doc.location.locationName + '</td><td>' + doc.plan + '</td><td>'
+                users += '<tr><td>' + doc.displayName + '</td><td>' + doc.type + '</td><td>' + doc.timestamp + '</td><td>' + doc.location.locationName + '</td><td>' + doc.plan + '</td>'
             });
-            users += '</tbody></table>'
+            // users += ''
             res.status(200).send(users)
         })
         .catch((err) => {

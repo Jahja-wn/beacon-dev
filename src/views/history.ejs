@@ -10,10 +10,11 @@
     <script src="../js/sdk.js"></script>
     <script>
         $(document).ready(async (e) => {
+            var userIdfield = data.context.userId;
+            $('#data').load('/liff/gethistory', { userId: userIdfield })
             liff.init(function (data) {
                 console.log("hi")
-                var userIdfield = data.context.userId;
-                $('#data').load('/liff/gethistory', { userId: userIdfield })
+
                 getProfile();
             });
         });
@@ -56,14 +57,6 @@
         <h2 class="margin">History</h2>
         <div style="overflow-x:auto;">
             <table class="table" id="data">
-                <!-- <tr>
-                    <th>name</th>
-                    <th>type</th>
-                    <th>date/time</th>
-                    <th>location</th>
-                    <th>plan</th>
-                    <th>userid</th>
-                </tr> -->
 
             </table>
         </div>
