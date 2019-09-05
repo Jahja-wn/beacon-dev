@@ -67,7 +67,7 @@ async function handleEvent(event) {
         case 'message':
             var userprofile = await dal.find({ userId: event.source.userId }, userColl);
             if (userprofile[0] != undefined) {
-                return conversationService.handleInMessage(event.message, event.source.userId, activityColl, userprofile[0]);
+                return conversationService.handleInMessage(event.message, event.source.userId,event.timestamp, activityColl, userprofile[0]);
             } else { return replyText(event.replyToken, `you aren't a group member`); }
         case 'follow':
             return replyText(event.replyToken, 'Got followed event');

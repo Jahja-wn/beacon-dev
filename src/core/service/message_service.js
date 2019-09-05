@@ -1,32 +1,62 @@
-(function () {'use strict';}());
+(function () { 'use strict'; }());
 import moment from 'moment';
 import config from '../config';
 import { logger } from '../../logger';
 
+
 async function sendMessage(id, messageContent) {
-    if(typeof messageContent === 'string'){
+    if (typeof messageContent === 'string') {
         messageContent = {
-                type: 'text',
-                text: messageContent
-            };
+            type: 'text',
+            text: messageContent
+        };
     }
-    console.log(messageContent);
-    try{
+    try {
         await this.client.pushMessage(id, messageContent);
     }
-    catch(err){
-        logger.error("Fail while try to send message: ",err);
-        logger.info("Message Content: ",messageContent);
+    catch (err) {
+        logger.error("Fail while try to send message: ", err);
+        logger.info("Message Content: ", messageContent);
     }
 }
 
-async function sendWalkInMessage(activity,userprofile) {
+async function sendWalkInMessage(activity, userprofile) {
     logger.info(`send WalkInMessage with Activity: ${JSON.stringify(activity)}  ${JSON.stringify(userprofile)} `);
-    let message = this.createWalkInMessage(activity,userprofile);
-    await this.sendMessage(config.ReportGroupId,message);
+    let message = this.createWalkInMessage(activity, userprofile)
+    await this.sendMessage(config.ReportGroupId, message);
 }
 
-function createWalkInMessage( activity,userprofile) {//format of the sent message
+async function sendConfirmMessage(userid) {
+    let message = this.confirmMessage();
+    await this.sendMessage(userid, message);
+}
+
+function confirmMessage() {
+    const confirmMessage = {
+        "type": "template",
+        "altText": "this is a confirm template",
+        "template": {
+            "type": "confirm",
+            "actions": [
+                {
+                    "type": "message",
+                    "label": "Yes",
+                    "text": "Yes"
+                },
+                {
+                    "type": "message",
+                    "label": "No",
+                    "text": "No"
+                }
+            ],
+            "text": "would you like to clock out ?"
+        }
+    }
+
+    return confirmMessage;
+}
+
+function createWalkInMessage(activity, userprofile) {//format of the sent message
     const flexMessage = {
         "type": "flex",
         "altText": "this is a flex message",
@@ -46,7 +76,7 @@ function createWalkInMessage( activity,userprofile) {//format of the sent messag
                 "contents": [
                     {
                         "type": "text",
-                        "text": activity.displayName + " "+"(" +userprofile.nickName +")",
+                        "text": activity.displayName + " " + "(" + userprofile.nickName + ")",
                         "wrap": true,
                         "weight": "bold",
                         "gravity": "center",
@@ -73,6 +103,28 @@ function createWalkInMessage( activity,userprofile) {//format of the sent messag
                                     {
                                         "type": "text",
                                         "text": moment(activity.timestamp).format('MMMM Do YYYY, h:mm:ss a'),
+                                        "wrap": true,
+                                        "size": "sm",
+                                        "color": "#666666",
+                                        "flex": 4
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "box",
+                                "layout": "baseline",
+                                "spacing": "sm",
+                                "contents": [
+                                    {
+                                        "type": "text",
+                                        "text": "Type",
+                                        "color": "#aaaaaa",
+                                        "size": "sm",
+                                        "flex": 1
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": activity.type,
                                         "wrap": true,
                                         "size": "sm",
                                         "color": "#666666",
@@ -130,9 +182,10 @@ function createWalkInMessage( activity,userprofile) {//format of the sent messag
             }
         }
     };
-    
+
     return flexMessage;
 }
+
 
 
 class MessageService {
@@ -141,6 +194,8 @@ class MessageService {
         this.sendMessage = sendMessage;
         this.sendWalkInMessage = sendWalkInMessage;
         this.createWalkInMessage = createWalkInMessage;
+        this.sendConfirmMessage = sendConfirmMessage;
+        this.confirmMessage = confirmMessage;
     }
 }
 

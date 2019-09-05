@@ -7,23 +7,26 @@ const today = moment().startOf('day')
 async function handleBeaconEvent(userId, displayName, timestamp, hwid, url, userSchema, locationSchema, activitySchema) {
 
   let user = await this.dal.find({ userId: userId }, userSchema); //Find userid ,it is a member of the group or not.
-  if (user[0] === undefined || user[0] === null) { logger.error(`Unrecognized user id: ${userId}`); return; }
+  if (user[0] === undefined) { logger.error(`Unrecognized user id: ${userId}`); return; }
 
   var findhwid = { hardwareId: hwid };
+
   var location = await this.dal.find(findhwid, locationSchema);
   if (location[0] === undefined || location[0] === null) { logger.error(`Unrecognized hardware id: ${hwid}`); return; }
 
-  var activities = {
+  var filter = {
     userId: userId,
+    'location.hardwareID': hwid,
     timestamp: {
       $gte: today.toDate(),
       $lte: moment(today).endOf('day').toDate()
     }
   }
-  var matchedActities = await this.dal.find(activities, activitySchema, { '_id': 'desc' }, 1); // Find activity matches userId and location for today  
-  if (matchedActities[0] === undefined || matchedActities[0] === null) {
+
+  var matchedActities = await this.dal.find(filter, activitySchema, { '_id': 'desc' }); // Find activity matches userId and location for today  
+ 
+  if (matchedActities[0] === undefined) {
     logger.debug(`handleBeaconEvent not found matched activity -> userid: ${userId}, location: ${location[0].locationName}`);
-    console.log(timestamp)
     var saveActivity = new activitySchema({
       userId: userId,
       displayName: displayName,
@@ -52,12 +55,28 @@ async function handleBeaconEvent(userId, displayName, timestamp, hwid, url, user
   }
   else {
     logger.debug(`handleBeaconEvent found matched activity -> userid: ${userId}, location: ${location[0].locationName}`);
-    for (var i in matchedActities) {
-      if (matchedActities[i].plan != 'none' && matchedActities[i].askstate == true) { // users become active again
-        return this.messageService.sendMessage(config.ReportGroupId, displayName + ' re-enter ' + location[0].locationName);
+    console.log("found matchedActivities: ", matchedActities);
 
+      if (matchedActities[0].plan != 'none' && matchedActities[0].type != 'out') { // users become active again
+        return this.messageService.sendConfirmMessage(userId)
       }
-    }
+    
+
+    // if (matchedActities.plan != 'none') { // users become active again
+
+    //   return this.messageService.sendConfirmMessage(userId)
+
+
+
+    //    return this.messageService.sendMessage(config.ReportGroupId, displayName + ' re-enter ' + location[0].locationName);
+
+
+    // for (var i in matchedActities) {
+    //   if (matchedActities[i].plan != 'none' && matchedActities[i].askstate == true) { // users become active again
+    //     return this.messageService.sendMessage(config.ReportGroupId, displayName + ' re-enter ' + location[0].locationName);
+
+    //   }
+    // }
   }
 }
 

@@ -26,7 +26,7 @@ class LocalFile {
   }
 
   async update(model, findobj, replace, sortOption) {
-    return model.update(findobj, replace).sort(sortOption).exec()
+    return model.findOneAndUpdate(findobj, replace, sortOption)
   }
 }
 
