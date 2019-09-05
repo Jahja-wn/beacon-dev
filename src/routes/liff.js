@@ -37,7 +37,7 @@ router.post('/gethistory', function (req, res) {
     var getuserid = req.body;
     dal.find(getuserid, activityColl)
         .then((docs) => {
-            let users = ' <thead><tr><th>name</th><thead><th>type</th><th>date/time</th><th>location</th><th>plan</th></tr></thead><tbody>';
+            let users = ' <thead><tr><th>name</th><th>type</th><th>date/time</th><th>location</th><th>plan</th></tr></thead><tbody>';
             docs.forEach(doc => {
                 users += '<tr><td>' + doc.displayName + '</td><td>' + doc.type + '</td><td>' + doc.timestamp + '</td><td>' + doc.location.locationName + '</td><td>' + doc.plan + '</td></tbody>'
             });
