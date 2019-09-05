@@ -40,8 +40,13 @@ function confirmMessage() {
             "actions": [
                 {
                     "type": "message",
-                    "label": "OK",
-                    "text": "OK"
+                    "label": "Yes",
+                    "text": "Yes"
+                },
+                {
+                    "type": "message",
+                    "label": "No",
+                    "text": "No"
                 }
             ],
             "text": "would you like to clock out ?"

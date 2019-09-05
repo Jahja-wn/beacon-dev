@@ -22,7 +22,7 @@ async function handleInMessage(message, userId, timestamp, schema, userprofile) 
     }, schema, { _id: -1 })
 
     let matchedActivity = matchedActivities[0];
-    if (message.text === "OK") {
+    if (message.text === "Yes") {
         if (matchedActivity.type === "out") {
             this.messageService.sendMessage(userId, "already clock out");
         } else {
@@ -54,7 +54,7 @@ async function handleInMessage(message, userId, timestamp, schema, userprofile) 
 
 
     }
-    else {
+    else if (message.text != "No"){
         if (matchedActivity.plan === 'none' && matchedActivity.type === "in") {//if plan parameter equals to none then updated an answer with incomeing message 
             this.dal.update(schema, { userId: userId, type: 'in' }, { plan: message.text }, sortOption)
             matchedActivity.plan = message.text;
