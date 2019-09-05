@@ -43,16 +43,16 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 
 app.post('/history', function (req, res) {
-  var a = req.body.userId ; 
+  var a = req.body.userId;
   console.log(a);
   dal.find(req.body.userId, activityColl)
-        .then((docs) => {
-          res.status(200).send(docs)
-        })
-        .catch((err) => {
-          console.log(err)
-          res.status(500).send(err.message)
-        })
+    .then((docs) => {
+      res.status(200).send(docs)
+    })
+    .catch((err) => {
+      console.log(err)
+      res.status(500).send(err.message)
+    })
   //res.render('history')
 });
 
@@ -123,7 +123,6 @@ async function handleEvent(event) {
 
     case 'join':
       return logge.info("bot join in ", event.source.groupId);
-
     case 'memberJoined':
       return messageService.sendMessage(event.joined.members[0].userId, "please insert your information \n line://app/1588402264-zGXExoo1");
 

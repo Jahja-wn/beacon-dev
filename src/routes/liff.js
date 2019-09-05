@@ -2,7 +2,7 @@ import { Router } from 'express'
 import mongoose from 'mongoose'
 import { userModel, activityModel, locationModel } from '../core/model';
 import { LocalFile } from '../core/data_access_layer';
-
+import { logger } from '../logger';
 const path = require('path');
 const router = Router();
 const dal = new LocalFile();
@@ -13,12 +13,28 @@ router.get('/userprofile', function (req, res) {
     res.render('index')
 });
 router.post('/submit', (req, res) => {
-    var saveUser = new userColl(req.body);
-    dal.save(saveUser);
+    dal.find({ userId: req.body.userId }, userColl)
+        .then((docs) => {
+            logger.info("docs", docs)
+            if (docs[0] != undefined) {
+                dal.update(userColl, { userId: docs[0].userId }, req.body)
+                    .catch((err) => {
+                        logger.error("cannot update user profile :", err)
+                    })
+            } else {
+                var saveUser = new userColl(req.body);
+                dal.save(saveUser)
+                    .catch((err) => {
+                        logger.error("can not save user profile", err)
+                    })
+            }
+        })
+        .catch((err) => {
+            logger.error("find userprofile unsuccessful", err)
+        })
 });
 router.post('/gethistory', function (req, res) {
     var getuserid = req.body;
-    console.log(getuserid)
     dal.find(getuserid, activityColl)
         .then((docs) => {
             let users = '<tr><th>name</th><th>type</th><th>date/time</th><th>location</th><th>plan</th></tr>';
@@ -32,7 +48,6 @@ router.post('/gethistory', function (req, res) {
             console.log(err)
             res.status(500).send(err.message)
         })
-    //res.render('history')
 });
 
 module.exports = router

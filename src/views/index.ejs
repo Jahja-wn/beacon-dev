@@ -1,16 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LIFF Starter</title>
+    
+	<link rel="stylesheet" type="text/css" href="../fonts/font-awesome-4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="../css/index.css">
     <script src="https://d.line-scdn.net/liff/1.0/sdk.js"></script>
     <script src="../js/index.js"></script>
 </head>
 
 <body>
+
+
+    <div class="container-contact100">
+        <div class="wrap-contact100">
+            <iframe name="hiddenFrame" class="hide"></iframe>
+            <form class="contact100-form validate-form" form method="POST" id="form" target="hiddenFrame"action="/liff/submit">
+                <span class="contact100-form-title">
+                    Say Hello!
+                </span>
+                <input type="text" id="userId" name="userId" hidden>
+                <input type="text" id="displayName" name="displayName" hidden>
+                <div class="wrap-input100 validate-input">
+                    <span class="label-input100">First Name</span>
+                    <input class="input100" type="text" id="firstName" name="firstName"
+                        placeholder="Enter your first name" required>
+                    <span class="focus-input100"></span>
+                </div>
+
+                <div class="wrap-input100 validate-input">
+                    <span class="label-input100">Last Name</span>
+                    <input class="input100" type="text" id="lastName" name="lastName" placeholder="Enter your last name"
+                        required>
+                    <span class="focus-input100"></span>
+                </div>
+
+                <div class="wrap-input100 validate-input">
+                    <span class="label-input100">Nick Name</span>
+                    <input class="input100" type="text" id="nickName" name="nickName" placeholder="Enter your nick name"
+                        required>
+                    <span class="focus-input100"></span>
+                </div>
+
+                <div class="container-contact100-form-btn">
+                    <div class="wrap-contact100-form-btn">
+                        <div class="contact100-form-bgbtn"></div>
+                        <button class="contact100-form-btn" onclick="myFunction()" type="submit">
+                            <span>
+                                Submit
+                                <i class="fa fa-long-arrow-right m-l-7" aria-hidden="true"></i>
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 
     <iframe name="hiddenFrame" class="hide"></iframe>
-    <form method="post" id="form" target="hiddenFrame" action="/submit">
+    <form method="POST" id="form" target="hiddenFrame" action="/liff/submit">
 
         <input type="text" id="userId" name="userId" hidden>
         <input type="text" id="displayName" name="displayName" hidden>
@@ -19,31 +70,31 @@
         <input type="text" id="firstName" name="firstName" required>
         <br>
         Last name:<br>
-        <input type="text" id="lastName" name="lastname" required>
+        <input type="text" id="lastName" name="lastName" required>
         <br>
-        Nickname : <br>
+        Nick name : <br>
         <input type="text" id="nickName" name="nickName" required>
         <br><br>
         <input onclick="myFunction()" type="submit" />
 
-    </form>
+    </form> -->
 
-    <h2>Profile</h2>
+    <!-- <h2>Profile</h2>
     <table border="1">
         <tr>
-            <th>Firstname</th>
+            <th>First name</th>
             <td id="sh_first"></td>
         </tr>
         <tr>
-            <th>Lastname</th>
+            <th>Last name</th>
             <td id="sh_last"></td>
         </tr>
         <tr>
-            <th>Nickname</th>
+            <th>Nick name</th>
             <td id="sh_nick"></td>
         </tr>
     </table>
-    </div>
+    </div> -->
 
 </body>
 
