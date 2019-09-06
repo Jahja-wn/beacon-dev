@@ -17,7 +17,7 @@ const messageService = new MessageService(new Client(config));
 const conversationService = new ConversationService(dal, messageService, elastic, config.AnswerAlertDuration);
 const beaconService = new BeaconService(conversationService, messageService, dal, elastic);
 
-const toJson = require('@meanie/mongoose-to-json');
+const toJson = require('@meanie/mongoose-to-json'); // change  _id to id 
 mongoose.plugin(toJson);
 
 const userColl = mongoose.model('users', userModel);
@@ -65,7 +65,7 @@ const replyText = (token, texts) => {
 async function handleEvent(event) {
     switch (event.type) {
         case 'message':
-            var userprofile = await dal.find({ userId: event.source.userId }, userColl);
+            var userprofile = await dal.find({ userId: event.source.userId }, userColl); // find users are they in a group member from database
             if (userprofile[0] != undefined) {
                 return conversationService.handleInMessage(event.message, event.source.userId,event.timestamp, activityColl, userprofile[0],replyText);
             } else { return replyText(event.replyToken, `you aren't a group member`); }
@@ -82,7 +82,7 @@ async function handleEvent(event) {
         case 'join':
             return logge.info("bot join in ", event.source.groupId);
 
-        case 'memberJoined':
+        case 'memberJoined': //when they join in group bot will send message to user for insert user information 
             return messageService.sendMessage(event.joined.members[0].userId, "please insert your information \n line://app/1588402264-zGXExoo1");
 
         case 'memberLeft':

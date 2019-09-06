@@ -10,18 +10,8 @@ class LocalFile {
     return obj.save()
   }
 
-  async find(findObj, model, sortOptions, limit) {
+  async find(findObj, model, sortOptions, limit) { 
 
-    //findObj is an obj that you want to find , create from model and sort by id order by desc
-    // if (model === activities) {
-    //   return model.find({
-    //     findObj,
-    //      createdAt: {
-    //       $gte: today.toDate(),
-    //       $lte: moment(today).endOf('day').toDate()
-    //     }
-    //   }).sort(sortOptions).limit(limit).exec()
-    // }
     return model.find(findObj).sort(sortOptions).limit(limit).exec()
   }
 
