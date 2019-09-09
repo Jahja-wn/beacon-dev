@@ -4,7 +4,7 @@ import config from '../config';
 import { logger } from '../../logger';
 
 
-async function sendMessage(id, messageContent) {
+async function sendMessage(id, messageContent) { // use for send messages 
     if (typeof messageContent === 'string') {
         messageContent = {
             type: 'text',
@@ -20,7 +20,7 @@ async function sendMessage(id, messageContent) {
     }
 }
 
-async function sendWalkInMessage(activity, userprofile) {
+async function sendWalkInMessage(activity, userprofile) { // receive information then put its  in createWalkInMessage format and send with sendMessage()
     logger.info(`send WalkInMessage with Activity: ${JSON.stringify(activity)}  ${JSON.stringify(userprofile)} `);
     let message = this.createWalkInMessage(activity, userprofile)
     await this.sendMessage(config.ReportGroupId, message);
@@ -56,7 +56,7 @@ function confirmMessage() {
     return confirmMessage;
 }
 
-function createWalkInMessage(activity, userprofile) {//format of the sent message
+function createWalkInMessage(activity, userprofile) {//message format
     const flexMessage = {
         "type": "flex",
         "altText": "this is a flex message",

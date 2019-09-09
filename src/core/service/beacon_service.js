@@ -60,7 +60,20 @@ async function handleBeaconEvent(userId, displayName, timestamp, hwid, url, user
       if (matchedActities[0].plan != 'none' && matchedActities[0].type != 'out') { // users become active again
         return this.messageService.sendConfirmMessage(userId)
       }
-    
+  }
+}
+
+class BeaconService {
+  constructor(conversationService, messageService, dal) {
+    this.conversationService = conversationService;
+    this.handleBeaconEvent = handleBeaconEvent;
+    this.messageService = messageService;
+    this.dal = dal;
+  }
+}
+export {
+  BeaconService
+};
 
     // if (matchedActities.plan != 'none') { // users become active again
 
@@ -77,17 +90,3 @@ async function handleBeaconEvent(userId, displayName, timestamp, hwid, url, user
 
     //   }
     // }
-  }
-}
-
-class BeaconService {
-  constructor(conversationService, messageService, dal) {
-    this.conversationService = conversationService;
-    this.handleBeaconEvent = handleBeaconEvent;
-    this.messageService = messageService;
-    this.dal = dal;
-  }
-}
-export {
-  BeaconService
-};

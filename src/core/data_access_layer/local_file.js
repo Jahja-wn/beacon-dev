@@ -6,17 +6,17 @@ const today = moment().startOf('day')
 
 class LocalFile {
 
-  async save(obj) {   //ต้องเป็น Object ที่ได้มาจากการ new Object จาก Model เท่านั้น
+  async save(obj) {   //obj must be the object derived from new object from model only
     return obj.save()
   }
 
-  async find(findObj, model, sortOptions, limit) { 
+  async find(filter, model, sortOption, limit) { 
 
-    return model.find(findObj).sort(sortOptions).limit(limit).exec()
+    return model.find(filter).sort(sortOption).limit(limit).exec()
   }
 
-  async update(model, findobj, replace, sortOption) {
-    return model.findOneAndUpdate(findobj, replace, sortOption)
+  async update(model, condition, replace, sortOption) {
+    return model.findOneAndUpdate(condition, replace, sortOption)
   }
 }
 

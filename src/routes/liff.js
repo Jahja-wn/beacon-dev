@@ -18,19 +18,28 @@ router.post('/submit', (req, res) => {
             logger.info("docs", docs)
             if (docs[0] != undefined) {
                 dal.update(userColl, { userId: docs[0].userId }, req.body)
+                    .then(() => {
+                        res.status(200)
+                    })
                     .catch((err) => {
                         logger.error("cannot update user profile :", err)
+                        res.status(500).send(err.message)
                     })
             } else {
                 var saveUser = new userColl(req.body);
                 dal.save(saveUser)
+                    .then(() => {
+                        res.status(200)
+                    })
                     .catch((err) => {
                         logger.error("can not save user profile", err)
+                        res.status(500).send(err.message)
                     })
             }
         })
         .catch((err) => {
             logger.error("find userprofile unsuccessful", err)
+            res.status(500).send(err.message)
         })
 });
 router.post('/gethistory', function (req, res) {
@@ -44,7 +53,7 @@ router.post('/gethistory', function (req, res) {
             res.status(200).send(users)
         })
         .catch((err) => {
-            console.log(err)
+            logger.error("find activityies unsuccessful", err)
             res.status(500).send(err.message)
         })
 });

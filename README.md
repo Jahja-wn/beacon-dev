@@ -108,13 +108,114 @@ src
 └───views
 ```
 
+## Using API
+  
+  - GET /history
+  - GET /liff/userprofile
+  - POST /liff/gethistory
+  - POST /liff/submit
+  - POST /webhook
+  
+### GET /history
+
+This API will rendering history page.
+### GET /liff/userprofile
+
+This API will rendering set user's profile page.
+
+### POST /liff/gethistory
+
+This API use for find data in the database by userId  and show the data on history page.
+
+Request body :
+
+```
+{ userId: '123456789' }
+```
+
+Response: 
+```
+//if successful 
+return status 200 
+
+//if unsuccessful 
+return status 500 with error message
+```
+
+### POST /liff/submit
+
+This API use for save user's information.
+Request body :
+```
+ {
+  userId: '123456789',
+  displayName: 'Bob',
+  firstName: 'Bobb',
+  lastName: 'Bobbb',
+  nickName: 'Bobbbb'
+}
+```
+Response: 
+```
+//if successful 
+return status 200 
+
+//if unsuccessful 
+return status 500 with error message
+```
+### POST /webhook
+
+This API use for receive events from line.
+
+Request body :
+``` 
+events: [
+    {
+      replyToken: '00000000000000000000000000000000',
+      type: 'message',
+      timestamp: 1568006874500,
+      source: [Object],
+      message: [Object]
+    },
+    {
+      replyToken: 'ffffffffffffffffffffffffffffffff',
+      type: 'message',
+      timestamp: 1568006874500,
+      source: [Object],
+      message: [Object]
+    }
+  ]
+```
+Response: 
+```
+// if successful 
+{ 
+  replyToken: '00000000000000000000000000000000',
+  type: 'message',
+  timestamp: 1568006877355,
+  source: { type: 'user', userId: 'Udeadbeefdeadbeefdeadbeefdeadbeef' },
+  message: { id: '100001', type: 'text', text: 'Hello, world' }
+}
+
+{
+  replyToken: 'ffffffffffffffffffffffffffffffff',
+  type: 'message',
+  timestamp: 1568006877355,
+  source: { type: 'user', userId: 'Udeadbeefdeadbeefdeadbeefdeadbeef' },
+  message: { id: '100002', type: 'sticker', packageId: '1', stickerId: '1' }
+}
+
+// if unsuccessful
+return status 500 
+```
+
 ## Model , Data access layer and Process 
 
  - ### Model
 
     Create schemas map to a MongoDB collection.
 
-###### user model 
+#### user model
 
 ```
 const mongoose = require('mongoose')
@@ -130,7 +231,7 @@ const userModel = mongoose.model('users', userSchema);
 module.exports = userModel
 ```
 
-###### activity model
+#### activity model
 
 By default mongo dates are stored in UTC format, we need to install mongoose-timezone for change UTC format into our current timezone before store in the database.
 
@@ -161,7 +262,7 @@ const activityModel = mongoose.model('activities',activitySchema)
 module.exports = activityModel
 
 ```
-###### location model
+#### location model
 
 We need to add location informations such as hardwareID , location's Name , latitude and longitude in MogoDB for retrieve the data
 
@@ -180,12 +281,47 @@ module.exports = locationModel
 
  - ### Data access layer
   
-   -   save ( obj )
+  #### save ( obj )
+  Use for record necessary information such as user , location , activity information
 
+  #### find ( filter, model, sortOption, limit )
 
+  Use for retrieve information that needs to be considered .
+
+  ```
+  sortOptions pattern :
   
-   - find ( findObj, model, sortOptions, limit )
+    const sortOption = { field: 'value'}  or  { field: 1 }
+  
+    values allowed are asc, desc, ascending, descending, 1, and -1.
+  ```
+
+  #### update ( model, condition, replace, sortOption )
+
+  ``` 
+  sortOption pattern : 
+    
+    const sortOption = { new: true, sort: { _id: -1 } };
+
+  new: bool => if true, return the modified document rather than the original, defaults to false.
+
+  ```
+
+- ### Service
+  
+#### beacon_service
+
+Handle When the user has a Bluetooth connection with the line beacon. By comparing your user id with the user id that kept in the database.
+if you are a group member, the program will work according to the specified conditions.
+
+#### conversation_service
+
+Use for Handle received messages from the user and  call  callback ().
+
+#### message_service
+
+Handle about text messaging , message format.
 
 
-   - update ( model, findobj, replace, sortOption )
+
   
