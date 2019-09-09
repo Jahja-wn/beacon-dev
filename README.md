@@ -51,9 +51,6 @@ npm install
 
   Create a Line bot  => https://developers.line.biz
 
-  Define hardware id for beacon => https://manager.line.biz/beacon/register#/
-
-
   Before run this project, you must chage value in config file at src/core/config.js
 by create  enviroment variable of channelAccessToken, channelSecret and change ReportGroupId ,uri
 
@@ -66,6 +63,8 @@ module.exports = {
 	ReportGroupId: "<groupID>",
 };
 ```
+  Define hardware id for beacon => https://manager.line.biz/beacon/register#/
+
   After we have prepared the software then clone line simple beacon in our raspberry pi and install dependencies with NPM   run script with hardware Id
 
 ```
@@ -225,17 +224,11 @@ return status 500
 #### user model
 
 ```
-const mongoose = require('mongoose')
-const Schema = mongoose.Schema;
-const userSchema = new Schema({
     userId: String,
     displayName: String,
     firstName: String,
     lastName: String,
     nickName: String
-})
-const userModel = mongoose.model('users', userSchema);
-module.exports = userModel
 ```
 
 #### activity model
@@ -246,44 +239,23 @@ By default mongo dates are stored in UTC format, we need to install mongoose-tim
 npm install mongoose-timezone --save
 ```
 ```
-const timeZone = require('mongoose-timezone');
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
-const activitySchema = new Schema({
     userId: String,
     displayName: String,
     type: String,
     timestamp: Date,
-    subDocument: {
-        subDate: {
-            type: Date
-        }
-    },
     location: Object,
     askstate: Boolean,
     plan: String,
     url: String
-})
-activitySchema.plugin(timeZone, { paths: ['timestamp', 'subDocument.subDate'] });
-const activityModel = mongoose.model('activities',activitySchema)
-module.exports = activityModel
-
 ```
 #### location model
 
 We need to add location informations such as hardwareID , location's Name , latitude and longitude in MogoDB for retrieve the data
 
 ```
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
-const locationSchema = new Schema({
     hardwareID : String,
     locationName : String,
     point : Object
-})
-const locationModel = mongoose.model('locations',locationSchema)
-
-module.exports = locationModel
 ```
 
  - ### Data access layer
@@ -311,7 +283,6 @@ module.exports = locationModel
     const sortOption = { new: true, sort: { _id: -1 } };
 
   new: bool => if true, return the modified document rather than the original, defaults to false.
-
   ```
 
 - ### Service
@@ -323,7 +294,7 @@ if you are a group member, the program will work according to the specified cond
 
 #### conversation_service
 
-Use for Handle received messages from the user and  call  callback ().
+Use for Handle received messages from the user and  call  callback function.
 
 #### message_service
 
