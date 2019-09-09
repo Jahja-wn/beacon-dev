@@ -109,6 +109,9 @@ src
 ```
 
 ## Using API
+  server: Express
+
+  view engine : ejs
   
   - GET /history
   - GET /liff/userprofile
