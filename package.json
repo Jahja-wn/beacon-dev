@@ -6,6 +6,8 @@
   "scripts": {
     "build": "rimraf dist/ && babel ./src --out-dir dist/src --ignore ./node_modules,./.babelrc,./package.json,./npm-debug.log --copy-files",
     "test": "npm run build && jasmine ./dist/src/core/test/data_access_layer_spec/local_file_spec.js",
+    "testa": "npm run build && jasmine ./dist/src/core/test/app_spec.js",
+    "teste": "npm run build && jasmine ./dist/src/core/test/service_spec/elastic_service_spec.js",
     "testb": "npm run build && jasmine ./dist/src/core/test/service_spec/beacon_service_spec.js",
     "testm": "npm run build && jasmine ./dist/src/core/test/service_spec/message_service_spec.js",
     "testc": "npm run build && jasmine ./dist/src/core/test/service_spec/conversation_service_spec.js",

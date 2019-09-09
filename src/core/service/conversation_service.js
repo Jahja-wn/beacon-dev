@@ -40,13 +40,13 @@ async function handleInMessage(message, userId, timestamp, schema, userprofile) 
                 url: matchedActivity.url
             });
 
-            const { err, result } = this.dal.save(saveobj) 
+            const { err, result } = this.dal.save(saveobj)
             if (err) {
                 logger.error('save activity clock out unsuccessful', err)
                 return 'save activity clock out unsuccessful ', err;
             }
             else {
-                logger.info('save activity clock out successful'); 
+                logger.info('save activity clock out successful');
                 const sendClockout = await this.messageService.sendWalkInMessage(saveobj, userprofile);
                 if (err) {
                     return err
@@ -56,11 +56,11 @@ async function handleInMessage(message, userId, timestamp, schema, userprofile) 
 
 
     }
-    else if (message.text != "No"){
+    else if (message.text != "No") {
         if (matchedActivity.plan === 'none' && matchedActivity.type === "in") { //if plan parameter equals to none then update an answer with incoming message 
             this.dal.update(schema, { userId: userId, type: 'in' }, { plan: message.text }, sortOption)
             matchedActivity.plan = message.text;
-            //   this.elastic.save(matchedActivity);
+            this.elastic.save(matchedActivity);
             await this.messageService.sendWalkInMessage(matchedActivity, userprofile);
         }
         else if (matchedActivity.plan != 'none' && matchedActivity.type === "in") {
@@ -99,7 +99,7 @@ async function callback(updateCondition, count, schema, userprofile) {  //handle
             var checkAns = await this.dal.find(updateCondition, schema, { _id: -1 }, 1)
             if (checkAns[0].plan === 'none' && count < 3) {
                 // notify message for 3 times 
-                // this.messageService.sendMessage(userId, 'Please enter your answer');
+                this.messageService.sendMessage(userId, 'Please enter your answer');
                 count = count + 1;
                 let result = await this.callback(updateCondition, count, schema, userprofile);
                 resolve(result);
@@ -107,7 +107,7 @@ async function callback(updateCondition, count, schema, userprofile) {  //handle
             } else if (checkAns[0].plan === 'none' && count == 3) {
                 // has notified for 3 times but no response
                 await this.dal.update(schema, updateCondition, { plan: '           ' }, sortOption)
-                    //    await this.messageService.sendWalkInMessage(checkAns[0], userprofile)
+                await this.messageService.sendWalkInMessage(checkAns[0], userprofile)
                     .then(() => {
                         resolve("update answer and exist loop from conver,callback");
                     }

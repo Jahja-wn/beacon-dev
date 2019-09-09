@@ -16,9 +16,9 @@ app.set('view engine', 'ejs')
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')))
 app.use('/', router)
-app.listen(config.port, () => {
+const listen =app.listen(config.port, () => {
     logger.info(`listening on ${config.port}`);
 });
 
-
-
+module.exports = app;
+module.exports.port=listen.address().port;
