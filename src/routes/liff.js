@@ -54,7 +54,7 @@ router.post('/gethistory', function (req, res) {
                 res.status(200).send(users)
 
             } else {
-                users += '<tr><th colspan="3">' + 'no record !' + '</th></tr>'
+                users += '<tr><th colspan="5">' + 'no record !' + '</th></tr>'
                 res.status(200).send(users)
 
             }
