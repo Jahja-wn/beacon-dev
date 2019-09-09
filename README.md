@@ -3,6 +3,10 @@
 - Requirement
 - Pre-require Installation
 - Getting started
+- Structure
+- Using API
+- Model , Data access layer and Process 
+  
 ## Requirement
 - Node js v.10.16.0
 
@@ -112,7 +116,7 @@ src
   server: Express
 
   view engine : ejs
-  
+
   - GET /history
   - GET /liff/userprofile
   - POST /liff/gethistory
