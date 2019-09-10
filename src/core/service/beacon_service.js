@@ -1,5 +1,4 @@
 (function () { 'use strict'; }());
-import config from '../config';
 import { logger } from '../../logger';
 const moment = require('moment')
 const today = moment().startOf('day')

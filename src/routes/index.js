@@ -1,4 +1,4 @@
-import mongoose from 'mongoose'
+import mongoose from 'mongoose';
 import { userModel, activityModel, locationModel } from '../core/model';
 import { LocalFile } from '../core/data_access_layer';
 import { ConversationService, ElasticService, BeaconService, MessageService } from '../core/service';
@@ -7,8 +7,7 @@ import { logger, Log_config } from '../logger';
 import config from '../core/config';
 import { Router } from 'express'
 import liff from './liff'
-
-
+mongoose.plugin(require('meanie-mongoose-to-json')); //change _id to id
 const router = Router()
 const client = new Client(config);          // create LINE SDK client
 const dal = new LocalFile();
@@ -16,10 +15,6 @@ const elastic = new ElasticService();
 const messageService = new MessageService(new Client(config));
 const conversationService = new ConversationService(dal, messageService, elastic, config.AnswerAlertDuration);
 const beaconService = new BeaconService(conversationService, messageService, dal, elastic);
-
-const toJson = require('@meanie/mongoose-to-json'); // change  _id to id 
-mongoose.plugin(toJson);
-
 const userColl = mongoose.model('users', userModel);
 const locationColl = mongoose.model('locations', locationModel);
 const activityColl = mongoose.model('activities', activityModel);

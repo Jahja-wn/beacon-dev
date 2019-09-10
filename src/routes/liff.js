@@ -3,6 +3,8 @@ import mongoose from 'mongoose'
 import { userModel, activityModel, locationModel } from '../core/model';
 import { LocalFile } from '../core/data_access_layer';
 import { logger } from '../logger';
+
+mongoose.plugin(require('meanie-mongoose-to-json'));//change _id to id
 const path = require('path');
 const router = Router();
 const dal = new LocalFile();

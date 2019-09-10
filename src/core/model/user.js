@@ -7,5 +7,7 @@ const userSchema = new Schema({
     lastName: String,
     nickName: String
 })
+
+userSchema.plugin(require('meanie-mongoose-to-json'));//change _id to id
 const userModel = mongoose.model('users', userSchema);
 module.exports = userModel

@@ -16,6 +16,7 @@ const activitySchema = new Schema({
     plan: String,
     url: String
 })
+activitySchema.plugin(require('meanie-mongoose-to-json'));//change _id to id
 activitySchema.plugin(timeZone, { paths: ['timestamp', 'subDocument.subDate'] });
 const activityModel = mongoose.model('activities',activitySchema)
 module.exports = activityModel

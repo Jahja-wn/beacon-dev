@@ -5,6 +5,8 @@ const locationSchema = new Schema({
     locationName : String,
     point : Object
 })
+
+locationSchema.plugin(require('meanie-mongoose-to-json'));//change _id to id
 const locationModel = mongoose.model('locations',locationSchema)
 
 module.exports = locationModel
