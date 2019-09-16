@@ -4,16 +4,17 @@ import { LocalFile } from '../core/data_access_layer';
 import { ConversationService, ElasticService, BeaconService, MessageService } from '../core/service';
 import { Client, middleware } from '@line/bot-sdk';
 import { logger, Log_config } from '../logger';
-import config from '../core/config';
+import config from 'config';
 import { Router } from 'express'
 import liff from './liff'
-mongoose.plugin(require('meanie-mongoose-to-json')); //change _id to id
+mongoose.plugin(require('meanie-mongoose-to-json')); //change _id to i
+const bodyParser = require('body-parser');
 const router = Router()
 const client = new Client(config);          // create LINE SDK client
 const dal = new LocalFile();
 const elastic = new ElasticService();
 const messageService = new MessageService(new Client(config));
-const conversationService = new ConversationService(dal, messageService, elastic, config.AnswerAlertDuration);
+const conversationService = new ConversationService(dal, messageService, elastic, config.get('AnswerAlertDuration'));
 const beaconService = new BeaconService(conversationService, messageService, dal, elastic);
 const userColl = mongoose.model('users', userModel);
 const locationColl = mongoose.model('locations', locationModel);
@@ -21,7 +22,7 @@ const activityColl = mongoose.model('activities', activityModel);
 
 router.use('/liff', liff)
 
-router.get('/history', (req, res) => res.render('history'))
+router.get('/history', bodyParser.json(), (req, res) => res.render('history'))
 
 // webhook callback
 router.post('/webhook', middleware(config), (req, res) => {
@@ -47,33 +48,26 @@ router.post('/webhook', middleware(config), (req, res) => {
         });
 });
 
-// simple reply function
-const replyText = (token, texts) => {
-    texts = Array.isArray(texts) ? texts : [texts];
-    return client.replyMessage(
-        token,
-        texts.map((text) => ({ type: 'text', text }))
-    );
-};
-
 // callback function to handle a single event
 async function handleEvent(event) {
     switch (event.type) {
         case 'message':
             var userprofile = await dal.find({ userId: event.source.userId }, userColl); // find users are they in a group member from database
             if (userprofile[0] != undefined) {
-                return conversationService.handleInMessage(event.message, event.source.userId,event.timestamp, activityColl, userprofile[0],replyText);
-            } else { return replyText(event.replyToken, `you aren't a group member`); }
+                return conversationService.handleInMessage(event.replyToken, event.message, event.source.userId, event.timestamp, activityColl, userprofile[0]);
+            } else {
+                return messageService.replyText(event.replyToken, `you aren't a group member`);
+            }
         case 'follow':
-            return replyText(event.replyToken, 'Got followed event');
-
+            return messageService.replyText(event.replyToken, 'Got followed event');
+        
         case 'unfollow':
             return logger.info(`Unfollowed this bot: ${JSON.stringify(event)}`);
 
         case 'postback':
             let data = event.postback.data;
-            return replyText(event.replyToken, `Got postback: ${data}`);
-
+            return messageService.replyText(event.replyToken, `Got postback: ${data}`);
+        
         case 'join':
             return logge.info("bot join in ", event.source.groupId);
 

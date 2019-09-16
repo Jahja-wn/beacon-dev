@@ -1,24 +1,23 @@
-import { logger } from './logger';
-import router from './routes'
-import config from './core/config';
-
+import {logger} from './logger';
+import router from './routes';
+import config from 'config';
+import db from './database'
 const bodyParser = require('body-parser');
 const express = require('express');
 const app = express();
 const path = require('path');
-const mongoose = require('mongoose');
-mongoose.connect(config.url, { useNewUrlParser: true, useFindAndModify: false }) //connect to database
-    .then(() => console.log('monggoose connected'))
-    .catch((err) => console.log('mongoose unconnected:', err))
+
 const ejs = require('ejs');
 app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'ejs')
+// app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')))
 app.use('/', router)
-const listen =app.listen(config.port, () => {
-    logger.info(`listening on ${config.port}`);
+const listen = app.listen(config.get('port'), () => {
+    logger.info(`listening on ${config.get('port')}`);
 });
 
 module.exports = app;
-module.exports.port=listen.address().port;
+module.exports.port = listen;
+module.exports.db = db;
