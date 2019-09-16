@@ -4,13 +4,13 @@ const moment = require('moment')
 const today = moment().startOf('day')
 
 async function handleBeaconEvent(userId, displayName, timestamp, hwid, url, userSchema, locationSchema, activitySchema) {
-
-  let user = await this.dal.find({ userId: userId }, userSchema); //Find userid ,it is a member of the group or not.
+console.log(userId, displayName, timestamp, hwid, url, userSchema, locationSchema, activitySchema)
+  let user = await this.dal.find({ userId: userId }, userSchema);
+  console.log("user",user) //Find userid ,it is a member of the group or not.
   if (user[0] === undefined) { logger.error(`Unrecognized user id: ${userId}`); return; }
 
-  var findhwid = { hardwareId: hwid };
-
-  var location = await this.dal.find(findhwid, locationSchema);
+  var location = await this.dal.find({hardwareId: hwid}, locationSchema);
+  console.log("location",location)
   if (location[0] === undefined || location[0] === null) { logger.error(`Unrecognized hardware id: ${hwid}`); return; }
 
   var filter = {
@@ -23,9 +23,9 @@ async function handleBeaconEvent(userId, displayName, timestamp, hwid, url, user
   }
 
   var matchedActities = await this.dal.find(filter, activitySchema, { '_id': 'desc' }); // Find activity matches userId and location for today  
- 
+  console.log("activity",matchedActities)
   if (matchedActities[0] === undefined) {
-    logger.debug(`handleBeaconEvent not found matched activity -> userid: ${userId}, location: ${location[0].locationName}`);
+    logger.info(`handleBeaconEvent not found matched activity -> userid: ${userId}, location: ${location[0].locationName}`);
     var saveActivity = new activitySchema({
       userId: userId,
       displayName: displayName,
@@ -43,22 +43,19 @@ async function handleBeaconEvent(userId, displayName, timestamp, hwid, url, user
 
     this.dal.save(saveActivity)
       .then(async (docs) => {
-        logger.info('save successful', docs);
-        const call_asktodayplan = await this.conversationService.askTodayPlan(userId, location[0].locationName, activitySchema, user[0]) //call ask_today_plan ()
-        logger.info('handleBeaconEvent', call_asktodayplan)
+        logger.debug('handleBeaconEvent save activity successful', docs);
+        await this.conversationService.askTodayPlan(userId, location[0].locationName, activitySchema, user[0]) //call ask_today_plan ()
       })
       .catch((err) => {
-        logger.error('save unsuccessful', err);
+        logger.error('handleBeaconEvent save activity unsuccessful', err);
         return err;
       })
   }
   else {
-    logger.debug(`handleBeaconEvent found matched activity -> userid: ${userId}, location: ${location[0].locationName}`);
-    console.log("found matchedActivities: ", matchedActities);
-
-      if (matchedActities[0].plan != 'none' && matchedActities[0].type != 'out') { // users become active again
-        return this.messageService.sendConfirmMessage(userId)
-      }
+    logger.info(`handleBeaconEvent found matched activity -> userid: ${userId}, location: ${location[0].locationName}`);
+    if (matchedActities[0].plan != 'none' && matchedActities[0].type != 'out') { // users become active again
+      return this.messageService.sendConfirmMessage(userId)
+    }
   }
 }
 

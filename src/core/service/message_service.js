@@ -1,8 +1,19 @@
 (function () { 'use strict'; }());
 import moment from 'moment';
-import config from '../config';
+import config from 'config';
 import { logger } from '../../logger';
 
+// simple reply function
+function replyText (token,texts){
+    console.log(token)
+    console.log(texts)
+    texts = Array.isArray(texts) ? texts : [texts];
+    return this.client.replyMessage(
+        token,
+        texts.map((text) => ({ type: 'text', text }))
+    );
+
+}
 
 async function sendMessage(id, messageContent) { // use for send messages 
     if (typeof messageContent === 'string') {
@@ -16,14 +27,14 @@ async function sendMessage(id, messageContent) { // use for send messages
     }
     catch (err) {
         logger.error("Fail while try to send message: ", err);
-        logger.info("Message Content: ", messageContent);
+        logger.debug("Message Content: ", messageContent);
     }
 }
 
 async function sendWalkInMessage(activity, userprofile) { // receive information then put its  in createWalkInMessage format and send with sendMessage()
     logger.info(`send WalkInMessage with Activity: ${JSON.stringify(activity)}  ${JSON.stringify(userprofile)} `);
     let message = this.createWalkInMessage(activity, userprofile)
-    await this.sendMessage(config.ReportGroupId, message);
+    await this.sendMessage(config.get('ReportGroupId'), message);
 }
 
 async function sendConfirmMessage(userid) {
@@ -196,6 +207,7 @@ class MessageService {
         this.createWalkInMessage = createWalkInMessage;
         this.sendConfirmMessage = sendConfirmMessage;
         this.confirmMessage = confirmMessage;
+        this.replyText = replyText;
     }
 }
 

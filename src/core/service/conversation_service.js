@@ -3,32 +3,27 @@ import { setTimeout } from 'timers';
 import { logger } from '../../logger';
 const moment = require('moment')
 const today = moment().startOf('day')
-
-const sortOption = { new: true, sort: { _id: -1 } };
-const alreadyAnswerMessage = {
-    type: 'text',
-    text: 'you already have answered the question'
-};
+const sortOption = { new: true, sort: { _id: 1 } };
 
 //handle when received messages
-async function handleInMessage(message, userId, timestamp, schema, userprofile) {
-
+async function handleInMessage(replytoken, message, userId, timestamp, schema, userprofile) {
     var matchedActivities = await this.dal.find({ // find match activities
         userId: userId,
         timestamp: {
             $gte: today.toDate(),
             $lte: moment(today).endOf('day').toDate()
         }
-    }, schema, { _id: -1 })
+    }, schema, { _id: 1 })
 
     let matchedActivity = matchedActivities[0];
-    console.log("-------------",matchedActivity)
+    console.log(matchedActivity)
     //consider the user will clock out or not 
     if (message.text === "Yes") { //user wants to clock out 
         if (matchedActivity.type === "out") { // it means user has already clocked out
-            this.messageService.sendMessage(userId, "already clock out");
+            logger.info(`handleInMessage -> userid: ${userId} already clock out`);
+            this.messageService.replyText(replytoken, "already clock out");
+          
         } else {
-
             const saveobj = new schema({
                 userId: matchedActivity.userId,
                 displayName: matchedActivity.displayName,
@@ -40,16 +35,15 @@ async function handleInMessage(message, userId, timestamp, schema, userprofile) 
                 url: matchedActivity.url
             });
 
-            
-            this.elastic.save(saveobj);
 
+            this.elastic.save(saveobj);
             const { err, result } = this.dal.save(saveobj)
             if (err) {
-                logger.error('save activity clock out unsuccessful', err)
+                logger.error('handleInMessage save activity clock out unsuccessful', err)
                 return 'save activity clock out unsuccessful ', err;
             }
             else {
-                logger.info('save activity clock out successful');
+                logger.info('handleInMessage save activity clock out successful');
                 const sendClockout = await this.messageService.sendWalkInMessage(saveobj, userprofile);
                 if (err) {
                     return err
@@ -57,30 +51,33 @@ async function handleInMessage(message, userId, timestamp, schema, userprofile) 
             }
         }
     }
-    else if(message.text != "No" && message.text != "Yes") {
+    else if (message.text != "No" && message.text != "Yes") {
         if (matchedActivity.plan === 'none' && matchedActivity.type === "in") { //if plan parameter equals to none then update an answer with incoming message 
+            logger.info(`handleInMessage, bot already asked but userid: ${userId} do not answer the question yet`);
             this.dal.update(schema, { userId: userId, type: 'in' }, { plan: message.text }, sortOption)
             matchedActivity.plan = message.text;
             this.elastic.save(matchedActivity);
             await this.messageService.sendWalkInMessage(matchedActivity, userprofile);
         }
         else if (matchedActivity.plan != 'none' && matchedActivity.type === "in") {
-            await this.messageService.sendMessage(userId, alreadyAnswerMessage);
+            logger.info(`handleInMessage, bot already asked but userid: ${userId} already have answered `);
+            await this.messageService.replyText(replytoken, 'you already have answered the question');
         }
     }
 }
 
 async function askTodayPlan(userId, location, schema, userprofile) { //send the question to users
+
     this.messageService.sendMessage(userId, 'what\'s your plan to do today at ' + location + ' ?');
     const updateCondition = { userId: userId, 'location.locationName': location, type: 'in' }
 
     const { err, result } = await this.dal.update(schema, updateCondition, { askstate: true }, sortOption)// update to mark as already ask question
     if (err) {
-        logger.error('update unsuccessful', err)
+        logger.error('askTodayPlan update asktate unsuccessful', err)
         return 'update unsuccessful ', err;
     }
     else {
-        logger.info('update successful');
+        logger.info('askTodayPlan update asktate successful', result);
         const call_callback = await this.callback(updateCondition, 0, schema, userprofile)
         if (err) {
             return err
@@ -97,10 +94,11 @@ async function callback(updateCondition, count, schema, userprofile) {  //handle
         setTimeout(async () => {
 
             logger.debug(`call back for ${count} times`);
-            var checkAns = await this.dal.find(updateCondition, schema, { _id: -1 }, 1)
+            var checkAns = await this.dal.find(updateCondition, schema, { _id: 1 }, 1)
             if (checkAns[0].plan === 'none' && count < 3) {
                 // notify message for 3 times 
-             //   this.messageService.sendMessage(userId, 'Please enter your answer');
+                // this.messageService.replyText(replytoken, "Please enter your answer");
+                this.messageService.sendMessage(userId, 'Please enter your answer');
                 count = count + 1;
                 let result = await this.callback(updateCondition, count, schema, userprofile);
                 resolve(result);
@@ -108,13 +106,14 @@ async function callback(updateCondition, count, schema, userprofile) {  //handle
             } else if (checkAns[0].plan === 'none' && count == 3) {
                 // has notified for 3 times but no response
                 await this.dal.update(schema, updateCondition, { plan: '           ' }, sortOption)
-               // await this.messageService.sendWalkInMessage(checkAns[0], userprofile)
-                    .then(() => {
-                        resolve("update answer and exist loop from conver,callback");
-                    }
-                    ).catch(err => {
-                        resolve(err)
-                    });
+                checkAns[0].plan = '           ';
+                try {
+                    await this.messageService.sendWalkInMessage(checkAns[0], userprofile)
+                    resolve("update answer and exist loop from conver,callback");
+                }
+                catch (err) {
+                    reject(err)
+                }
             }
             else if (checkAns[0].plan != 'none') {
                 resolve("exist loop from conver,callback");

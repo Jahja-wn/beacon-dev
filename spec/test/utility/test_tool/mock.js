@@ -1,8 +1,8 @@
 (function () {'use strict';}());
 
 import { Client } from "@line/bot-sdk";
-import config from '../../core/config';
-import { MessageService } from "../../core/service";
+import config from 'config'
+import { MessageService } from "../../../../src/core/service";
 
 function mockDelaySendMessage(listMessage){
     return (id, message) => {return new Promise((resolve,reject) =>{setTimeout(()=>{

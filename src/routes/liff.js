@@ -5,33 +5,39 @@ import { LocalFile } from '../core/data_access_layer';
 import { logger } from '../logger';
 
 mongoose.plugin(require('meanie-mongoose-to-json'));//change _id to id
+
+const bodyParser = require('body-parser');
 const path = require('path');
 const router = Router();
 const dal = new LocalFile();
 const userColl = mongoose.model('users', userModel);
 const activityColl = mongoose.model('activities', activityModel);
+const sortOption = { new: true, sort: { _id: -1 } };
 
-router.get('/userprofile', function (req, res) {
+router.get('/userprofile', bodyParser.json(), function (req, res) {
     res.render('index')
 });
-router.post('/submit', (req, res) => {
+router.post('/submit', bodyParser.json(), (req, res) => {
     dal.find({ userId: req.body.userId }, userColl)
         .then((docs) => {
-            logger.info("docs", docs)
             if (docs[0] != undefined) {
-                dal.update(userColl, { userId: docs[0].userId }, req.body)
-                    .then(() => {
-                        res.status(200)
+                logger.info(`/submit found user's info -> userid: ${req.body.userId}`)
+                dal.update(userColl, { userId: docs[0].userId }, req.body, sortOption)
+                    .then((docs) => {
+                        logger.debug("update update user profile", docs)
+                        res.status(200).send(docs)
                     })
                     .catch((err) => {
                         logger.error("cannot update user profile :", err)
                         res.status(500).send(err.message)
                     })
             } else {
+                logger.info(`/submit not found user's info -> userid: ${req.body.userId}`)
                 var saveUser = new userColl(req.body);
                 dal.save(saveUser)
-                    .then(() => {
-                        res.status(200)
+                    .then((docs) => {
+                        logger.debug("save user profile", docs)
+                        res.status(200).send(docs)
                     })
                     .catch((err) => {
                         logger.error("can not save user profile", err)
@@ -44,10 +50,11 @@ router.post('/submit', (req, res) => {
             res.status(500).send(err.message)
         })
 });
-router.post('/gethistory', function (req, res) {
+router.post('/gethistory', bodyParser.json(), function (req, res) {
     var getuserid = req.body;
     dal.find(getuserid, activityColl)
         .then((docs) => {
+            logger.info(`/gethistory found user's activity -> userid: ${req.body.userId}`)
             let users = '<thead><tr><th>name</th><th>type</th><th>date/time</th><th>location</th><th>plan</th></tr></thead><tbody>';
             if (docs[0] != undefined) {
                 docs.forEach(doc => {
@@ -56,9 +63,9 @@ router.post('/gethistory', function (req, res) {
                 res.status(200).send(users)
 
             } else {
-                users += '<tr><th colspan="5">' + 'no record !' + '</th></tr>'
-                res.status(200).send(users)
-
+                logger.info(`/gethistory found user's activity -> userid: ${req.body.userId}`)
+                users += '<tr><th colspan="5">' + 'no record !' + '</th></tr></tbody>'
+                res.status(201).send(users)
             }
 
         })
