@@ -1,4 +1,4 @@
-import elasticsearch from 'elasticsearch';
+import elasticsearch from '@elastic/elasticsearch';
 import { finalConfig } from  '../../../config';
 import { activities , users} from '../model';
 import { logger } from '../../logger';
@@ -19,8 +19,7 @@ const activityMapping = {
     }
 };
 
-const client = new elasticsearch.Client(finalConfig.elasticConfig);
-
+const client = new elasticsearch.Client({node:finalConfig.elasticConfig});
 
 async function insertActivity(activity){
     let gp7Date = new Date(activity.timestamp);
@@ -45,7 +44,7 @@ async function insertActivity(activity){
             }
         }
         else{
-            logger.error("connot create index:"+ err);
+            logger.error("cannot create index:"+ err);
         }
         
     }
