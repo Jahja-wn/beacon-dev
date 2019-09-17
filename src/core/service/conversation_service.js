@@ -3,7 +3,7 @@ import { setTimeout } from 'timers';
 import { logger } from '../../logger';
 const moment = require('moment')
 const today = moment().startOf('day')
-const sortOption = { new: true, sort: { _id: 1 } };
+const sortOption = { new: true, sort: { "_id": -1 } };
 
 //handle when received messages
 async function handleInMessage(replytoken, message, userId, timestamp, schema, userprofile) {
@@ -13,16 +13,16 @@ async function handleInMessage(replytoken, message, userId, timestamp, schema, u
             $gte: today.toDate(),
             $lte: moment(today).endOf('day').toDate()
         }
-    }, schema, { _id: 1 })
+    }, schema,{ '_id': 'desc'  }, 1)
 
     let matchedActivity = matchedActivities[0];
-    console.log(matchedActivity)
+    logger.debug("handle in message",matchedActivities[0])
     //consider the user will clock out or not 
     if (message.text === "Yes") { //user wants to clock out 
         if (matchedActivity.type === "out") { // it means user has already clocked out
             logger.info(`handleInMessage -> userid: ${userId} already clock out`);
             this.messageService.replyText(replytoken, "already clock out");
-          
+
         } else {
             const saveobj = new schema({
                 userId: matchedActivity.userId,
@@ -77,8 +77,8 @@ async function askTodayPlan(userId, location, schema, userprofile) { //send the 
         return 'update unsuccessful ', err;
     }
     else {
-        logger.info('askTodayPlan update asktate successful', result);
-        const call_callback = await this.callback(updateCondition, 0, schema, userprofile)
+        logger.info('askTodayPlan update asktate successful');
+        const call_callback = await this.callback(userId,updateCondition, 0, schema, userprofile)
         if (err) {
             return err
         }
@@ -88,19 +88,20 @@ async function askTodayPlan(userId, location, schema, userprofile) { //send the 
 }
 
 
-async function callback(updateCondition, count, schema, userprofile) {  //handle when users do not answer question within 15 seconds
+async function callback(userId,updateCondition, count, schema, userprofile) {  //handle when users do not answer question within 15 seconds
 
     return new Promise((resolve, reject) => {
         setTimeout(async () => {
 
             logger.debug(`call back for ${count} times`);
-            var checkAns = await this.dal.find(updateCondition, schema, { _id: 1 }, 1)
+            var checkAns = await this.dal.find(updateCondition, schema, { '_id': 'desc'  }, 1)
+            logger.debug("check",checkAns[0])
             if (checkAns[0].plan === 'none' && count < 3) {
                 // notify message for 3 times 
-                // this.messageService.replyText(replytoken, "Please enter your answer");
+               // this.messageService.replyText(replytoken, "Please enter your answer");
                 this.messageService.sendMessage(userId, 'Please enter your answer');
                 count = count + 1;
-                let result = await this.callback(updateCondition, count, schema, userprofile);
+                let result = await this.callback(userId,updateCondition, count, schema, userprofile);
                 resolve(result);
 
             } else if (checkAns[0].plan === 'none' && count == 3) {

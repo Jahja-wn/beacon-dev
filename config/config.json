@@ -1,0 +1,41 @@
+{
+    "production": {
+        "name": "Server Development",
+        "database": {
+            "url": "DB?retryWrites=true&w=majority",
+            "dialect": "mongo"
+        },
+        "port": 3000,
+        "ElasticConfig": {
+            "host": 9200,
+            "log": "info"
+        },
+        "logger": "production"
+    },
+    "development": {
+        "name": "Server Development",
+        "database": {
+            "url": "DB?retryWrites=true&w=majority",
+            "dialect": "mongo"
+        },
+        "port": 8000,
+        "ElasticConfig": {
+            "host": 9200,
+            "log": "info"
+        },
+        "logger": "development"
+    },
+    "test": {
+        "name": "Server Test",
+        "database": {
+            "url": "test?retryWrites=true&w=majority",
+            "dialect": "mock"
+        },
+        "port": 3100,
+        "ElasticConfig": {
+            "host": 9200,
+            "log": "info"
+        },
+        "logger": "test"
+    }
+}

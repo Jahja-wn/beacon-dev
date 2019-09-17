@@ -1,5 +1,5 @@
 import elasticsearch from 'elasticsearch';
-import config from  'config';
+import { finalConfig } from  '../../../config';
 import { activities , users} from '../model';
 import { logger } from '../../logger';
 
@@ -19,7 +19,7 @@ const activityMapping = {
     }
 };
 
-const client = new elasticsearch.Client(config.get('ElasticConfig'));
+const client = new elasticsearch.Client(finalConfig.ElasticConfig.host);
 
 
 async function insertActivity(activity){

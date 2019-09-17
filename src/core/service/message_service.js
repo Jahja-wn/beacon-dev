@@ -1,12 +1,10 @@
 (function () { 'use strict'; }());
 import moment from 'moment';
-import config from 'config';
+import { finalConfig } from '../../../config'
 import { logger } from '../../logger';
-
 // simple reply function
-function replyText (token,texts){
-    console.log(token)
-    console.log(texts)
+
+function replyText(token, texts) {
     texts = Array.isArray(texts) ? texts : [texts];
     return this.client.replyMessage(
         token,
@@ -34,7 +32,8 @@ async function sendMessage(id, messageContent) { // use for send messages
 async function sendWalkInMessage(activity, userprofile) { // receive information then put its  in createWalkInMessage format and send with sendMessage()
     logger.info(`send WalkInMessage with Activity: ${JSON.stringify(activity)}  ${JSON.stringify(userprofile)} `);
     let message = this.createWalkInMessage(activity, userprofile)
-    await this.sendMessage(config.get('ReportGroupId'), message);
+    
+    await this.sendMessage(finalConfig.reportGroupId, message);
 }
 
 async function sendConfirmMessage(userid) {
