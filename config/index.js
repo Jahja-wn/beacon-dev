@@ -9,6 +9,7 @@ const finalConfig = {
     channelAccessToken: process.env.channelAccessToken,
     channelSecret: process.env.channelSecret,
     reportGroupId: process.env.reportGroupId,
+    elasticConfig:process.env.elasticConfig,
     AnswerAlertDuration:5000
 }
 export {finalConfig};

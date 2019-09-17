@@ -19,7 +19,7 @@ const activityMapping = {
     }
 };
 
-const client = new elasticsearch.Client(finalConfig.ElasticConfig.host);
+const client = new elasticsearch.Client(finalConfig.elasticConfig);
 
 
 async function insertActivity(activity){
