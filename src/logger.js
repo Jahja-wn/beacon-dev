@@ -1,4 +1,4 @@
-import config from 'config'
+import { finalConfig } from '../config'
 const log4js = require('log4js');
 const current_datetime = new Date();
 var Log_config = log4js.configure({
@@ -27,7 +27,7 @@ var Log_config = log4js.configure({
   }
 });
 
-const logger = log4js.getLogger(config.get('logger'));
+const logger = log4js.getLogger(finalConfig.logger);
 
 export {
   logger, Log_config

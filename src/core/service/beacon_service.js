@@ -4,13 +4,10 @@ const moment = require('moment')
 const today = moment().startOf('day')
 
 async function handleBeaconEvent(userId, displayName, timestamp, hwid, url, userSchema, locationSchema, activitySchema) {
-console.log(userId, displayName, timestamp, hwid, url, userSchema, locationSchema, activitySchema)
   let user = await this.dal.find({ userId: userId }, userSchema);
-  console.log("user",user) //Find userid ,it is a member of the group or not.
   if (user[0] === undefined) { logger.error(`Unrecognized user id: ${userId}`); return; }
 
   var location = await this.dal.find({hardwareId: hwid}, locationSchema);
-  console.log("location",location)
   if (location[0] === undefined || location[0] === null) { logger.error(`Unrecognized hardware id: ${hwid}`); return; }
 
   var filter = {

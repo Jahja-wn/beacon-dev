@@ -1,20 +1,25 @@
 import mongoose from 'mongoose';
+import bodyParser from 'body-parser'
 import { userModel, activityModel, locationModel } from '../core/model';
 import { LocalFile } from '../core/data_access_layer';
 import { ConversationService, ElasticService, BeaconService, MessageService } from '../core/service';
 import { Client, middleware } from '@line/bot-sdk';
 import { logger, Log_config } from '../logger';
-import config from 'config';
 import { Router } from 'express'
 import liff from './liff'
+import {finalConfig} from '../../config';
 mongoose.plugin(require('meanie-mongoose-to-json')); //change _id to i
-const bodyParser = require('body-parser');
+
+// const line_config = {  //create LINE SDK config from env variables
+//     channelAccessToken: process.env.channelAccessToken,
+//     channelSecret: process.env.channelSecret,
+// };
+const client = new Client(finalConfig);          // create LINE SDK clientconst bodyParser = require('body-parser');
 const router = Router()
-const client = new Client(config);          // create LINE SDK client
 const dal = new LocalFile();
 const elastic = new ElasticService();
-const messageService = new MessageService(new Client(config));
-const conversationService = new ConversationService(dal, messageService, elastic, config.get('AnswerAlertDuration'));
+const messageService = new MessageService(new Client(finalConfig));
+const conversationService = new ConversationService(dal, messageService, elastic,finalConfig.AnswerAlertDuration);
 const beaconService = new BeaconService(conversationService, messageService, dal, elastic);
 const userColl = mongoose.model('users', userModel);
 const locationColl = mongoose.model('locations', locationModel);
@@ -25,7 +30,8 @@ router.use('/liff', liff)
 router.get('/history', bodyParser.json(), (req, res) => res.render('history'))
 
 // webhook callback
-router.post('/webhook', middleware(config), (req, res) => {
+
+router.post('/webhook', middleware(finalConfig), (req, res) => {
     // req.body.events should be an array of events
     if (!Array.isArray(req.body.events)) {
         logger.error(res);
@@ -60,14 +66,14 @@ async function handleEvent(event) {
             }
         case 'follow':
             return messageService.replyText(event.replyToken, 'Got followed event');
-        
+
         case 'unfollow':
             return logger.info(`Unfollowed this bot: ${JSON.stringify(event)}`);
 
         case 'postback':
             let data = event.postback.data;
             return messageService.replyText(event.replyToken, `Got postback: ${data}`);
-        
+
         case 'join':
             return logge.info("bot join in ", event.source.groupId);
 

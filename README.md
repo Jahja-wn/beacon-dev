@@ -280,7 +280,7 @@ We need to add location informations such as hardwareID , location's Name , lati
   ``` 
   sortOption pattern : 
     
-    const sortOption = { new: true, sort: { _id: -1 } };
+    const sortOption = { new: true, sort: { "_id": -1 } };
 
   new: bool => if true, return the modified document rather than the original, defaults to false.
   ```
