@@ -33,7 +33,7 @@
 
 body, html {
   text-align: center;
-  background: #fff;
+  background-color: #e2e1e2;
   height: 100%;
   font-family: Poppins-Regular, sans-serif;
 }
@@ -63,23 +63,30 @@ section {
   -ms-flex: 3;
   flex: 3;
   padding: 10px;
+  
 }
 
 
 .table {
   background-color: #ffffff;
   border-collapse: collapse;
-  width: 100%;
+  width: 80%;
   font-size: 16px;
+  margin: 0px auto;            
   padding-top: 12px;
   padding-bottom: 12px;
-  color: #000000;
+  color: #666666;
+  border-radius: 10px;
 }
-tr:hover {background-color:#f5f5f5;}
+tr:hover {
+  background-color:#f5f5f5;
+  border-radius: 10px;}
 .table td, .table th {
   border: 1px solid #ddd;
   padding-top: 12px;
   padding-bottom: 12px;
+  border-radius: 10px;
+  
 }
 #profilepicturediv {
   text-align: center;
