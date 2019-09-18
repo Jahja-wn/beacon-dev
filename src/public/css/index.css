@@ -152,15 +152,17 @@
     justify-content: center;
     align-items: center;
     padding: 15px;
+    background-color: #e2e1e2;
     
   }
   
   .wrap-contact100 {
     width: 500px;
-    background: #fff;
     border-radius: 10px;
     overflow: hidden;
     padding: 42px 55px 45px 55px;
+    
+    background-color: #fff;
   }
   
   
