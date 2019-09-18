@@ -59,7 +59,6 @@ async function insertActivity(activity){
             logger.debug("insert activity: "+JSON.stringify(activity)+" success");
         }
         catch(err){
-            console.log("from elastic",err)
             logger.error("cannot insert activity: ",err.body.error.type);
         }
     }
@@ -74,10 +73,8 @@ function elastic_update(obj , target) {
     } else if (obj instanceof users) {
         presentIndex = "user";
     }
-    console.log("Enter Query");
     var queryArray = [];
     for(var property in obj){
-        console.log(property);
         if(obj[property] != null && property != target){
             queryArray.push({match : { [property] : obj[property] }});
         }
@@ -85,7 +82,6 @@ function elastic_update(obj , target) {
     var scriptSet = {"inline": `ctx._source.${target} = '${obj[target]}'; `};
     if(obj[target] == true || obj[target] == false) scriptSet = {"inline": `ctx._source.${target} = ${obj[target]}; `};
     
-    console.log(queryArray);
     var promise = new Promise((resolve, reject) => {
         
         var res = client.updateByQuery({

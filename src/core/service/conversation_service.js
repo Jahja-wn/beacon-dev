@@ -98,7 +98,6 @@ async function callback(userId,updateCondition, count, schema, userprofile) {  /
             logger.debug("check",checkAns[0])
             if (checkAns[0].plan === 'none' && count < 3) {
                 // notify message for 3 times 
-               // this.messageService.replyText(replytoken, "Please enter your answer");
                 this.messageService.sendMessage(userId, 'Please enter your answer');
                 count = count + 1;
                 let result = await this.callback(userId,updateCondition, count, schema, userprofile);
