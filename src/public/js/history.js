@@ -8,7 +8,6 @@ $(document).ready(async (e) => {
 
 
 function getProfile() {
-    console.log("getProfile")
 
     liff.getProfile().then(function (profile) {
         document.getElementById('displayName').textContent = profile.displayName;

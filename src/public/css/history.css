@@ -1,4 +1,3 @@
-
 /*//////////////////////////////////////////////////////////////////
 [ FONT ]*/
 
@@ -34,19 +33,17 @@
 
 body, html {
   text-align: center;
-  color: #ffffff;
-  background: #fa71cd;
-  background: -webkit-linear-gradient(bottom, #c471f5, #fa71cd);
-  background: -o-linear-gradient(bottom, #c471f5, #fa71cd);
-  background: -moz-linear-gradient(bottom, #c471f5, #fa71cd);
-  background: linear-gradient(bottom, #c471f5, #fa71cd);
+  background: #fff;
   height: 100%;
   font-family: Poppins-Regular, sans-serif;
 }
 
 .first-container {
+  display: block;
+  font-family: Poppins-Bold;
+  color: #333333;
+  line-height: 1.2;
   font-size: 20px ;
-  font: bold;
   padding: 30px;
   text-align: center;
 }
@@ -92,4 +89,4 @@ img {
   border-radius: 50%;
   width: 30% ;
   height: 30% ; 
-}
+} 

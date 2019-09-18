@@ -1,4 +1,4 @@
-import elasticsearch from 'elasticsearch';
+import elasticsearch from '@elastic/elasticsearch';
 import { finalConfig } from  '../../../config';
 import { activities , users} from '../model';
 import { logger } from '../../logger';
@@ -19,8 +19,7 @@ const activityMapping = {
     }
 };
 
-const client = new elasticsearch.Client(finalConfig.elasticConfig);
-
+const client = new elasticsearch.Client({node:finalConfig.elasticConfig});
 
 async function insertActivity(activity){
     let gp7Date = new Date(activity.timestamp);
@@ -45,7 +44,7 @@ async function insertActivity(activity){
             }
         }
         else{
-            logger.error("connot create index:"+ err);
+            logger.error("cannot create index:"+ err);
         }
         
     }
@@ -60,7 +59,6 @@ async function insertActivity(activity){
             logger.debug("insert activity: "+JSON.stringify(activity)+" success");
         }
         catch(err){
-            console.log("from elastic",err)
             logger.error("cannot insert activity: ",err.body.error.type);
         }
     }
@@ -75,10 +73,8 @@ function elastic_update(obj , target) {
     } else if (obj instanceof users) {
         presentIndex = "user";
     }
-    console.log("Enter Query");
     var queryArray = [];
     for(var property in obj){
-        console.log(property);
         if(obj[property] != null && property != target){
             queryArray.push({match : { [property] : obj[property] }});
         }
@@ -86,7 +82,6 @@ function elastic_update(obj , target) {
     var scriptSet = {"inline": `ctx._source.${target} = '${obj[target]}'; `};
     if(obj[target] == true || obj[target] == false) scriptSet = {"inline": `ctx._source.${target} = ${obj[target]}; `};
     
-    console.log(queryArray);
     var promise = new Promise((resolve, reject) => {
         
         var res = client.updateByQuery({
