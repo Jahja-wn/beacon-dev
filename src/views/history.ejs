@@ -12,6 +12,7 @@
 
     <script>
         $(document).ready(async (e) => {
+
             liff.init(function (data) {
                 var userIdfield = data.context.userId;
                 $('#data').load('/liff/gethistory', { userId: userIdfield }) // fecth data to shown on history page
@@ -45,16 +46,9 @@
     <div class="limiter">
         <!-- First Container -->
         <div class="first-container">
-            <table>
-                <tr>
-                    <td>
-                        <div id="profilepicturediv"</div>
-                    </td>
-		    <td>
-                        <h1 id="displayName">name</h1>
-		    </td>
-                </tr>
-            </table>
+            <div id="profilepicturediv">
+                <h1 id="displayName">name</h1>
+            </div>
         </div>
 
         <!--  Second Container -->
