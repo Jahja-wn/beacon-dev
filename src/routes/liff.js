@@ -4,7 +4,7 @@ import { userModel, activityModel, locationModel } from '../core/model';
 import { LocalFile } from '../core/data_access_layer';
 import { logger } from '../logger';
 
-mongoose.plugin(require('meanie-mongoose-to-json'));//change _id to id
+mongoose.plugin(require('meanie-mongoose-to-json')); //change _id to id
 
 const bodyParser = require('body-parser');
 const path = require('path');
@@ -14,7 +14,7 @@ const userColl = mongoose.model('users', userModel);
 const activityColl = mongoose.model('activities', activityModel);
 const sortOption = { new: true, sort: { _id: -1 } };
 
-router.get('/userprofile', bodyParser.json(), function (req, res) {
+router.get('/userprofile', bodyParser.json(), function(req, res) {
     res.render('index')
 });
 router.post('/submit', bodyParser.json(), (req, res) => {
@@ -50,7 +50,7 @@ router.post('/submit', bodyParser.json(), (req, res) => {
             res.status(500).send(err.message)
         })
 });
-router.post('/gethistory', bodyParser.json(), function (req, res) {
+router.post('/gethistory', bodyParser.json(), function(req, res) {
     var getuserid = req.body;
     dal.find(getuserid, activityColl)
         .then((docs) => {
@@ -64,7 +64,7 @@ router.post('/gethistory', bodyParser.json(), function (req, res) {
 
             } else {
                 logger.info(`/gethistory found user's activity -> userid: ${req.body.userId}`)
-                users += '<tr><th colspan="5">' + 'no record !' + '</th></tr></tbody>'
+                users += '<tr><td colspan="5">' + 'no record !' + '</td></tr></tbody>'
                 res.status(201).send(users)
             }
 

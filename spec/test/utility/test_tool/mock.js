@@ -1,7 +1,7 @@
 (function () {'use strict';}());
 
 import { Client } from "@line/bot-sdk";
-import config from 'config'
+import {finalConfig} from '../../../../config'
 import { MessageService } from "../../../../src/core/service";
 
 function mockDelaySendMessage(listMessage){
@@ -16,7 +16,7 @@ function mockDelayGetProfile(profile){
 }
 
 function mockLineClient(listMessage,profile){
-    let lineClient = new Client(config);
+    let lineClient = new Client(finalConfig);
     if(listMessage !== null) {
         lineClient.pushMessage = mockDelaySendMessage(listMessage);
     }
@@ -26,10 +26,10 @@ function mockLineClient(listMessage,profile){
     return lineClient;
 }
 
-
 function mockMessageService(listMessage){
     return new MessageService(mockLineClient(listMessage));
 }
+
 
 export{
     mockDelaySendMessage,
