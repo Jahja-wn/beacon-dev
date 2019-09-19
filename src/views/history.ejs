@@ -11,21 +11,16 @@
     <!-- call LIFF SDK Which is an executable file of LIFF app -->
 
     <script>
-        $(document).ready(async(e) => {
-            // liff.init(function (data) {
-            //     // var userIdfield = data.context.userId;
-            //     // $('#data').load('/liff/gethistory', { userId: userIdfield }) // fecth data to shown on history page
-            //     getProfile();
-            // });
-            getProfile();
+        $(document).ready(async (e) => {
+            liff.init(function (data) {
+                var userIdfield = data.context.userId;
+                $('#data').load('/liff/gethistory', { userId: userIdfield }) // fecth data to shown on history page
+                getProfile();
+            });
         });
 
         function getProfile() {
-            liff.getProfile().then(function(profile) {
-                var userIdfield = profile.userId;
-                $('#data').load('/liff/gethistory', {
-                        userId: userIdfield
-                    }) // fecth data to shown on history page
+            liff.getProfile().then(function (profile) {
                 document.getElementById('displayName').textContent = profile.displayName;
                 const profilePictureDiv = document.getElementById('profilepicturediv');
                 if (profilePictureDiv.firstElementChild) {
@@ -36,7 +31,7 @@
                 img.alt = "Profile Picture";
                 profilePictureDiv.appendChild(img);
 
-            }).catch(function(error) {
+            }).catch(function (error) {
                 window.alert("Error getting profile: " + error);
             });
 
@@ -53,19 +48,18 @@
             <table>
                 <tr>
                     <td>
-                        <div id="profilepicturediv"></div>
+                        <div id="profilepicturediv">
+                        </div>
+                        <h1 id="displayName">name</h1>
                     </td>
-                    <td>
-                        <h1 class="margin" id="displayName"></h1>
-                    </td>
+                </tr>
+            </table>
         </div>
 
         <!--  Second Container -->
         <div class="article">
-            <div style="overflow-x:auto;">
-                <table class="table" id="data">
-                </table>
-            </div>
+            <table class="table" id="data">
+            </table>
         </div>
     </div>
 </body>
