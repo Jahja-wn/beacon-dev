@@ -7,19 +7,22 @@
     <link rel="stylesheet" type="text/css" href="../fonts/font-awesome-4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="../css/history.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="../js/sdk.js"></script>  <!-- call LIFF SDK Which is an executable file of LIFF app -->
-    
+    <script src="../js/sdk.js"></script>
+    <!-- call LIFF SDK Which is an executable file of LIFF app -->
+
     <script>
-        $(document).ready(async (e) => {
-            liff.init(function (data) {
+        $(document).ready(async(e) => {
+            liff.init(function(data) {
                 var userIdfield = data.context.userId;
-                $('#data').load('/liff/gethistory', { userId: userIdfield }) // fecth data to shown on history page
+                $('#data').load('/liff/gethistory', {
+                        userId: userIdfield
+                    }) // fecth data to shown on history page
                 getProfile();
             });
         });
 
         function getProfile() {
-            liff.getProfile().then(function (profile) {
+            liff.getProfile().then(function(profile) {
                 document.getElementById('displayName').textContent = profile.displayName;
                 const profilePictureDiv = document.getElementById('profilepicturediv');
                 if (profilePictureDiv.firstElementChild) {
@@ -30,33 +33,32 @@
                 img.alt = "Profile Picture";
                 profilePictureDiv.appendChild(img);
 
-            }).catch(function (error) {
+            }).catch(function(error) {
                 window.alert("Error getting profile: " + error);
             });
 
-        }</script>
+        }
+    </script>
 </head>
 <script>
-
 </script>
 
 <body>
     <div class="limiter">
         <!-- First Container -->
         <div class="first-container">
-            <h1 class="margin" id="displayName"></h1>
             <div id="profilepicturediv">
+                <h1 class="margin" id="displayName"></h1>
             </div>
-        </div>
 
-        <!--  Second Container -->
-        <div class="article">
-            <div style="overflow-x:auto;">
-                <table class="table" id="data">
-                </table>
+            <!--  Second Container -->
+            <div class="article">
+                <div style="overflow-x:auto;">
+                    <table class="table" id="data">
+                    </table>
+                </div>
             </div>
         </div>
-    </div>
 </body>
 
 </html>

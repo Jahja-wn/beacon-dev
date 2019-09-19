@@ -13,18 +13,17 @@ async function handleInMessage(replytoken, message, userId, timestamp, schema, u
             $gte: today.toDate(),
             $lte: moment(today).endOf('day').toDate()
         }
-    }, schema,{ '_id': 'desc'  }, 1)
-
+    }, schema, { '_id': 'desc' }, 1)
     let matchedActivity = matchedActivities[0];
-    logger.debug("handle in message",matchedActivities[0])
+    logger.debug("handle in message", matchedActivities[0])
     //consider the user will clock out or not 
-    if (message.text === "Yes") { //user wants to clock out 
+    if (message.text === "Yes" && matchedActivity != undefined) { //user wants to clock out 
         if (matchedActivity.type === "out") { // it means user has already clocked out
             logger.info(`handleInMessage -> userid: ${userId} already clock out`);
             this.messageService.replyText(replytoken, "already clock out");
 
         } else {
-            const saveobj = new schema({
+            const saveobj = {
                 userId: matchedActivity.userId,
                 displayName: matchedActivity.displayName,
                 type: "out",
@@ -33,11 +32,11 @@ async function handleInMessage(replytoken, message, userId, timestamp, schema, u
                 askstate: matchedActivity.askstate,
                 plan: matchedActivity.plan,
                 url: matchedActivity.url
-            });
+            };
 
 
             this.elastic.save(saveobj);
-            const { err, result } = this.dal.save(saveobj)
+            const { err, result } = this.dal.save(new schema(saveobj))
             if (err) {
                 logger.error('handleInMessage save activity clock out unsuccessful', err)
                 return 'save activity clock out unsuccessful ', err;
@@ -51,7 +50,7 @@ async function handleInMessage(replytoken, message, userId, timestamp, schema, u
             }
         }
     }
-    else if (message.text != "No" && message.text != "Yes") {
+    else if (message.text != "No" && message.text != "Yes" && matchedActivity != undefined) {
         if (matchedActivity.plan === 'none' && matchedActivity.type === "in") { //if plan parameter equals to none then update an answer with incoming message 
             logger.info(`handleInMessage, bot already asked but userid: ${userId} do not answer the question yet`);
             this.dal.update(schema, { userId: userId, type: 'in' }, { plan: message.text }, sortOption)
@@ -61,7 +60,7 @@ async function handleInMessage(replytoken, message, userId, timestamp, schema, u
         }
         else if (matchedActivity.plan != 'none' && matchedActivity.type === "in") {
             logger.info(`handleInMessage, bot already asked but userid: ${userId} already have answered `);
-            await this.messageService.replyText(replytoken, 'you already have answered the question');
+            this.messageService.replyText(replytoken, 'you already have answered the question');
         }
     }
 }
@@ -78,7 +77,7 @@ async function askTodayPlan(userId, location, schema, userprofile) { //send the 
     }
     else {
         logger.info('askTodayPlan update asktate successful');
-        const call_callback = await this.callback(userId,updateCondition, 0, schema, userprofile)
+        const call_callback = await this.callback(userId, updateCondition, 0, schema, userprofile)
         if (err) {
             return err
         }
@@ -88,19 +87,19 @@ async function askTodayPlan(userId, location, schema, userprofile) { //send the 
 }
 
 
-async function callback(userId,updateCondition, count, schema, userprofile) {  //handle when users do not answer question within 15 seconds
+async function callback(userId, updateCondition, count, schema, userprofile) {  //handle when users do not answer question within 15 seconds
 
     return new Promise((resolve, reject) => {
         setTimeout(async () => {
 
             logger.debug(`call back for ${count} times`);
-            var checkAns = await this.dal.find(updateCondition, schema, { '_id': 'desc'  }, 1)
-            logger.debug("check",checkAns[0])
+            var checkAns = await this.dal.find(updateCondition, schema, { '_id': 'desc' }, 1)
+            logger.debug("check", checkAns[0])
             if (checkAns[0].plan === 'none' && count < 3) {
                 // notify message for 3 times 
                 this.messageService.sendMessage(userId, 'Please enter your answer');
                 count = count + 1;
-                let result = await this.callback(userId,updateCondition, count, schema, userprofile);
+                let result = await this.callback(userId, updateCondition, count, schema, userprofile);
                 resolve(result);
 
             } else if (checkAns[0].plan === 'none' && count == 3) {

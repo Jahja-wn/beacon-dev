@@ -12,13 +12,13 @@ describe('test api /liff ', () => {
     beforeEach(async () => {
         await userColl.deleteMany({ "userId": "1l","userId": "2l" });
     });
-    const userprofile = new userColl({
+    const userprofile = {
                "userId":"2l",
                "displayName":"save",
                "firstName":"data",
                "lastName":"user",
                "nickName":"profile",
-            });
+            };
 
     describe("POST /", () => {
 
@@ -44,7 +44,7 @@ describe('test api /liff ', () => {
 
         it("should update user's info return user when call post /submit in case of data exist ", async () => {
 
-            dal.save(userprofile);
+            dal.save(new userColl (userprofile));
             const res = await request(server)
                 .post("/liff/submit")
                 .send({
