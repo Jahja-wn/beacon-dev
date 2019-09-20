@@ -43,7 +43,7 @@ h1 {
 
 /*//////////////////////////////////////////////////////////////////
 [ Table ]*/
-.table {
+.firstdata {
 
 	text-align: center;
     border-collapse: separate;
@@ -52,14 +52,14 @@ h1 {
    
 }
 
-.table tr th,.table tr td:first-child{
+.firstdata tr th,.firstdata tr td:first-child{
     border-left: 1px solid #008F7A;
 }
-.table tr th,.table tr td:last-child{
+.firstdata tr th,.firstdata tr td:last-child{
     border-right: 1px solid #008F7A;    
 }
 
-.table tr td {
+.firstdata tr td {
     text-align: center;
     padding: 15px;
     border-bottom: 1px solid #008F7A;
@@ -67,44 +67,42 @@ h1 {
     color: #00C9A7;
     font-family: Poppins-Regular;
     font-size: 15px;
-    border-top: 1px;
 }
 
-.table tr th {
+.firstdata tr th {
     text-align: center;
     padding: 15px;
     background: #008F7A;
     color: #fff;
     font-family: Poppins-Bold;
     font-size: 20px;
-    border-top: 1px;
 }
 
 
 /* top-left border-radius */
 
-.table tr:first-child th:first-child {
+.firstdata tr:first-child th:first-child {
     border-top-left-radius: 6px;
 }
 
 
 /* top-right border-radius */
 
-.table tr:first-child th:last-child {
+.firstdata tr:first-child th:last-child {
     border-top-right-radius: 6px;
 }
 
 
 /* bottom-left border-radius */
 
-.table tr:last-child td:first-child {
+.firstdata tr:last-child td:first-child {
     border-bottom-left-radius: 6px;
 }
 
 
 /* bottom-right border-radius */
 
-.table tr:last-child td:last-child {
+.firstdata tr:last-child td:last-child {
     border-bottom-right-radius: 6px;
 }
 

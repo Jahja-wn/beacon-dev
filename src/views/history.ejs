@@ -14,6 +14,7 @@
 
     <script>
         $(document).ready(async (e) => {
+            
             liff.init(function (data) {
                 var userIdfield = data.context.userId;
                 $('#data').load('/liff/gethistory', { userId: userIdfield }) // fecth data to shown on history page
@@ -51,8 +52,8 @@
             </div>
         </div>
         <!--  Second Container -->
-        <div class="table-responsive">
-            <table class="table" id="data">
+        <div style="overflow-x:auto;">
+            <table class="firstdata" id="data">
             </table>
         </div>
     </div>
