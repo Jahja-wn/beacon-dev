@@ -44,7 +44,7 @@ h1 {
 /*//////////////////////////////////////////////////////////////////
 [ Table ]*/
 .firstdata {
-
+    margin: 15px;
 	text-align: center;
     border-collapse: separate;
     border-spacing: 0;
