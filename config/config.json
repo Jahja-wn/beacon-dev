@@ -11,7 +11,7 @@
     "development": {
         "name": "Server Development",
         "database": {
-            "url": "DB?retryWrites=true&w=majority",
+            "url": "Dev?retryWrites=true&w=majority",
             "dialect": "mongo"
         },
         "port": 8000,

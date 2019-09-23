@@ -6,7 +6,7 @@ const today = moment().startOf('day')
 async function handleBeaconEvent(userId, displayName, timestamp, hwid, url, userSchema, locationSchema, activitySchema) {
   let user = await this.dal.find({ userId: userId }, userSchema);
   if (user[0] === undefined) { logger.error(`Unrecognized user id: ${userId}`); return; }
-  var location = await this.dal.find({hardwareId: hwid}, locationSchema);
+  var location = await this.dal.find({hardwareID: hwid}, locationSchema);
   if (location[0] === undefined || location[0] === null) { logger.error(`Unrecognized hardware id: ${hwid}`); return; }
   var filter = {
     userId: userId,
