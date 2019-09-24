@@ -7,7 +7,7 @@ import { Client, middleware } from '@line/bot-sdk';
 import { logger, Log_config } from '../logger';
 import { Router } from 'express'
 import liff from './liff'
-import {finalConfig} from '../../config';
+import { finalConfig } from '../../config';
 mongoose.plugin(require('meanie-mongoose-to-json')); //change _id to i
 
 // const line_config = {  //create LINE SDK config from env variables
@@ -19,11 +19,12 @@ const router = Router()
 const dal = new LocalFile();
 const elastic = new ElasticService();
 const messageService = new MessageService(new Client(finalConfig));
-const conversationService = new ConversationService(dal, messageService, elastic,finalConfig.AnswerAlertDuration);
+const conversationService = new ConversationService(dal, messageService, elastic, finalConfig.AnswerAlertDuration);
 const beaconService = new BeaconService(conversationService, messageService, dal, elastic);
 const userColl = mongoose.model('users', userModel);
 const locationColl = mongoose.model('locations', locationModel);
 const activityColl = mongoose.model('activities', activityModel);
+
 
 router.use('/liff', liff)
 
@@ -87,6 +88,8 @@ async function handleEvent(event) {
             return logger.info(`Left: ${JSON.stringify(event)}`);
 
         case 'beacon':
+
+
             client.getProfile(event.source.userId)
                 .then((profile) => {
                     beaconService.handleBeaconEvent(event.source.userId, profile.displayName, event.timestamp, event.beacon.hwid, profile.pictureUrl, userColl, locationColl, activityColl);

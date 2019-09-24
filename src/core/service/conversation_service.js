@@ -4,6 +4,7 @@ import { logger } from '../../logger';
 const moment = require('moment')
 const today = moment().startOf('day')
 const sortOption = { new: true, sort: { "_id": -1 } };
+var GeoJSON = require('mongoose-geojson-schema');
 
 //handle when received messages
 async function handleInMessage(replytoken, message, userId, timestamp, schema, userprofile) {
@@ -23,12 +24,12 @@ async function handleInMessage(replytoken, message, userId, timestamp, schema, u
             this.messageService.replyText(replytoken, "already clock out");
 
         } else {
-            const saveobj = {
+                const saveobj = {
                 userId: matchedActivity.userId,
                 displayName: matchedActivity.displayName,
                 type: "out",
                 timestamp: timestamp,
-                location: matchedActivity.location,
+                location:matchedActivity.location,
                 askstate: matchedActivity.askstate,
                 plan: matchedActivity.plan,
                 url: matchedActivity.url
