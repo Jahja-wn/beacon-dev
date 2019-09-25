@@ -22,23 +22,26 @@ Set up raspberry pi with WiFi  by follow the link below
 
 https://medium.com/@supachaija/how-to-setup-raspberry-pi-zero-w-headless-with-wifi-466c7a9e4a9b
 
-Install Bluetooth and library with command
-
-```
-$ sudo apt-get install bluetooth bluez libbluetooth-dev libudev-dev 
-```
-Install Node.js and NPM for run Simple Beacon with Node.js
-
-```
-$ curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
-$ sudo apt-get install nodejs
-$ sudo apt-get install npm
-```
-
-Install Git for clone Simple Beacon repository
+Install Git for clone Beacon repository
 
 ```
 $ sudo apt-get install git 
+```
+
+
+Clone shell script
+
+```
+git clone https://github.com/ballkittipat272/install-Line-Beacon-DD.git
+```
+
+Install Beacon with command
+
+```
+cd install-Line-Beacon-DD
+chmod 775 setup.sh
+sed -i -e 's/\r$//' setup.sh
+./setup.sh
 ```
  - ### Line beacon bot 
 
@@ -78,8 +81,6 @@ $ sudo ./simplebeacon.js --hwid= <your hwid>
 ```
 npm start
 ```
-
-
   Config the webhook url in the line developer console => https://developers.line.biz/
 
 ## Structure
@@ -255,7 +256,9 @@ We need to add location informations such as hardwareID , location's Name , lati
 ```
     hardwareID : String,
     locationName : String,
-    point : Object
+    point : {
+      coordinates: [Number] // [lon,lat]
+    }
 ```
 
  - ### Data access layer
