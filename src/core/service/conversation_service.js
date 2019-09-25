@@ -4,8 +4,6 @@ import { logger } from '../../logger';
 const moment = require('moment')
 const today = moment().startOf('day')
 const sortOption = { new: true, sort: { "_id": -1 } };
-var GeoJSON = require('mongoose-geojson-schema');
-
 //handle when received messages
 async function handleInMessage(replytoken, message, userId, timestamp, schema, userprofile) {
     var matchedActivities = await this.dal.find({ // find match activities
@@ -24,12 +22,12 @@ async function handleInMessage(replytoken, message, userId, timestamp, schema, u
             this.messageService.replyText(replytoken, "already clock out");
 
         } else {
-                const saveobj = {
+            const saveobj = {
                 userId: matchedActivity.userId,
                 displayName: matchedActivity.displayName,
                 type: "out",
                 timestamp: timestamp,
-                location:matchedActivity.location,
+                location: matchedActivity.location,
                 askstate: matchedActivity.askstate,
                 plan: matchedActivity.plan,
                 url: matchedActivity.url
@@ -68,15 +66,16 @@ async function handleInMessage(replytoken, message, userId, timestamp, schema, u
 
 async function askTodayPlan(userId, location, schema, userprofile) { //send the question to users
 
+    console.log("3")
     this.messageService.sendMessage(userId, 'what\'s your plan to do today at ' + location + ' ?');
     const updateCondition = { userId: userId, 'location.locationName': location, type: 'in' }
-
     const { err, result } = await this.dal.update(schema, updateCondition, { askstate: true }, sortOption)// update to mark as already ask question
     if (err) {
         logger.error('askTodayPlan update asktate unsuccessful', err)
         return 'update unsuccessful ', err;
     }
     else {
+        console.log("2")
         logger.info('askTodayPlan update asktate successful');
         const call_callback = await this.callback(userId, updateCondition, 0, schema, userprofile)
         if (err) {
@@ -89,10 +88,10 @@ async function askTodayPlan(userId, location, schema, userprofile) { //send the 
 
 
 async function callback(userId, updateCondition, count, schema, userprofile) {  //handle when users do not answer question within 15 seconds
-
+    console.log("callback")
     return new Promise((resolve, reject) => {
         setTimeout(async () => {
-
+            console.log("callback loop")
             logger.debug(`call back for ${count} times`);
             var checkAns = await this.dal.find(updateCondition, schema, { '_id': 'desc' }, 1)
             logger.debug("check", checkAns[0])
