@@ -1,9 +1,5 @@
 
 (function () { 'use strict'; }());
-import { activities } from '../model';
-const moment = require('moment')
-const today = moment().startOf('day')
-
 class LocalFile {
 
   async save(obj) {   //obj must be the object derived from new object from model only

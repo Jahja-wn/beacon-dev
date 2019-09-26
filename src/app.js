@@ -2,11 +2,11 @@ import {logger} from './logger';
 import router from './routes';
 import {finalConfig} from '../config';
 import db from './database'
-const bodyParser = require('body-parser');
-const express = require('express');
+import bodyParser from 'body-parser'
+import express from 'express'
+import path from 'path'
+import ejs from 'ejs'
 const app = express();
-const path = require('path');
-const ejs = require('ejs');
 app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'ejs')
 // app.use(bodyParser.json())

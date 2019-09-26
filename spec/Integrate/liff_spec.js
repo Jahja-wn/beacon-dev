@@ -1,9 +1,8 @@
-import server from "../../../src/app"
-import { userModel, activityModel } from '../../../src/core/model'
-import { LocalFile } from '../../../src/core/data_access_layer'
+import server from "../../src/app"
+import { userModel, activityModel } from "../../src/core/model"
+import { LocalFile } from '../../src/core/data_access_layer'
 import mongoose from 'mongoose'
 const userColl = mongoose.model('users', userModel);
-const activityColl = mongoose.model('activities', activityModel);
 const request = require("supertest");
 const dal = new LocalFile();
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000000;

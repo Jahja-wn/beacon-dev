@@ -1,13 +1,12 @@
 import { Router } from 'express'
 import mongoose from 'mongoose'
-import { userModel, activityModel, locationModel } from '../core/model';
-import { LocalFile } from '../core/data_access_layer';
-import { logger } from '../logger';
+import { userModel, activityModel, locationModel } from '../core/model'
+import { LocalFile } from '../core/data_access_layer'
+import { logger } from '../logger'
+import bodyParser from 'body-parser'
+import path from 'path'
 
 mongoose.plugin(require('meanie-mongoose-to-json')); //change _id to id
-
-const bodyParser = require('body-parser');
-const path = require('path');
 const router = Router();
 const dal = new LocalFile();
 const userColl = mongoose.model('users', userModel);

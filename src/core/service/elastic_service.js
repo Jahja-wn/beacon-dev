@@ -33,7 +33,7 @@ async function insertActivity(activity) {
     try {
         const indexExists = await client.indices.exists({ index: indexStr })
         haveIndex = indexExists.body
-        console.log("body", indexExists.body)
+        logger.info("body", indexExists.body)
         if (!haveIndex) {
             logger.debug(`try create index: [${indexStr}]`);
             await client.indices.create({ index: indexStr, body: {
