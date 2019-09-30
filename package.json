@@ -8,6 +8,8 @@
     "serve": "set NODE_ENV=production&& node --require @babel/register --require @babel/polyfill dist/app.js",
     "dev": "set NODE_ENV=development&& nodemon src/app.js --exec babel-node ",
     "test:jasmine": "set NODE_ENV=test&& babel-node spec/run.js",
+    "test:unit": "set NODE_ENV=unit&& babel-node spec/unit.js",
+    "test:integrate": "set NODE_ENV=integrate&& babel-node spec/integrate.js",
     "play": "npm run build && node dist/src/core/test/play.js",
     "esinsert": "npm run build && node dist/src/utility/elastic_script/insert.js"
   },
@@ -49,8 +51,6 @@
     "moment": "^2.24.0",
     "mongoosastic": "^4.5.1",
     "mongoose": "^5.6.11",
-    "mongoose-geojson-schema": "^2.1.3",
-    "mongoose-moment": "^0.1.3",
     "mongoose-timezone": "^1.2.0",
     "morgan": "^1.9.1",
     "nodemon": "^1.19.1",

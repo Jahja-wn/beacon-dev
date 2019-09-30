@@ -1,6 +1,6 @@
 {
     "production": {
-        "name": "Server Development",
+        "name": "Server Production",
         "database": {
             "url": "DB?retryWrites=true&w=majority",
             "dialect": "mongo"
@@ -14,7 +14,7 @@
             "url": "Dev?retryWrites=true&w=majority",
             "dialect": "mongo"
         },
-        "port": 3001,
+        "port": 8000,
         "logger": "development"
     },
     "test": {
@@ -25,5 +25,23 @@
         },
         "port": 3100,
         "logger": "test"
+    },
+    "unit": {
+        "name": "Unit Test",
+        "database": {
+            "url": "unit_test",
+            "dialect": "mock"
+        },
+        "port": 3002,
+        "logger": "unit_test"
+    },
+    "integrate": {
+        "name": "Integrate Test",
+        "database": {
+            "url": "test?retryWrites=true&w=majority",
+            "dialect": "mock"
+        },
+        "port": 3003,
+        "logger": "integrate_test"
     }
 }

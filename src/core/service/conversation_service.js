@@ -1,111 +1,149 @@
 (function () { 'use strict'; }());
 import { setTimeout } from 'timers';
 import { logger } from '../../logger';
-const moment = require('moment')
-const today = moment().startOf('day')
-const sortOption = { new: true, sort: { "_id": -1 } };
-var GeoJSON = require('mongoose-geojson-schema');
+import moment from 'moment'
 
-//handle when received messages
+
+// handle when received messages
 async function handleInMessage(replytoken, message, userId, timestamp, schema, userprofile) {
-    var matchedActivities = await this.dal.find({ // find match activities
+
+
+    var filter = {
         userId: userId,
-        timestamp: {
-            $gte: today.toDate(),
-            $lte: moment(today).endOf('day').toDate()
+        clockin: {
+            $gte: moment().startOf('day'),
+            $lte: moment().endOf('day')
         }
-    }, schema, { '_id': 'desc' }, 1)
+    }
+
+    var matchedActivities = await this.dal.find(filter, schema, { '_id': 'desc' }, 0);       // Find matches activity in each day by using userId 
     let matchedActivity = matchedActivities[0];
-    logger.debug("handle in message", matchedActivities[0])
-    //consider the user will clock out or not 
-    if (message.text === "Yes" && matchedActivity != undefined) { //user wants to clock out 
-        if (matchedActivity.type === "out") { // it means user has already clocked out
-            logger.info(`handleInMessage -> userid: ${userId} already clock out`);
-            this.messageService.replyText(replytoken, "already clock out");
+
+    logger.debug("handle in message", matchedActivities)
+
+    // consider the user will clock out or not
+    if (message.text === "Yes" && matchedActivity != undefined) {                               // if received message is "yes", mean user wants to clock out 
+        if (matchedActivity.clockout != null) {                                                   // it means user has already clocked out
+            logger.info(`handleInMessage -> userid: ${userId} have already clocked out`);
+            this.messageService.replyText(replytoken, "you have already clocked out");
 
         } else {
+
+            try {
                 const saveobj = {
-                userId: matchedActivity.userId,
-                displayName: matchedActivity.displayName,
-                type: "out",
-                timestamp: timestamp,
-                location:matchedActivity.location,
-                askstate: matchedActivity.askstate,
-                plan: matchedActivity.plan,
-                url: matchedActivity.url
-            };
+                    userId: matchedActivity.userId,
+                    displayName: matchedActivity.displayName,
+                    type: "out",
+                    clockin: matchedActivity.clockin,
+                    clockout: timestamp,
+                    location: matchedActivity.location,
+                    askstate: matchedActivity.askstate,
+                    plan: matchedActivity.plan,
+                    url: matchedActivity.url
+                };
 
+                await this.dal.update(schema, filter, { type: "out", clockout: timestamp }, { new: true, sort: { "_id": -1 } })
+                logger.info('handleInMessage save clocked out activity successful');
+                await this.messageService.sendWalkInMessage(saveobj, userprofile);
 
-            this.elastic.save(saveobj);
-            const { err, result } = this.dal.save(new schema(saveobj))
-            if (err) {
-                logger.error('handleInMessage save activity clock out unsuccessful', err)
-                return 'save activity clock out unsuccessful ', err;
+                const obj = {
+                    userId: matchedActivity.userId,
+                    displayName: null,
+                    type: null,
+                    clockin: matchedActivity.clockin,
+                    clockout: timestamp,
+                    location: null,
+                    askstate: null,
+                    plan: null,
+                    url: null
+                };
+
+                this.elastic.update(obj, 'clockout')
             }
-            else {
-                logger.info('handleInMessage save activity clock out successful');
-                const sendClockout = await this.messageService.sendWalkInMessage(saveobj, userprofile);
-                if (err) {
-                    return err
-                } return sendClockout;
+
+            catch (err) {
+                logger.error('handleInMessage save clocked out activity unsuccessful', err)
+                return 'handleInMessage save clocked out activity unsuccessful', err;
             }
         }
     }
-    else if (message.text != "No" && message.text != "Yes" && matchedActivity != undefined) {
-        if (matchedActivity.plan === 'none' && matchedActivity.type === "in") { //if plan parameter equals to none then update an answer with incoming message 
+    else if (message.text != "Yes" && message.text != "No" && matchedActivity != undefined) {
+        if (matchedActivity.plan === 'none') {              //if plan parameter equals to none then update an answer with incoming message 
             logger.info(`handleInMessage, bot already asked but userid: ${userId} do not answer the question yet`);
-            this.dal.update(schema, { userId: userId, type: 'in' }, { plan: message.text }, sortOption)
-            matchedActivity.plan = message.text;
-            this.elastic.save(matchedActivity);
-            await this.messageService.sendWalkInMessage(matchedActivity, userprofile);
+            this.dal.update(schema, { userId: userId }, { plan: message.text }, { new: true, sort: { "_id": -1 } })
+            const activity = {
+                userId: matchedActivity.userId,
+                displayName: matchedActivity.displayName,
+                type: matchedActivity.type,
+                clockin: matchedActivity.clockin,
+                clockout: matchedActivity.clockout,
+                location: matchedActivity.location,
+                askstate: matchedActivity.askstate,
+                plan: message.text,
+                url: matchedActivity.url
+            };
+            await this.messageService.sendWalkInMessage(activity, userprofile);
+            this.elastic.save(activity);                // mapping these data into elasticsearch
+
         }
-        else if (matchedActivity.plan != 'none' && matchedActivity.type === "in") {
+        else if (matchedActivity.plan != 'none') {
             logger.info(`handleInMessage, bot already asked but userid: ${userId} already have answered `);
             this.messageService.replyText(replytoken, 'you already have answered the question');
         }
     }
 }
 
-async function askTodayPlan(userId, location, schema, userprofile) { //send the question to users
+async function askTodayPlan(userId, location, schema, userprofile) {
+    this.messageService.sendMessage(userId, 'what\'s your plan to do today at ' + location + ' ?');             // send question to user
+    const updateCondition = { userId: userId, 'location.locationName': location }
 
-    this.messageService.sendMessage(userId, 'what\'s your plan to do today at ' + location + ' ?');
-    const updateCondition = { userId: userId, 'location.locationName': location, type: 'in' }
-
-    const { err, result } = await this.dal.update(schema, updateCondition, { askstate: true }, sortOption)// update to mark as already ask question
-    if (err) {
-        logger.error('askTodayPlan update asktate unsuccessful', err)
-        return 'update unsuccessful ', err;
-    }
-    else {
+    try {
+        await this.dal.update(schema, updateCondition, { askstate: true }, { new: true, sort: { "_id": -1 } })                             // update to mark as already ask question
         logger.info('askTodayPlan update asktate successful');
-        const call_callback = await this.callback(userId, updateCondition, 0, schema, userprofile)
-        if (err) {
+
+        try {
+            const call_callback = await this.callback(userId, updateCondition, 0, schema, userprofile)
+            return call_callback;
+        }
+        catch (err) {
             return err
         }
-        return call_callback;
+    }
+    catch (err) {
+        logger.error('askTodayPlan update asktate unsuccessful', err)
+        return 'update unsuccessful ', err;
     }
 
 }
 
 
-async function callback(userId, updateCondition, count, schema, userprofile) {  //handle when users do not answer question within 15 seconds
-
+async function callback(userId, updateCondition, count, schema, userprofile) {                             //handle when users do not answer question within 5 seconds
     return new Promise((resolve, reject) => {
         setTimeout(async () => {
-
             logger.debug(`call back for ${count} times`);
             var checkAns = await this.dal.find(updateCondition, schema, { '_id': 'desc' }, 1)
             logger.debug("check", checkAns[0])
             if (checkAns[0].plan === 'none' && count < 3) {
-                // notify message for 3 times 
-                this.messageService.sendMessage(userId, 'Please enter your answer');
+                this.messageService.sendMessage(userId, 'Please enter your answer');                     // notify message for 3 times 
                 count = count + 1;
                 let result = await this.callback(userId, updateCondition, count, schema, userprofile);
                 resolve(result);
 
             } else if (checkAns[0].plan === 'none' && count == 3) {
-                // has notified for 3 times but no response
-                await this.dal.update(schema, updateCondition, { plan: '           ' }, sortOption)
+                const obj = {
+                    userId: checkAns[0].userId,
+                    displayName: null,
+                    type: null,
+                    clockin: checkAns[0].clockin,
+                    clockout: null,
+                    location: null,
+                    askstate: null,
+                    plan: '           ',
+                    url: null
+                };
+
+                await this.elastic.update(obj, 'plan')
+                await this.dal.update(schema, updateCondition, { plan: '           ' }, { new: true, sort: { "_id": -1 } })        // has notified for 3 times but no response
                 checkAns[0].plan = '           ';
                 try {
                     await this.messageService.sendWalkInMessage(checkAns[0], userprofile)

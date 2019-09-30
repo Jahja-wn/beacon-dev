@@ -1,29 +1,35 @@
 (function () { 'use strict'; }());
-import { logger } from '../../logger';
-const moment = require('moment')
-const today = moment().startOf('day')
+import { logger } from '../../logger'
+import moment from 'moment'
 
+//handle when received beacon event
 async function handleBeaconEvent(userId, displayName, timestamp, hwid, url, userSchema, locationSchema, activitySchema) {
-  let user = await this.dal.find({ userId: userId }, userSchema);
+
+  let user = await this.dal.find({ userId: userId }, userSchema, { '_id': 'desc' }, 1);                                                        // find the user is a group member or not. 
   if (user[0] === undefined) { logger.error(`Unrecognized user id: ${userId}`); return; }
-  var location = await this.dal.find({hardwareID: hwid}, locationSchema);
+
+  var location = await this.dal.find({ hardwareID: hwid }, locationSchema, { '_id': 'desc' }, 1);                                              // find user's location in db
   if (location[0] === undefined || location[0] === null) { logger.error(`Unrecognized hardware id: ${hwid}`); return; }
+
+
   var filter = {
     userId: userId,
+    clockin: {
+      $gte: moment().startOf('day'),
+      $lte: moment().endOf('day')
+    },
     'location.hardwareID': hwid,
-    timestamp: {
-      $gte: today.toDate(),
-      $lte: moment(today).endOf('day').toDate()
-    }
   }
-  var matchedActities = await this.dal.find(filter, activitySchema, { '_id': 'desc' }); // Find activity matches userId and location for today  
-  if (matchedActities[0] === undefined) {
+  var matchedActivities = await this.dal.find(filter, activitySchema, { '_id': 'desc' }, 0);                                   // Find match activities in each day by using userId and hwid 
+  let matchedActivity = matchedActivities[0];
+  if (matchedActivity === undefined) {                                                                                 // data does not exist
     logger.info(`handleBeaconEvent not found matched activity -> userid: ${userId}, location: ${location[0].locationName}`);
     var saveActivity = {
       userId: userId,
       displayName: displayName,
       type: "in",
-      timestamp: timestamp,
+      clockin: timestamp,
+      clockout: null,
       location: {
         hardwareID: hwid,
         locationName: location[0].locationName,
@@ -34,19 +40,19 @@ async function handleBeaconEvent(userId, displayName, timestamp, hwid, url, user
       url: url
     };
 
-    this.dal.save(new activitySchema (saveActivity))
-      .then(async (docs) => {
-        logger.debug('handleBeaconEvent save activity successful', docs);
-        await this.conversationService.askTodayPlan(userId, location[0].locationName, activitySchema, user[0]) //call ask_today_plan ()
-      })
-      .catch((err) => {
-        logger.error('handleBeaconEvent save activity unsuccessful', err);
-        return err;
-      })
+    try {
+      const docs = await this.dal.save(new activitySchema(saveActivity))                                                    // insert data in database with activitySchema format 
+      logger.debug('handleBeaconEvent save activity successful', docs);
+      await this.conversationService.askTodayPlan(userId, location[0].locationName, activitySchema, user[0])                // call ask_today_plan ()
+    }
+    catch (err) {
+      logger.error('handleBeaconEvent save activity unsuccessful', err);
+      return err;
+    }
   }
   else {
     logger.info(`handleBeaconEvent found matched activity -> userid: ${userId}, location: ${location[0].locationName}`);
-    if (matchedActities[0].plan != 'none' && matchedActities[0].type != 'out') { // users become active again
+    if (matchedActivity.plan != 'none') {                                             // if users become active again, send confirm message to user
       return this.messageService.sendConfirmMessage(userId)
     }
   }
