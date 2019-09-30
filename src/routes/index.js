@@ -8,12 +8,7 @@ import { logger, Log_config } from '../logger';
 import { Router } from 'express'
 import liff from './liff'
 import { finalConfig } from '../../config';
-mongoose.plugin(require('meanie-mongoose-to-json')); //change _id to i
-
-// const line_config = {  //create LINE SDK config from env variables
-//     channelAccessToken: process.env.channelAccessToken,
-//     channelSecret: process.env.channelSecret,
-// };
+mongoose.plugin(require('meanie-mongoose-to-json')); //change _id to id
 const client = new Client(finalConfig);          // create LINE SDK clientconst bodyParser = require('body-parser');
 const router = Router()
 const dal = new LocalFile();
@@ -88,8 +83,6 @@ async function handleEvent(event) {
             return logger.info(`Left: ${JSON.stringify(event)}`);
 
         case 'beacon':
-
-
             client.getProfile(event.source.userId)
                 .then((profile) => {
                     beaconService.handleBeaconEvent(event.source.userId, profile.displayName, event.timestamp, event.beacon.hwid, profile.pictureUrl, userColl, locationColl, activityColl);

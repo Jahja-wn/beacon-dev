@@ -1,6 +1,6 @@
-import server from "../../../src/app"
-import { userModel } from '../../../src/core/model'
-import { LocalFile } from '../../../src/core/data_access_layer'
+import server from "../../src/app"
+import { userModel, activityModel } from "../../src/core/model"
+import { LocalFile } from '../../src/core/data_access_layer'
 import mongoose from 'mongoose'
 const userColl = mongoose.model('users', userModel);
 const request = require("supertest");
@@ -10,15 +10,17 @@ jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000000;
 
 describe('test api /liff ', () => {
     beforeEach(async () => {
-        await userColl.deleteMany({ "userId": "1l","userId": "2l" });
+        await userColl.deleteMany({ "userId": "1l", "userId": "2l" });
+        
     });
     const userprofile = {
-               "userId":"2l",
-               "displayName":"save",
-               "firstName":"data",
-               "lastName":"user",
-               "nickName":"profile",
-            };
+        "userId": "2l",
+        "displayName": "save",
+        "firstName": "data",
+        "lastName": "user",
+        "nickName": "profile",
+    };
+
 
     describe("POST /", () => {
 
@@ -44,7 +46,7 @@ describe('test api /liff ', () => {
 
         it("should update user's info return user when call post /submit in case of data exist ", async () => {
 
-            dal.save(new userColl (userprofile));
+            dal.save(new userColl(userprofile));
             const res = await request(server)
                 .post("/liff/submit")
                 .send({
@@ -52,9 +54,9 @@ describe('test api /liff ', () => {
                     "displayName": "liff",
                     "firstName": "update",
                     "lastName": "data",
-                    "nickName": "exist"
+                    "nickName": "existed"
                 })
-            
+
 
             expect(res.status).toEqual(200);
             expect((Object.keys(res.body))).toContain("userId", "displayName", "firstName", "lastName", "nickName", "id");
@@ -62,7 +64,7 @@ describe('test api /liff ', () => {
             expect(res.body.displayName).toEqual("liff");
             expect(res.body.firstName).toEqual("update");
             expect(res.body.lastName).toEqual("data");
-            expect(res.body.nickName).toEqual("exist");
+            expect(res.body.nickName).toEqual("existed");
         });
 
         it("should return status 200 when call post /gethistory in case of data exist ", async () => {
@@ -72,7 +74,7 @@ describe('test api /liff ', () => {
                     "userId": "2l",
                 })
             expect(res.status).toEqual(200);
-          
+
         });
         it("should return status 201 when call post /gethistory in case of data not exist ", async () => {
             const res = await request(server)
@@ -81,7 +83,7 @@ describe('test api /liff ', () => {
                     "userId": "3l",
                 })
             expect(res.status).toEqual(201);
-          
+
         });
 
     });
