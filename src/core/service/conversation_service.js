@@ -45,12 +45,13 @@ async function handleInMessage(replytoken, message, userId, timestamp, schema, u
                 await this.dal.update(schema, filter, { type: "out", clockout: timestamp }, { new: true, sort: { "_id": -1 } })
                 logger.info('handleInMessage save clocked out activity successful');
                 await this.messageService.sendWalkInMessage(saveobj, userprofile);
-
+                var parsedate = Date.parse(saveobj.clockin)
+           
                 const obj = {
                     userId: matchedActivity.userId,
                     displayName: null,
                     type: null,
-                    clockin: matchedActivity.clockin,
+                    clockin: parsedate,
                     clockout: timestamp,
                     location: null,
                     askstate: null,
@@ -70,19 +71,20 @@ async function handleInMessage(replytoken, message, userId, timestamp, schema, u
     else if (message.text != "Yes" && message.text != "No" && matchedActivity != undefined) {
         if (matchedActivity.plan === 'none') {              //if plan parameter equals to none then update an answer with incoming message 
             logger.info(`handleInMessage, bot already asked but userid: ${userId} do not answer the question yet`);
-            this.dal.update(schema, { userId: userId }, { plan: message.text }, { new: true, sort: { "_id": -1 } })
+            const update_plan = await this.dal.update(schema, { userId: userId }, { plan: message.text }, { new: true, sort: { "_id": -1 } })
+            await this.messageService.sendWalkInMessage(update_plan, userprofile);
+            var parsedate = Date.parse(update_plan.clockin)
             const activity = {
-                userId: matchedActivity.userId,
-                displayName: matchedActivity.displayName,
-                type: matchedActivity.type,
-                clockin: matchedActivity.clockin,
-                clockout: matchedActivity.clockout,
-                location: matchedActivity.location,
-                askstate: matchedActivity.askstate,
-                plan: message.text,
-                url: matchedActivity.url
+                userId: update_plan.userId,
+                displayName: update_plan.displayName,
+                type: update_plan.type,
+                clockin: parsedate,
+                clockout: update_plan.clockout,
+                location: update_plan.location,
+                askstate: update_plan.askstate,
+                plan: update_plan.plan,
+                url: update_plan.url
             };
-            await this.messageService.sendWalkInMessage(activity, userprofile);
             this.elastic.save(activity);                // mapping these data into elasticsearch
 
         }
@@ -130,23 +132,23 @@ async function callback(userId, updateCondition, count, schema, userprofile) {  
                 resolve(result);
 
             } else if (checkAns[0].plan === 'none' && count == 3) {
-                const obj = {
-                    userId: checkAns[0].userId,
-                    displayName: null,
-                    type: null,
-                    clockin: checkAns[0].clockin,
-                    clockout: null,
-                    location: null,
-                    askstate: null,
-                    plan: '           ',
-                    url: null
+                const updatefromCallback = await this.dal.update(schema, updateCondition, { plan: '           ' }, { new: true, sort: { "_id": -1 } })        // has notified for 3 times but no response
+                var parsedate = Date.parse(updatefromCallback.clockin)
+                const activity = {
+                    userId: updatefromCallback.userId,
+                    displayName: updatefromCallback.displayName,
+                    type: updatefromCallback.type,
+                    clockin: parsedate,
+                    clockout: updatefromCallback.clockout,
+                    location: updatefromCallback.location,
+                    askstate: updatefromCallback.askstate,
+                    plan: updatefromCallback.plan,
+                    url: updatefromCallback.url
                 };
+                this.elastic.save(activity);
 
-                await this.elastic.update(obj, 'plan')
-                await this.dal.update(schema, updateCondition, { plan: '           ' }, { new: true, sort: { "_id": -1 } })        // has notified for 3 times but no response
-                checkAns[0].plan = '           ';
                 try {
-                    await this.messageService.sendWalkInMessage(checkAns[0], userprofile)
+                    await this.messageService.sendWalkInMessage(updatefromCallback, userprofile)
                     resolve("update answer and exist loop from conver,callback");
                 }
                 catch (err) {

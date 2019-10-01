@@ -58,7 +58,7 @@ async function insertActivity(activity) {
                 logger.debug(`create index: [${indexStr}] already exist`);
             }
             else {
-                logger.info("cannot create index: ", err.body.error.type);
+                logger.error("cannot create index: ", err.body.error.type);
             }
         }
         else {
@@ -77,7 +77,6 @@ async function insertActivity(activity) {
             logger.debug("insert activity: " + JSON.stringify(activity) + " success");
         }
         catch (err) {
-            console.log("from insert elastic", JSON.stringify(err))
             logger.error("cannot insert activity: ", err.body.error.type);
         }
     }
@@ -93,13 +92,13 @@ async function elastic_update(obj, target) {
             queryArray.push({ match: { [property]: obj[property] } });
         }
     }
-    var scriptSet = { "inline": `ctx._source.${target} = '${obj[target]}'; ` };
+    var scriptSet = `ctx._source.${target} = '${obj[target]}'; `;
     try {
 
         await client.updateByQuery({
             index: presentIndex,
             refresh: true,
-            type: '_doc',
+            //  type: '_doc',
             body: {
                 "query": {
                     "bool": {
@@ -109,10 +108,10 @@ async function elastic_update(obj, target) {
                 "script": scriptSet
             }
         })
+        logger.debug(`update elastic : [${presentIndex}]`);
     }
     catch (err) {
-        console.log("from update elastic", JSON.stringify(err))
-        logger.error("cannot update activity: ", err.body.error.type);
+        logger.error("cannot update activity: ", err);
     }
 
 }
