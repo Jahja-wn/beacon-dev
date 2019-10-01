@@ -24,6 +24,6 @@ const activitySchema = new Schema({
     url: String
 })
 activitySchema.plugin(require('meanie-mongoose-to-json'));//change _id to id
-activitySchema.plugin(timeZone, { paths: [['clockin','clockout'], 'subDocument.subDate'] });
+activitySchema.plugin(timeZone, { paths:[]});
 const activityModel = mongoose.model('activities', activitySchema)
 module.exports = activityModel
