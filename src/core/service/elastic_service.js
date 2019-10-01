@@ -1,33 +1,36 @@
 import elasticsearch from '@elastic/elasticsearch';
 import { finalConfig } from '../../../config';
-import { activities, users } from '../model';
+import { userModel, activityModel } from '../model';
 import { logger } from '../../logger';
 
 const current_datetime = new Date();
 const activityMapping = {
-        "properties": {
-            "timestamp": {
-                "type": "date"
-            },
-            "location": {
-                "properties": {
-                    "point": {
-                        "properties": {
-                            "coordinates": {
-                                "type": "geo_point"
-                            }
+    "properties": {
+        "clockin": {
+            "type": "date"
+        },
+        "clockout": {
+            "type": "date"
+        },
+        "location": {
+            "properties": {
+                "point": {
+                    "properties": {
+                        "coordinates": {
+                            "type": "geo_point"
                         }
                     }
                 }
             }
-        
+        }
+
     }
 };
 
 const client = new elasticsearch.Client({ node: finalConfig.elasticConfig });
 
 async function insertActivity(activity) {
-    let gp7Date = new Date(activity.timestamp);
+    let gp7Date = new Date(activity.clockin);
     let indexStr = `activity-${gp7Date.getDate()}-${gp7Date.getMonth() + 1}-${gp7Date.getFullYear()}`;
     let haveIndex = false;
     try {
@@ -36,10 +39,12 @@ async function insertActivity(activity) {
         logger.info("body", indexExists.body)
         if (!haveIndex) {
             logger.debug(`try create index: [${indexStr}]`);
-            await client.indices.create({ index: indexStr, body: {
-                mappings:activityMapping,
-                settings: {}
-            } });
+            await client.indices.create({
+                index: indexStr, body: {
+                    mappings: activityMapping,
+                    settings: {}
+                }
+            });
             logger.info(`create index: [${indexStr}] success`);
 
             haveIndex = true;
@@ -53,7 +58,7 @@ async function insertActivity(activity) {
                 logger.debug(`create index: [${indexStr}] already exist`);
             }
             else {
-                logger.info("cannot create index: ", err.body.error.type);
+                logger.error("cannot create index: ", err.body.error.type);
             }
         }
         else {
@@ -72,36 +77,28 @@ async function insertActivity(activity) {
             logger.debug("insert activity: " + JSON.stringify(activity) + " success");
         }
         catch (err) {
-            console.log("from elastic",JSON.stringify(err))
-            logger.error("cannot insert activity: ",err.body.error.type);
+            logger.error("cannot insert activity: ", err.body.error.type);
         }
     }
 
 }
 
 
-function elastic_update(obj, target) {
-    var presentIndex;
-    if (obj instanceof activities) {
-        presentIndex = 'activity-' + current_datetime.getDate() + "-" + (current_datetime.getMonth() + 1) + "-" + current_datetime.getFullYear();
-    } else if (obj instanceof users) {
-        presentIndex = "user";
-    }
+async function elastic_update(obj, target) {
+    var presentIndex = 'activity-' + current_datetime.getDate() + "-" + (current_datetime.getMonth() + 1) + "-" + current_datetime.getFullYear();
     var queryArray = [];
     for (var property in obj) {
         if (obj[property] != null && property != target) {
             queryArray.push({ match: { [property]: obj[property] } });
         }
     }
-    var scriptSet = { "inline": `ctx._source.${target} = '${obj[target]}'; ` };
-    if (obj[target] == true || obj[target] == false) scriptSet = { "inline": `ctx._source.${target} = ${obj[target]}; ` };
+    var scriptSet = `ctx._source.${target} = '${obj[target]}'; `;
+    try {
 
-    var promise = new Promise((resolve, reject) => {
-
-        var res = client.updateByQuery({
+        await client.updateByQuery({
             index: presentIndex,
             refresh: true,
-            type: '_doc',
+            //  type: '_doc',
             body: {
                 "query": {
                     "bool": {
@@ -111,16 +108,12 @@ function elastic_update(obj, target) {
                 "script": scriptSet
             }
         })
+        logger.debug(`update elastic : [${presentIndex}]`);
+    }
+    catch (err) {
+        logger.error("cannot update activity: ", err);
+    }
 
-
-        resolve(res);
-        reject();
-
-
-    });
-
-
-    return promise;
 }
 
 
@@ -129,7 +122,7 @@ class ElasticService {
     constructor() {
         this.indexTable = {};
         this.save = insertActivity;
-        //this.update = elastic_update;
+        this.update = elastic_update;
 
     }
 }

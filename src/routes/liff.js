@@ -13,7 +13,7 @@ const userColl = mongoose.model('users', userModel);
 const activityColl = mongoose.model('activities', activityModel);
 const sortOption = { new: true, sort: { _id: -1 } };
 
-router.get('/userprofile', bodyParser.json(), function(req, res) {
+router.get('/userprofile', bodyParser.json(), function (req, res) {
     res.render('index')
 });
 router.post('/submit', bodyParser.json(), (req, res) => {
@@ -49,21 +49,22 @@ router.post('/submit', bodyParser.json(), (req, res) => {
             res.status(500).send(err.message)
         })
 });
-router.post('/gethistory', bodyParser.json(), function(req, res) {
+router.post('/gethistory', bodyParser.json(), function (req, res) {
     var getuserid = req.body;
     dal.find(getuserid, activityColl)
         .then((docs) => {
             logger.info(`/gethistory found user's activity -> userid: ${req.body.userId}`)
-            let users = '<thead><tr><th>name</th><th>type</th><th>date/time</th><th>location</th><th>plan</th></tr></thead><tbody>';
+            let users = '<thead><tr><th>Profile pic</th><th>Name</th><th>Clock in</th><th>Clock out</th><th>Location</th><th>Plan</th></tr></thead><tbody>';
             if (docs[0] != undefined) {
+
                 docs.forEach(doc => {
-                    users += '<tr><td>' + doc.displayName + '</td><td>' + doc.type + '</td><td>' + doc.timestamp + '</td><td>' + doc.location.locationName + '</td><td>' + doc.plan + '</td></tbody>'
+                    users += '<tr><td><img src="' + doc.url + '"></td><td>' + doc.displayName + '</td><td>' + doc.clockin + '</td><td>' + doc.clockout + '</td><td>' + doc.location.locationName + '</td><td>' + doc.plan + '</td></tbody>'
                 });
                 res.status(200).send(users)
 
             } else {
                 logger.info(`/gethistory found user's activity -> userid: ${req.body.userId}`)
-                users += '<tr><td colspan="5">' + 'no record !' + '</td></tr></tbody>'
+                users += '<tr><td colspan="6">' + 'no record !' + '</td></tr></tbody>'
                 res.status(201).send(users)
             }
 

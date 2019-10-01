@@ -1,36 +1,35 @@
 (function () { 'use strict'; }());
-import { logger } from '../../logger';
+import { logger } from '../../logger'
 import moment from 'moment'
-
-const today = moment().startOf('day')
 
 //handle when received beacon event
 async function handleBeaconEvent(userId, displayName, timestamp, hwid, url, userSchema, locationSchema, activitySchema) {
 
-  let user = await this.dal.find({ userId: userId }, userSchema,{ '_id': 'desc' }, 1);                                                        // find the user is a group member or not. 
+  let user = await this.dal.find({ userId: userId }, userSchema, { '_id': 'desc' }, 1);                                                        // find the user is a group member or not. 
   if (user[0] === undefined) { logger.error(`Unrecognized user id: ${userId}`); return; }
 
-  var location = await this.dal.find({ hardwareID: hwid }, locationSchema ,{ '_id': 'desc' }, 1);                                              // find user's location in db
+  var location = await this.dal.find({ hardwareID: hwid }, locationSchema, { '_id': 'desc' }, 1);                                              // find user's location in db
   if (location[0] === undefined || location[0] === null) { logger.error(`Unrecognized hardware id: ${hwid}`); return; }
+
 
   var filter = {
     userId: userId,
+    clockin: {
+      $gte: moment().startOf('day'),
+      $lte: moment().endOf('day')
+    },
     'location.hardwareID': hwid,
-    timestamp: {
-      $gte: today.toDate(),
-      $lte: moment(today).endOf('day').toDate()
-    }
   }
-  var matchedActivities = await this.dal.find(filter, activitySchema, { '_id': 'desc' },0);                                   // Find match activities in each day by using userId and hwid 
+  var matchedActivities = await this.dal.find(filter, activitySchema, { '_id': 'desc' }, 0);                                   // Find match activities in each day by using userId and hwid 
   let matchedActivity = matchedActivities[0];
-  
   if (matchedActivity === undefined) {                                                                                 // data does not exist
     logger.info(`handleBeaconEvent not found matched activity -> userid: ${userId}, location: ${location[0].locationName}`);
     var saveActivity = {
       userId: userId,
       displayName: displayName,
       type: "in",
-      timestamp: timestamp,
+      clockin: timestamp,
+      clockout: null,
       location: {
         hardwareID: hwid,
         locationName: location[0].locationName,
@@ -53,7 +52,7 @@ async function handleBeaconEvent(userId, displayName, timestamp, hwid, url, user
   }
   else {
     logger.info(`handleBeaconEvent found matched activity -> userid: ${userId}, location: ${location[0].locationName}`);
-    if (matchedActivity != 'none' && matchedActivity != 'out') {                                             // if users become active again, send confirm message to user
+    if (matchedActivity.plan != 'none' &&matchedActivity.type !="out") {                                             // if users become active again, send confirm message to user
       return this.messageService.sendConfirmMessage(userId)
     }
   }
