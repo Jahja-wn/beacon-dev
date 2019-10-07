@@ -12,19 +12,18 @@
 
         $(document).ready(async (e) => {
             liff.init(function (data) {
-                var userIdfield = data.context.userId;
-            });
-            var userData = { userId: userIdfield }
-            $.ajax({
-                url: '/liff/gethistory/',
-                type: 'POST',
-                dataType: 'json',
-                success: function (data) {
-                    window.location.assign('/liff/history/' + userData.userId)
-                },
-                data: userData
-            });
+                var userData = { userId: data.context.userId }
+                $.ajax({
+                    url: '/liff/gethistory/',
+                    type: 'POST',
+                    dataType: 'json',
+                    success: function (data) {
+                        window.location.assign('/liff/history/' + userData.userId)
+                    },
+                    data: userData
+                });
 
+            });
         });
 
 
