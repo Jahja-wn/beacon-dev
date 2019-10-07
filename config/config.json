@@ -14,7 +14,7 @@
             "url": "Dev?retryWrites=true&w=majority",
             "dialect": "mongo"
         },
-        "port": 8000,
+        "port": 3001,
         "logger": "development"
     },
     "test": {

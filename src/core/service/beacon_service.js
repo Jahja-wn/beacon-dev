@@ -52,7 +52,7 @@ async function handleBeaconEvent(userId, displayName, timestamp, hwid, url, user
   }
   else {
     logger.info(`handleBeaconEvent found matched activity -> userid: ${userId}, location: ${location[0].locationName}`);
-    if (matchedActivity.plan != 'none') {                                             // if users become active again, send confirm message to user
+    if (matchedActivity.plan != 'none' &&matchedActivity.type !="out") {                                             // if users become active again, send confirm message to user
       return this.messageService.sendConfirmMessage(userId)
     }
   }

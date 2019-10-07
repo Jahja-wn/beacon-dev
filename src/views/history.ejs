@@ -1,42 +1,79 @@
-<!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="../fonts/font-awesome-4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" type="text/css" href="../css/history.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Material Design Bootstrap</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+    <link rel="stylesheet" type="text/css" href="/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <!-- Material Design Bootstrap -->
+    <link rel="stylesheet" href="/css/mdb.min.css">
+    <!-- Your custom styles (optional) -->
+    <link rel="stylesheet" href="/css/history.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- MDBootstrap Datatables  -->
+    <link rel="stylesheet" href="/css/datatables.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-    <script src="../js/sdk.js"></script>
-    <!-- call LIFF SDK Which is an executable file of LIFF app -->
-
-    <script>
-        $(document).ready(async (e) => {
-            liff.init(function (data) {
-                var userIdfield = data.context.userId;
-                $('#data').load('/liff/gethistory', { userId: userIdfield }) // fecth data to shown on history page
-            });
-        });
-
-    </script>
+    <script type="text/javascript" src="/js/jquery-3.4.1.min.js"></script>
+    <!-- Bootstrap tooltips -->
+    <script type="text/javascript" src="/js/popper.min.js"></script>
+    <!-- Bootstrap core JavaScript -->
+    <script type="text/javascript" src="/js/bootstrap.min.js"></script>
+    <!-- MDB core JavaScript -->
+    <script type="text/javascript" src="/js/mdb.min.js"></script>
+    <!-- MDBootstrap Datatables  -->
+    <script type="text/javascript" src="/js/datatables.min.js"></script>
 </head>
 
 <body>
 
     <div class="container">
-        <div class="row" id="header">
-            <div class="col-sm">
-                <h1>Attendance <br> Info</h1>
-            </div>
-        </div>
-        <!--  Second Container -->
-        <div style="overflow-x:auto;">
-            <table class="firstdata" id="data">
+        <h1>Attendance Info</h1>
+        <div style="overflow-x: auto">
+            <table id="dtBasicExample" class="firstdata" cellspacing="0" width="100%">
+                <thead>
+                    <tr>
+                        <th class="th-sm">Pic</th>
+                        <th class="th-sm">Name</th>
+                        <th class="th-sm">Clock in</th>
+                        <th class="th-sm">Clock out</th>
+                        <th class="th-sm">Location</th>
+                        <th class="th-sm">Plan</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% for(var i=0; i<docs.length; i++) {%>
+                    <tr>
+                        <td><img src="<%= docs[i].url%>"></td>
+                        <td><%= docs[i].displayName %></td>
+                        <td><%= docs[i].clockin %></td>
+                        <td><%= docs[i].clockout %></td>
+                        <td><%= docs[i].location.locationName %></td>
+                        <td><%= docs[i].plan %></td>
+                    </tr>
+                    <% } %>
+                </tbody>
             </table>
         </div>
     </div>
+
+    <script>
+
+        $(document).ready(function () {
+            $('#dtBasicExample').DataTable({
+                "paging": true, // false to disable pagination (or any other option)
+                "pagingType": "simple_numbers",// "simple" option for 'Previous' and 'Next' buttons only
+            });
+
+            $('.dataTables_length').addClass('bs-select');
+
+        });
+
+    </script>
 </body>
 
 </html>

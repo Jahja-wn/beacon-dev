@@ -21,7 +21,6 @@
     src: url('../fonts/poppins/Poppins-SemiBold.ttf');
 }
 
-
 /*//////////////////////////////////////////////////////////////////
   [ RESTYLE TAG ]*/
 
@@ -31,12 +30,10 @@
     box-sizing: border-box;
 }
 
-body,
-html {
+body, html {
     height: 100%;
     font-family: Poppins-Regular, sans-serif;
 }
-
 
 /*---------------------------------------------*/
 
@@ -60,15 +57,9 @@ a:hover {
     text-decoration: none;
 }
 
-
 /*---------------------------------------------*/
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
+h1, h2, h3, h4, h5, h6 {
     margin: 0px;
 }
 
@@ -80,12 +71,10 @@ p {
     margin: 0px;
 }
 
-ul,
-li {
+ul, li {
     margin: 0px;
     list-style-type: none;
 }
-
 
 /*---------------------------------------------*/
 
@@ -99,8 +88,7 @@ textarea {
     border: none;
 }
 
-textarea:focus,
-input:focus {
+textarea:focus, input:focus {
     border-color: transparent !important;
 }
 
@@ -168,7 +156,6 @@ textarea:-ms-input-placeholder {
     color: #adadad;
 }
 
-
 /*---------------------------------------------*/
 
 button {
@@ -185,13 +172,11 @@ iframe {
     border: none !important;
 }
 
-
 /*---------------------------------------------*/
 
 .container {
     max-width: 1200px;
 }
-
 
 /*//////////////////////////////////////////////////////////////////
   [ Contact ]*/
@@ -219,7 +204,6 @@ iframe {
     background-color: #fff;
 }
 
-
 /*------------------------------------------------------------------
   [ Form ]*/
 
@@ -231,12 +215,11 @@ iframe {
     display: block;
     font-family: Poppins-Bold;
     font-size: 39px;
-    color: #008F7A;
+    color: #000046;
     line-height: 1.2;
     text-align: center;
     padding-bottom: 44px;
 }
-
 
 /*------------------------------------------------------------------
   [ Input ]*/
@@ -252,7 +235,7 @@ iframe {
 .label-input100 {
     font-family: Poppins-Regular;
     font-size: 20px;
-    color: #00C9A7;
+    color: #337ab7;
     line-height: 1.5;
     padding-left: 5px;
 }
@@ -293,7 +276,6 @@ iframe {
     background: #7f7f7f;
 }
 
-
 /*---------------------------------------------*/
 
 input.input100 {
@@ -313,7 +295,6 @@ textarea.input100 {
 .has-val.input100+.focus-input100::before {
     width: 100%;
 }
-
 
 /*------------------------------------------------------------------
   [ Button ]*/
@@ -344,8 +325,12 @@ textarea.input100 {
     z-index: -1;
     width: 300%;
     height: 100%;
-    background-color: #7ee8fa;
-    background-image: -webkit-linear-gradient(315deg, #7ee8fa 0%, #80ff72 74%);
+    background: #337ab7;
+    /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #1CB5E0, #000046);
+    /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #1CB5E0, #000046);
+    /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
     top: 0;
     left: -100%;
     -webkit-transition: all 0.4s;
@@ -390,7 +375,6 @@ textarea.input100 {
     transform: translateX(10px);
 }
 
-
 /*------------------------------------------------------------------
   [ Responsive ]*/
 
@@ -406,4 +390,24 @@ textarea.input100 {
     left: -1px;
     width: 1px;
     height: 1px;
+}
+
+table.dataTable thead .sorting {
+    background: url("../images/sort_both.png") no-repeat center right;
+}
+
+table.dataTable thead .sorting_asc {
+    background: url("../images/sort_asc.png") no-repeat center right;
+}
+
+table.dataTable thead .sorting_desc {
+    background: url("../images/sort_desc.png") no-repeat center right;
+}
+
+table.dataTable thead .sorting_asc_disabled {
+    background: url("../images/sort_asc_disabled.png") no-repeat center right;
+}
+
+table.dataTable thead .sorting_desc_disabled {
+    background: url("../images/sort_desc_disabled.png") no-repeat center right;
 }
