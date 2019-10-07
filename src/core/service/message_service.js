@@ -172,6 +172,7 @@ function createWalkInMessage(activity, userprofile) {//message format
 
     if (activity.type === "out") {
         flexMessage.contents.body.contents[1].contents[0].contents[0].text = "out"
+        logger.debug(moment(activity.clockout).isUTC())
         flexMessage.contents.body.contents[1].contents[0].contents[1].text = moment(activity.clockout).format('MMMM Do YYYY, h:mm:ss a')
     } else if (activity.type === "in") {
         flexMessage.contents.body.contents[1].contents[0].contents[0].text = "in"
