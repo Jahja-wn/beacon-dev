@@ -2,7 +2,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <title>Material Design Bootstrap</title>
     <!-- Font Awesome -->
@@ -33,32 +33,31 @@
 
     <div class="container">
         <h1>Attendance Info</h1>
-        <div style="overflow-x: auto">
-            <table id="dtBasicExample" class="firstdata" cellspacing="0" width="100%">
-                <thead>
-                    <tr>
-                        <th class="th-sm">Pic</th>
-                        <th class="th-sm">Name</th>
-                        <th class="th-sm">Clock in</th>
-                        <th class="th-sm">Clock out</th>
-                        <th class="th-sm">Location</th>
-                        <th class="th-sm">Plan</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% for(var i=0; i<docs.length; i++) {%>
-                    <tr>
-                        <td><img src="<%= docs[i].url%>"></td>
-                        <td><%= docs[i].displayName %></td>
-                        <td><%= docs[i].clockin %></td>
-                        <td><%= docs[i].clockout %></td>
-                        <td><%= docs[i].location.locationName %></td>
-                        <td><%= docs[i].plan %></td>
-                    </tr>
-                    <% } %>
-                </tbody>
-            </table>
-        </div>
+
+        <table id="dtBasicExample" class="firstdata" cellspacing="0" width="100%">
+            <thead>
+                <tr>
+                    <th class="th-sm">Pic</th>
+                    <th class="th-sm">Name</th>
+                    <th class="th-sm">Clock in</th>
+                    <th class="th-sm">Clock out</th>
+                    <th class="th-sm">Location</th>
+                    <th class="th-sm">Plan</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% for(var i=0; i<docs.length; i++) {%>
+                <tr>
+                    <td><img src="<%= docs[i].url%>"></td>
+                    <td><%= docs[i].displayName %></td>
+                    <td><%= docs[i].clockin %></td>
+                    <td><%= docs[i].clockout %></td>
+                    <td><%= docs[i].location.locationName %></td>
+                    <td><%= docs[i].plan %></td>
+                </tr>
+                <% } %>
+            </tbody>
+        </table>
     </div>
 
     <script>
@@ -67,6 +66,7 @@
             $('#dtBasicExample').DataTable({
                 "paging": true, // false to disable pagination (or any other option)
                 "pagingType": "simple_numbers",// "simple" option for 'Previous' and 'Next' buttons only
+                "scrollX": true
             });
 
             $('.dataTables_length').addClass('bs-select');
