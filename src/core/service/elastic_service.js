@@ -94,11 +94,9 @@ async function elastic_update(obj, target) {
     }
     var scriptSet = `ctx._source.${target} = '${obj[target]}'; `;
     try {
-
         await client.updateByQuery({
             index: presentIndex,
             refresh: true,
-            //  type: '_doc',
             body: {
                 "query": {
                     "bool": {

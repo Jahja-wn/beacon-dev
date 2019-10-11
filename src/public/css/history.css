@@ -20,64 +20,62 @@
     font-family: Poppins-SemiBold;
     src: url('../fonts/poppins/Poppins-SemiBold.ttf');
 }
+
 * {
-    margin: auto;
+    margin: 0 auto;
     padding: 0px;
     box-sizing: border-box;
 }
 
-body,
-html { 
-
+body, html {
     background-color: #fff;
     height: 100%;
 }
 
-
 h1 {
+    margin-top:10%;
+    margin-bottom:5%;
     font-family: Poppins-Bold;
-    color: #333333;
+    color: #000046;
     line-height: 100%;
     font-size: 30px;
 }
 
 /*//////////////////////////////////////////////////////////////////
 [ Table ]*/
+
 .firstdata {
-    margin: 15px;
-	text-align: center;
+    text-align: center;
     border-collapse: separate;
     border-spacing: 0;
     min-width: 350px;
-   
 }
 
-.firstdata tr th,.firstdata tr td:first-child{
-    border-left: 1px solid #008F7A;
+.firstdata tr th, .firstdata tr td:first-child {
+    border-left: 1px solid#337ab7;
 }
-.firstdata tr th,.firstdata tr td:last-child{
-    border-right: 1px solid #008F7A;    
+
+.firstdata tr th, .firstdata tr td:last-child {
+    border-right: 1px solid#337ab7;
 }
 
 .firstdata tr td {
     text-align: center;
-    padding: 15px;
-    border-bottom: 1px solid #008F7A;
+    padding: 5px;
     background: #fff;
-    color: #00C9A7;
+    border-bottom: 1px solid #337ab7;
+    color: #1CB5E0;
     font-family: Poppins-Regular;
-    font-size: 15px;
+    font-size: 10px;
 }
 
 .firstdata tr th {
     text-align: center;
-    padding: 15px;
-    background: #008F7A;
+    padding: 5px;
+    background: #337ab7;
     color: #fff;
     font-family: Poppins-Bold;
-    font-size: 20px;
 }
-
 
 /* top-left border-radius */
 
@@ -85,13 +83,11 @@ h1 {
     border-top-left-radius: 6px;
 }
 
-
 /* top-right border-radius */
 
 .firstdata tr:first-child th:last-child {
     border-top-right-radius: 6px;
 }
-
 
 /* bottom-left border-radius */
 
@@ -99,22 +95,14 @@ h1 {
     border-bottom-left-radius: 6px;
 }
 
-
 /* bottom-right border-radius */
 
 .firstdata tr:last-child td:last-child {
     border-bottom-right-radius: 6px;
 }
 
-#header,
-.col-sm{
-    margin: 0% auto;
-	display:inline-flex;
-}
-
-
 img {
-	width:70%;
-    height:auto;
+    width: 70%;
+    height: auto;
     border-radius: 50%;
 }

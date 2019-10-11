@@ -5,6 +5,7 @@ import { LocalFile } from '../core/data_access_layer'
 import { logger } from '../logger'
 import bodyParser from 'body-parser'
 import path from 'path'
+import moment from 'moment'
 
 mongoose.plugin(require('meanie-mongoose-to-json')); //change _id to id
 const router = Router();
@@ -49,30 +50,62 @@ router.post('/submit', bodyParser.json(), (req, res) => {
             res.status(500).send(err.message)
         })
 });
+
+router.get('/history', bodyParser.json(), (req, res) => res.render('fakehistory'))
+
 router.post('/gethistory', bodyParser.json(), function (req, res) {
     var getuserid = req.body;
+    logger.debug(getuserid)
+    res.send({redirect: 'http://localhost:3001/liff/history/'+getuserid.userId})
+});
+
+router.get('/history/:id', bodyParser.json(), (req, res) => {
+    var getuserid = {userId: req.params.id};
+    logger.debug(getuserid)
     dal.find(getuserid, activityColl)
+    .then((docs) => {
+        logger.debug(docs)
+        res.render('history',{docs:docs});
+    })
+    .catch((err) => {
+        logger.error("find activityies unsuccessful", err)
+        res.status(500).send(err.message)
+    })
+})
+
+router.get('/', bodyParser.json(), (req, res) => {
+    var filter = {
+        userId: "1",
+        clockin: {
+            $gte: moment().startOf('day'),
+            $lte: moment().endOf('day')
+        }
+    }
+    dal.find(filter, activityColl)
         .then((docs) => {
-            logger.info(`/gethistory found user's activity -> userid: ${req.body.userId}`)
-            let users = '<thead><tr><th>Profile pic</th><th>Name</th><th>Clock in</th><th>Clock out</th><th>Location</th><th>Plan</th></tr></thead><tbody>';
-            if (docs[0] != undefined) {
-
-                docs.forEach(doc => {
-                    users += '<tr><td><img src="' + doc.url + '"></td><td>' + doc.displayName + '</td><td>' + doc.clockin + '</td><td>' + doc.clockout + '</td><td>' + doc.location.locationName + '</td><td>' + doc.plan + '</td></tbody>'
-                });
-                res.status(200).send(users)
-
-            } else {
-                logger.info(`/gethistory found user's activity -> userid: ${req.body.userId}`)
-                users += '<tr><td colspan="6">' + 'no record !' + '</td></tr></tbody>'
-                res.status(201).send(users)
-            }
-
+            logger.debug(docs)
+            res.status(200).send(docs)
         })
         .catch((err) => {
-            logger.error("find activityies unsuccessful", err)
+            logger.error(err)
             res.status(500).send(err.message)
         })
-});
+})
+
+router.post('/', bodyParser.json(), (req, res) => {
+
+    logger.info(`POST /activity`)
+    logger.info(`req : ${JSON.stringify(req.body)}`)
+    const newactivity = new activityColl(req.body)
+    dal.save(newactivity)
+        .then((docs) => {
+            logger.debug(docs)
+            res.status(200).send(docs)
+        })
+        .catch((err) => {
+            logger.error(err)
+            res.status(500).send(err.message)
+        })
+})
 
 module.exports = router

@@ -22,11 +22,7 @@ const activityColl = mongoose.model('activities', activityModel);
 
 
 router.use('/liff', liff)
-
-router.get('/history', bodyParser.json(), (req, res) => res.render('history'))
-
 // webhook callback
-
 router.post('/webhook', middleware(finalConfig), (req, res) => {
     // req.body.events should be an array of events
     if (!Array.isArray(req.body.events)) {
