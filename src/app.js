@@ -1,5 +1,3 @@
-global.__basedir = __dirname;
-
 import {logger} from './logger';
 import router from './routes';
 import {finalConfig} from '../config';
