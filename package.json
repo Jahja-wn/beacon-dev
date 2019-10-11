@@ -4,12 +4,12 @@
   "description": "starter point to create new line bot project",
   "main": "app.js",
   "scripts": {
-    "build": "rimraf dist/ &&babel src -d dist --copy-files --source-maps ",
-    "serve": "set NODE_ENV=production&& node --require @babel/register --require @babel/polyfill dist/app.js",
-    "dev": "set NODE_ENV=development&& nodemon src/app.js --exec babel-node ",
-    "test:jasmine": "set NODE_ENV=test&& babel-node spec/run.js",
-    "test:unit": "set NODE_ENV=unit&& babel-node spec/unit.js",
-    "test:integrate": "set NODE_ENV=integrate&& babel-node spec/integrate.js",
+    "build": "rimraf dist && babel src -d dist --copy-files --source-maps ",
+    "serve": "NODE_ENV=production NODE_PATH=. node --require @babel/register --require @babel/polyfill dist/app.js",
+    "dev": "NODE_ENV=development NODE_PATH=. nodemon src/app.js --exec babel-node ",
+    "test:jasmine": "NODE_ENV=test NODE_PATH=. babel-node spec/run.js",
+    "test:unit": "NODE_ENV=unit NODE_PATH=. babel-node spec/unit.js",
+    "test:integrate": "NODE_ENV=integrate NODE_PATH=. babel-node spec/integrate.js",
     "play": "npm run build && node dist/src/core/test/play.js",
     "esinsert": "npm run build && node dist/src/utility/elastic_script/insert.js"
   },
