@@ -58,7 +58,7 @@ async function handleInMessage(replytoken, message, userId, timestamp, schema, u
                 update_elasticformat.clockin = mongooseobj.clockin.getTime()
                 update_elasticformat.clockout = timestamp
 
-                await this.elastic.update(update_elasticformat, 'clockout')
+                await this.elastic.update(update_elasticformat.toObject(), 'clockout')
             }
 
             catch (err) {
