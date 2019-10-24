@@ -67,7 +67,7 @@ async function handleEvent(event) {
             return messageService.replyText(event.replyToken, `Got postback: ${data}`);
 
         case 'join':
-            return logge.info("bot join in ", event.source.groupId);
+            return logger.info("bot join in ", event.source.groupId);
 
         case 'memberJoined': //when they join in group bot will send message to user for insert user information 
             return messageService.sendMessage(event.joined.members[0].userId, "please insert your information \n line://app/1589363163-1oVLQwQk");
