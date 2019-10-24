@@ -94,7 +94,7 @@ async function elastic_update(obj, target) {
     }
     var scriptSet = `ctx._source.${target} = '${obj[target]}'; `;
     try {
-        await client.updateByQuery({
+        const update_elastic  = await  client.updateByQuery({
             index: presentIndex,
             refresh: true,
             body: {
@@ -106,7 +106,7 @@ async function elastic_update(obj, target) {
                 "script": scriptSet
             }
         })
-        logger.debug(`update elastic : [${presentIndex}]`);
+        logger.debug("update elastic ",update_elastic )
     }
     catch (err) {
         logger.error("cannot update activity: ", err);

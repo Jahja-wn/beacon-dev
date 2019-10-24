@@ -31,18 +31,6 @@ async function handleInMessage(replytoken, message, userId, timestamp, schema, u
         url: matchedActivity.url
     };
 
-    const update_elasticformat = {
-        userId: null,
-        displayName: null,
-        type: null,
-        clockin: null,
-        clockout: null,
-        location: null,
-        askstate: null,
-        plan: null,
-        url: null
-    };
-
     // consider the user will clock out or not
     if (message.text === "Yes" && matchedActivity != undefined) {                               // if received message is "yes", mean user wants to clock out 
         if (matchedActivity.clockout != null) {                                                   // it means user has already clocked out
@@ -54,9 +42,17 @@ async function handleInMessage(replytoken, message, userId, timestamp, schema, u
                 await this.dal.update(schema, filter, { type: "out", clockout: timestamp }, { new: true, sort: { "_id": -1 } })
                 logger.info('handleInMessage save clocked out activity successful');
                 await this.messageService.sendWalkInMessage(mongooseobj, userprofile);
-                update_elasticformat.userId = matchedActivity.userId
-                update_elasticformat.clockin = mongooseobj.clockin.getTime()
-                update_elasticformat.clockout = timestamp
+                const update_elasticformat = {
+                    userId: matchedActivity.userId,
+                    displayName: null,
+                    type: null,
+                    clockin: matchedActivity.clockin.getTime(),
+                    clockout: timestamp,
+                    location: null,
+                    askstate: null,
+                    plan: null,
+                    url: null
+                };
                 await this.elastic.update(update_elasticformat, 'clockout')
             }
 
