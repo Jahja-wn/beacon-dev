@@ -19,7 +19,7 @@ async function handleInMessage(replytoken, message, userId, timestamp, schema, u
     let matchedActivity = matchedActivities[0];
     logger.debug("handle in message", matchedActivities)
 
-    const mongooseobj = {
+    let mongooseobj = {
         userId: matchedActivity.userId,
         displayName: matchedActivity.displayName,
         type: "out",
