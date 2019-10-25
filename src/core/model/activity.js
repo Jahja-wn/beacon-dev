@@ -9,6 +9,7 @@ const activitySchema = new Schema({
     clockout: Date,
     location: Object,
     askstate: Boolean,
+    dialogs:Boolean,
     plan: String,
     url: String
 })
