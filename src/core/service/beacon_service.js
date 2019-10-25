@@ -36,6 +36,7 @@ async function handleBeaconEvent(userId, displayName, timestamp, hwid, url, user
         point: location[0].point
       },
       askstate: false,
+      dialogs:false,
       plan: "none",
       url: url
     };
@@ -52,7 +53,8 @@ async function handleBeaconEvent(userId, displayName, timestamp, hwid, url, user
   }
   else {
     logger.info(`handleBeaconEvent found matched activity -> userid: ${userId}, location: ${location[0].locationName}`);
-    if (matchedActivity.plan != 'none' &&matchedActivity.type !="out") {                                             // if users become active again, send confirm message to user
+    if (matchedActivity.plan != 'none' &&matchedActivity.type !="out" && matchedActivity.dialogs == false) {                                             // if users become active again, send confirm message to user
+      await this.dal.update(activitySchema, { userId: matchedActivity.userId }, { dialogs: true }, { new: true, sort: { "_id": -1 } })
       return this.messageService.sendConfirmMessage(userId)
     }
   }

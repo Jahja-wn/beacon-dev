@@ -27,6 +27,7 @@ async function handleInMessage(replytoken, message, userId, timestamp, schema, u
         clockout: timestamp,
         location: matchedActivity.location,
         askstate: matchedActivity.askstate,
+        dialogs:matchedActivity.dialogs,
         plan: matchedActivity.plan,
         url: matchedActivity.url
     };
@@ -50,6 +51,7 @@ async function handleInMessage(replytoken, message, userId, timestamp, schema, u
                     clockout: timestamp,
                     location: null,
                     askstate: null,
+                    dialogs:null,
                     plan: null,
                     url: null
                 };
