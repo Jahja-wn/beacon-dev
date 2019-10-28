@@ -3,33 +3,31 @@ import { finalConfig } from '../../../config';
 import { userModel, activityModel } from '../model';
 import { logger } from '../../logger';
 
-const current_datetime = new Date();
-const activityMapping = {
-    "properties": {
-        "clockin": {
-            "type": "date"
-        },
-        "clockout": {
-            "type": "date"
-        },
-        "location": {
-            "properties": {
-                "point": {
-                    "properties": {
-                        "coordinates": {
-                            "type": "geo_point"
+const client = new elasticsearch.Client({ node: finalConfig.elasticConfig });
+
+async function insertActivity(activity) {
+    const activityMapping = {
+        "properties": {
+            "clockin": {
+                "type": "date"
+            },
+            "clockout": {
+                "type": "date"
+            },
+            "location": {
+                "properties": {
+                    "point": {
+                        "properties": {
+                            "coordinates": {
+                                "type": "geo_point"
+                            }
                         }
                     }
                 }
             }
+    
         }
-
-    }
-};
-
-const client = new elasticsearch.Client({ node: finalConfig.elasticConfig });
-
-async function insertActivity(activity) {
+    };
     let gp7Date = new Date(activity.clockin);
     let indexStr = `activity-${gp7Date.getDate()}-${gp7Date.getMonth() + 1}-${gp7Date.getFullYear()}`;
     let haveIndex = false;
@@ -85,6 +83,7 @@ async function insertActivity(activity) {
 
 
 async function elastic_update(obj, target) {
+    const current_datetime = new Date();
     var presentIndex = 'activity-' + current_datetime.getDate() + "-" + (current_datetime.getMonth() + 1) + "-" + current_datetime.getFullYear();
     var queryArray = [];
     for (var property in obj) {
