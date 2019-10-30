@@ -33,6 +33,7 @@
 body, html {
     height: 100%;
     font-family: Poppins-Regular, sans-serif;
+    background:#D0D3D4;
 }
 
 /*---------------------------------------------*/
@@ -193,7 +194,6 @@ iframe {
     justify-content: center;
     align-items: center;
     padding: 15px;
-    background-color: #ffffff;
 }
 
 .wrap-contact100 {
