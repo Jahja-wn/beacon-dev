@@ -7,6 +7,7 @@
     "build": "rimraf dist && babel src -d dist --copy-files --source-maps ",
     "serve": "NODE_ENV=production NODE_PATH=. node --require @babel/register --require @babel/polyfill dist/app.js",
     "dev": "NODE_ENV=development NODE_PATH=. nodemon src/app.js --exec babel-node ",
+    "staging":"NODE_ENV=staging NODE_PATH=. node --require @babel/register --require @babel/polyfill dist/app.js",
     "test:jasmine": "NODE_ENV=test NODE_PATH=. babel-node spec/run.js",
     "test:unit": "NODE_ENV=unit NODE_PATH=. babel-node spec/unit.js",
     "test:integrate": "NODE_ENV=integrate NODE_PATH=. babel-node spec/integrate.js",
