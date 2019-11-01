@@ -134,7 +134,7 @@ async function callback(userId, updateCondition, count, schema, userprofile) {  
             else if (checkAns[0].plan != 'none') {
                 resolve("exist loop from conver,callback");
             }
-        }, this.answerAlertDuration);
+        }, this.AnswerAlertDuration);
     });
 }
 
@@ -146,7 +146,7 @@ class ConversationService {
         this.messageService = messageService;
         this.elastic = elasticService;
         this.dal = dal;
-        this.answerAlertDuration = answerAlertDuration;
+        this.AnswerAlertDuration = AnswerAlertDuration;
     }
 }
 export {
