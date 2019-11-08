@@ -139,7 +139,7 @@ async function callback(userId, updateCondition, count, schema, userprofile) {  
 }
 
 class ConversationService {
-    constructor(dal, messageService, elasticService, answerAlertDuration) {
+    constructor(dal, messageService, elasticService, AnswerAlertDuration) {
         this.askTodayPlan = askTodayPlan;
         this.callback = callback;
         this.handleInMessage = handleInMessage;
