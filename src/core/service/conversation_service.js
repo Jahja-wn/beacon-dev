@@ -134,19 +134,19 @@ async function callback(userId, updateCondition, count, schema, userprofile) {  
             else if (checkAns[0].plan != 'none') {
                 resolve("exist loop from conver,callback");
             }
-        }, this.answerAlertDuration);
+        }, this.AnswerAlertDuration);
     });
 }
 
 class ConversationService {
-    constructor(dal, messageService, elasticService, answerAlertDuration) {
+    constructor(dal, messageService, elasticService, AnswerAlertDuration) {
         this.askTodayPlan = askTodayPlan;
         this.callback = callback;
         this.handleInMessage = handleInMessage;
         this.messageService = messageService;
         this.elastic = elasticService;
         this.dal = dal;
-        this.answerAlertDuration = answerAlertDuration;
+        this.AnswerAlertDuration = AnswerAlertDuration;
     }
 }
 export {
