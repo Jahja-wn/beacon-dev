@@ -8,7 +8,7 @@ function replyText(token, texts) {
     logger.debug("token : ",token)
     logger.debug("message: ",texts)
     try {
-        texts = Array.isArray(texts) ? texts : [texts];
+     //   texts = Array.isArray(texts) ? texts : [texts];
         return this.client.replyMessage(
             token,
             texts.map((text) => ({ type: 'text', text }))
