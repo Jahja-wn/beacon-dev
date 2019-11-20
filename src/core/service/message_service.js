@@ -5,6 +5,8 @@ import { logger } from '../../logger';
 
 // simple reply function
 function replyText(token, texts) {
+    logger.debug("token : ",token)
+    logger.debug("message: ",texts)
     try {
         texts = Array.isArray(texts) ? texts : [texts];
         return this.client.replyMessage(
