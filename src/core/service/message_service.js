@@ -5,10 +5,8 @@ import { logger } from '../../logger';
 
 // simple reply function
 function replyText(token, texts) {
-    logger.debug("token : ",token)
-    logger.debug("message: ",texts)
     try {
-        texts = Array.isArray(texts) ? texts|| template : [texts];
+        texts = Array.isArray(texts) ? texts: [texts];
         return this.client.replyMessage(
             token,
             texts.map((text) => ({ type: 'text', text }))
@@ -41,9 +39,9 @@ async function sendWalkInMessage(activity, userprofile) { // receive information
     await this.sendMessage(finalConfig.reportGroupId, message);
 }
 
-async function sendConfirmMessage(token) {
+async function sendConfirmMessage(useid) {
     let message = this.confirmMessage();
-    await this.replyText(token, message);
+    await this.sendMessage(useid, message);
 }
 
 function confirmMessage() {
