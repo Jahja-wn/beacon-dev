@@ -81,8 +81,9 @@ async function handleInMessage(replytoken, message, userId, timestamp, schema, u
     }
 }
 
-async function askTodayPlan(userId, location, schema, userprofile) {
-    this.messageService.sendMessage(userId, 'what\'s your plan to do today at ' + location + ' ?');             // send question to user
+async function askTodayPlan(userId, location, schema, userprofile,token) {
+    logger.debug(`try to send send message with replytoken : ${token}`)
+    this.messageService.replyText(token, 'what\'s your plan to do today at ' + location + ' ?');             // send question to user
     const updateCondition = { userId: userId, 'location.locationName': location }
 
     try {

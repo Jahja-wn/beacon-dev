@@ -36,7 +36,7 @@ async function sendWalkInMessage(activity, userprofile) { // receive information
 
 async function sendConfirmMessage(userid) {
     let message = this.confirmMessage();
-    await this.sendMessage(userid, message);
+    await this.replyMessage(userid, message);
 }
 
 function confirmMessage() {
