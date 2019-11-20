@@ -5,8 +5,8 @@ import moment from 'moment'
 
 // handle when received messages
 async function handleInMessage(replytoken, message, userId, timestamp, schema, userprofile) {
-
-
+    var text = message.text.toLowerCase().trim();
+    console.log("lower case:", text)
     var filter = {
         userId: userId,
         clockin: {
@@ -27,45 +27,14 @@ async function handleInMessage(replytoken, message, userId, timestamp, schema, u
         clockout: timestamp,
         location: matchedActivity.location,
         askstate: matchedActivity.askstate,
-        dialogs:matchedActivity.dialogs,
+        dialogs: matchedActivity.dialogs,
         plan: matchedActivity.plan,
         url: matchedActivity.url
     };
 
-    // consider the user will clock out or not
-    if (message.text === "Yes" && matchedActivity != undefined) {                               // if received message is "yes", mean user wants to clock out 
-        if (matchedActivity.clockout != null) {                                                   // it means user has already clocked out
-            logger.info(`handleInMessage -> userid: ${userId} have already clocked out`);
-            this.messageService.replyText(replytoken, "you have already clocked out");
+    if (matchedActivity != undefined) {
 
-        } else {
-            try {
-                await this.dal.update(schema, filter, { type: "out", clockout: timestamp }, { new: true, sort: { "_id": -1 } })
-                logger.info('handleInMessage save clocked out activity successful');
-                await this.messageService.sendWalkInMessage(mongooseobj, userprofile);
-                const update_elasticformat = {
-                    userId: matchedActivity.userId,
-                    displayName: null,
-                    type: null,
-                    clockin: matchedActivity.clockin.getTime(),
-                    clockout: timestamp,
-                    location: null,
-                    askstate: null,
-                    dialogs:null,
-                    plan: null,
-                    url: null
-                };
-                await this.elastic.update(update_elasticformat, 'clockout')
-            }
-
-            catch (err) {
-                logger.error('handleInMessage save clocked out activity unsuccessful', err)
-                return 'handleInMessage save clocked out activity unsuccessful', err;
-            }
-        }
-    }
-    else if (message.text != "Yes" && message.text != "No" && matchedActivity != undefined) {
-        if (matchedActivity.plan === 'none') {              //if plan parameter equals to none then update an answer with incoming message 
+        if (matchedActivity.plan === "none") {
             logger.info(`handleInMessage, bot already asked but userid: ${userId} do not answer the question yet`);
             let update_plan = await this.dal.update(schema, { userId: userId }, { plan: message.text }, { new: true, sort: { "_id": -1 } })
             await this.messageService.sendWalkInMessage(update_plan, userprofile);
@@ -74,16 +43,59 @@ async function handleInMessage(replytoken, message, userId, timestamp, schema, u
             activity.clockin = activity.clockin.getTime()
             await this.elastic.save(activity);                // mapping these data into elasticsearch
         }
-        else if (matchedActivity.plan != 'none') {
-            logger.info(`handleInMessage, bot already asked but userid: ${userId} already have answered `);
-            this.messageService.replyText(replytoken, 'you already have answered the question');
+        else {
+
+            if (matchedActivity.clockout === null) {
+
+                if (text === "yes" && matchedActivity.dialogs === true) {
+                    try {
+                        await this.dal.update(schema, filter, { type: "out", clockout: timestamp }, { new: true, sort: { "_id": -1 } })
+                        logger.info('handleInMessage save clocked out activity successful');
+                        await this.messageService.sendWalkInMessage(mongooseobj, userprofile);
+                        const update_elasticformat = {
+                            userId: matchedActivity.userId,
+                            displayName: null,
+                            type: null,
+                            clockin: matchedActivity.clockin.getTime(),
+                            clockout: timestamp,
+                            location: null,
+                            askstate: null,
+                            dialogs: null,
+                            plan: null,
+                            url: null
+                        };
+                        await this.elastic.update(update_elasticformat, 'clockout')
+                    }
+
+                    catch (err) {
+                        logger.error('handleInMessage save clocked out activity unsuccessful', err)
+                        return 'handleInMessage save clocked out activity unsuccessful', err;
+                    }
+                } else if (text != "yes" && text != "no" && matchedActivity.dialogs === false) {
+                    logger.info(`handleInMessage,user: ${userId}  have already answered the question`);
+                    this.messageService.replyText(replytoken, 'you have already answered the question.');
+
+                } else if (text != "yes" && text != "no" && matchedActivity.dialogs === true) {
+                    logger.info(`handleInMessage -> userid: ${userId} wants to clock out but his typo. `);
+                    this.messageService.replyText(replytoken, "please type inform of yes or no.");
+
+                }
+
+            }
+            else {
+                logger.info(`handleInMessage -> userid: ${userId} have already clocked out`);
+                this.messageService.replyText(replytoken, "you have already clocked out.");
+
+            }
+
         }
     }
+
 }
 
-async function askTodayPlan(userId, location, schema, userprofile,token) {
+async function askTodayPlan(userId, location, schema, userprofile, token) {
     logger.debug(`try to send message with replytoken : ${token}`)
-    this.messageService.replyText(token, 'what\'s your plan to do today at ' + location + ' ?');             // send question to user
+    this.messageService.replyText(token, 'what\'s your plan to do today at ' + location + ' ? ');             // send question to user
     const updateCondition = { userId: userId, 'location.locationName': location }
 
     try {

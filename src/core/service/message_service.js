@@ -39,35 +39,6 @@ async function sendWalkInMessage(activity, userprofile) { // receive information
     await this.sendMessage(finalConfig.reportGroupId, message);
 }
 
-async function sendConfirmMessage(useid) {
-    let message = this.confirmMessage();
-    await this.sendMessage(useid, message);
-}
-
-function confirmMessage() {
-    const confirmMessage = {
-        "type": "template",
-        "altText": "this is a confirm template",
-        "template": {
-            "type": "confirm",
-            "actions": [
-                {
-                    "type": "message",
-                    "label": "Yes",
-                    "text": "Yes"
-                },
-                {
-                    "type": "message",
-                    "label": "No",
-                    "text": "No"
-                }
-            ],
-            "text": "would you like to clock out ?"
-        }
-    }
-
-    return confirmMessage;
-}
 
 function createWalkInMessage(activity, userprofile) {//message format
 
@@ -186,6 +157,35 @@ function createWalkInMessage(activity, userprofile) {//message format
     return flexMessage;
 }
 
+// async function sendConfirmMessage(useid) {
+//     let message = this.confirmMessage();
+//     await this.sendMessage(useid, message);
+// }
+
+// function confirmMessage() {
+//     const confirmMessage = {
+//         "type": "template",
+//         "altText": "this is a confirm template",
+//         "template": {
+//             "type": "confirm",
+//             "actions": [
+//                 {
+//                     "type": "message",
+//                     "label": "Yes",
+//                     "text": "Yes"
+//                 },
+//                 {
+//                     "type": "message",
+//                     "label": "No",
+//                     "text": "No"
+//                 }
+//             ],
+//             "text": "would you like to clock out ?"
+//         }
+//     }
+
+//     return confirmMessage;
+// }
 
 
 class MessageService {
