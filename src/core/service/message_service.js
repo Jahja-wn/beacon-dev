@@ -5,12 +5,16 @@ import { logger } from '../../logger';
 
 // simple reply function
 function replyText(token, texts) {
-    logger.debug(`try to send message with replytoken : ${token}`)
-    texts = Array.isArray(texts) ? texts : [texts];
-    return this.client.replyMessage(
-        token,
-        texts.map((text) => ({ type: 'text', text }))
-    );
+    try {
+        texts = Array.isArray(texts) ? texts : [texts];
+        return this.client.replyMessage(
+            token,
+            texts.map((text) => ({ type: 'text', text }))
+        );
+    }
+    catch(err){
+        logger.error("cann't send reply message", err);
+    }
 
 }
 
