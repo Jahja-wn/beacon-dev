@@ -5,6 +5,7 @@ import { logger } from '../../logger';
 
 // simple reply function
 function replyText(token, texts) {
+    logger.debug(`try to send message with replytoken : ${token}`)
     texts = Array.isArray(texts) ? texts : [texts];
     return this.client.replyMessage(
         token,
@@ -34,9 +35,9 @@ async function sendWalkInMessage(activity, userprofile) { // receive information
     await this.sendMessage(finalConfig.reportGroupId, message);
 }
 
-async function sendConfirmMessage(userid) {
+async function sendConfirmMessage(token) {
     let message = this.confirmMessage();
-    await this.replyMessage(userid, message);
+    await this.replyText(token, message);
 }
 
 function confirmMessage() {
