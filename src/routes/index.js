@@ -70,7 +70,7 @@ async function handleEvent(event) {
             return logger.info("bot join in ", event.source.groupId);
 
         case 'memberJoined': //when they join in group bot will send message to user for insert user information 
-            return messageService.sendMessage(event.joined.members[0].userId, "please insert your information \n line://app/1589363163-1oVLQwQk");
+            return messageService.sendMessage(event.joined.members[0].userId, "please insert your information on profile page on the rich menu");
 
         case 'memberLeft':
             return;
