@@ -19,24 +19,13 @@ async function handleInMessage(replytoken, message, userId, timestamp, schema, u
     let matchedActivity = matchedActivities[0];
     logger.debug("handle in message", matchedActivities)
 
-    let mongooseobj = {
-        userId: matchedActivity.userId,
-        displayName: matchedActivity.displayName,
-        type: "out",
-        clockin: matchedActivity.clockin,
-        clockout: timestamp,
-        location: matchedActivity.location,
-        askstate: matchedActivity.askstate,
-        dialogs: matchedActivity.dialogs,
-        plan: matchedActivity.plan,
-        url: matchedActivity.url
-    };
 
     if (matchedActivity != undefined) {
 
         if (matchedActivity.plan === "none") {
             logger.info(`handleInMessage, bot already asked but userid: ${userId} do not answer the question yet`);
             let update_plan = await this.dal.update(schema, { userId: userId }, { plan: message.text }, { new: true, sort: { "_id": -1 } })
+            logger.debug("update plan")
             await this.messageService.sendWalkInMessage(update_plan, userprofile);
 
             const activity = update_plan.toJSON();
@@ -49,9 +38,24 @@ async function handleInMessage(replytoken, message, userId, timestamp, schema, u
 
                 if (text === "yes" && matchedActivity.dialogs === true) {
                     try {
+
+                        let mongooseobj = {
+                            userId: matchedActivity.userId,
+                            displayName: matchedActivity.displayName,
+                            type: "out",
+                            clockin: matchedActivity.clockin,
+                            clockout: timestamp,
+                            location: matchedActivity.location,
+                            askstate: matchedActivity.askstate,
+                            dialogs: matchedActivity.dialogs,
+                            plan: matchedActivity.plan,
+                            url: matchedActivity.url
+                        };
+
                         await this.dal.update(schema, filter, { type: "out", clockout: timestamp }, { new: true, sort: { "_id": -1 } })
                         logger.info('handleInMessage save clocked out activity successful');
                         await this.messageService.sendWalkInMessage(mongooseobj, userprofile);
+
                         const update_elasticformat = {
                             userId: matchedActivity.userId,
                             displayName: null,
