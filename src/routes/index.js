@@ -81,7 +81,7 @@ async function handleEvent(event) {
         case 'beacon':
             client.getProfile(event.source.userId)
                 .then((profile) => {
-                    beaconService.handleBeaconEvent(event.source.userId, profile.displayName, event.timestamp, event.beacon.hwid, profile.pictureUrl, userColl, locationColl, activityColl);
+                    beaconService.handleBeaconEvent(event.source.userId, profile.displayName, event.timestamp, event.beacon.hwid, profile.pictureUrl, userColl, locationColl, activityColl, event.replyToken);
                 }).catch((err) => {
                     logger.error(err);
                 });

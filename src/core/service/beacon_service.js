@@ -3,7 +3,7 @@ import { logger } from '../../logger'
 import moment from 'moment'
 
 //handle when received beacon event
-async function handleBeaconEvent(userId, displayName, timestamp, hwid, url, userSchema, locationSchema, activitySchema) {
+async function handleBeaconEvent(userId, displayName, timestamp, hwid, url, userSchema, locationSchema, activitySchema,token) {
 
   let user = await this.dal.find({ userId: userId }, userSchema, { '_id': 'desc' }, 1);                                                        // find the user is a group member or not. 
   if (user[0] === undefined) { logger.error(`Unrecognized user id: ${userId}`); return; }
@@ -44,7 +44,7 @@ async function handleBeaconEvent(userId, displayName, timestamp, hwid, url, user
     try {
       const docs = await this.dal.save(new activitySchema(saveActivity))                                                    // insert data in database with activitySchema format 
       logger.debug('handleBeaconEvent save activity successful', docs);
-      await this.conversationService.askTodayPlan(userId, location[0].locationName, activitySchema, user[0])                // call ask_today_plan ()
+      await this.conversationService.askTodayPlan(userId, location[0].locationName, activitySchema, user[0],token)                // call ask_today_plan ()
     }
     catch (err) {
       logger.error('handleBeaconEvent save activity unsuccessful', err);
@@ -55,7 +55,7 @@ async function handleBeaconEvent(userId, displayName, timestamp, hwid, url, user
     logger.info(`handleBeaconEvent found matched activity -> userid: ${userId}, location: ${location[0].locationName}`);
     if (matchedActivity.plan != 'none' &&matchedActivity.type !="out" && matchedActivity.dialogs == false) {                                             // if users become active again, send confirm message to user
       await this.dal.update(activitySchema, { userId: matchedActivity.userId }, { dialogs: true }, { new: true, sort: { "_id": -1 } })
-      return this.messageService.sendConfirmMessage(userId)
+      return  this.messageService.replyText(token, "Would you like to clock out? \n please answer the question inform of yes or no");
     }
   }
 }

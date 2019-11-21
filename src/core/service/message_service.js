@@ -5,11 +5,16 @@ import { logger } from '../../logger';
 
 // simple reply function
 function replyText(token, texts) {
-    texts = Array.isArray(texts) ? texts : [texts];
-    return this.client.replyMessage(
-        token,
-        texts.map((text) => ({ type: 'text', text }))
-    );
+    try {
+        texts = Array.isArray(texts) ? texts: [texts];
+        return this.client.replyMessage(
+            token,
+            texts.map((text) => ({ type: 'text', text }))
+        );
+    }
+    catch(err){
+        logger.error("cann't send reply message", err);
+    }
 
 }
 
@@ -34,35 +39,6 @@ async function sendWalkInMessage(activity, userprofile) { // receive information
     await this.sendMessage(finalConfig.reportGroupId, message);
 }
 
-async function sendConfirmMessage(userid) {
-    let message = this.confirmMessage();
-    await this.sendMessage(userid, message);
-}
-
-function confirmMessage() {
-    const confirmMessage = {
-        "type": "template",
-        "altText": "this is a confirm template",
-        "template": {
-            "type": "confirm",
-            "actions": [
-                {
-                    "type": "message",
-                    "label": "Yes",
-                    "text": "Yes"
-                },
-                {
-                    "type": "message",
-                    "label": "No",
-                    "text": "No"
-                }
-            ],
-            "text": "would you like to clock out ?"
-        }
-    }
-
-    return confirmMessage;
-}
 
 function createWalkInMessage(activity, userprofile) {//message format
 
@@ -181,6 +157,35 @@ function createWalkInMessage(activity, userprofile) {//message format
     return flexMessage;
 }
 
+// async function sendConfirmMessage(useid) {
+//     let message = this.confirmMessage();
+//     await this.sendMessage(useid, message);
+// }
+
+// function confirmMessage() {
+//     const confirmMessage = {
+//         "type": "template",
+//         "altText": "this is a confirm template",
+//         "template": {
+//             "type": "confirm",
+//             "actions": [
+//                 {
+//                     "type": "message",
+//                     "label": "Yes",
+//                     "text": "Yes"
+//                 },
+//                 {
+//                     "type": "message",
+//                     "label": "No",
+//                     "text": "No"
+//                 }
+//             ],
+//             "text": "would you like to clock out ?"
+//         }
+//     }
+
+//     return confirmMessage;
+// }
 
 
 class MessageService {
